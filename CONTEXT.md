@@ -12,19 +12,19 @@ the same change.**
 | Field | Value |
 |---|---|
 | **Name** | `kodit` |
-| **Tagline** | Opinionated spec-driven development for solo developers |
+| **Tagline** | Opinionated milestone-driven development for solo developers |
 | **Audience** | Individual developers working with coding agents |
 | **Form** | A collection of agent-agnostic skills, delivered as markdown |
 | **Status** | Bootstrap — documentation only, no skills implemented yet |
 
 ### Philosophy
 
-`kodit` is **opinionated** by design. It picks one workflow — spec, plan,
-implement, review, done — and does not try to support every process. It is built
-for the **solo developer**: enough structure to keep an agent accountable,
-without the roles, approvals, and handoffs of a team process. It is
-**agent-agnostic**: skills are plain markdown, so any coding agent that can read
-instructions can use them.
+`kodit` is **opinionated** by design. It picks one workflow — setup,
+milestone-planning, implement-loop, review-loop, milestone-review, done — and does not
+try to support every process. It is built for the **solo developer**: enough
+structure to keep an agent accountable, without the roles, approvals, and
+handoffs of a team process. It is **agent-agnostic**: skills are plain markdown,
+so any coding agent that can read instructions can use them.
 
 ## Background & Environment
 
@@ -45,30 +45,74 @@ Environment facts relevant to working here:
 
 ## Workflow Definition
 
-Every change to this project, and every project that uses `kodit`, moves through
-these five phases in order. Phases are not skipped.
+Every project that uses `kodit` moves through six phases, always in order,
+forming a milestone loop. Phases are not skipped.
 
-| # | Phase | Purpose | Artifact | Exit criteria |
-|---|---|---|---|---|
-| 1 | **spec** | Capture the need as explicit, testable requirements | `specs/spec-NNN-<name>.md` | Requirements are explicit, testable, and free of implementation detail |
-| 2 | **plan** | Turn the spec into an ordered, verifiable approach | `specs/plan-NNN-<name>.md` (tasks embedded) | Each task is scoped, ordered, and independently verifiable |
-| 3 | **implement** | Execute the plan exactly | Code / skill files | Every task complete, none skipped, no scope added |
-| 4 | **review** | Verify the implementation against the spec | Review notes in the plan | Every task verified; deltas recorded |
-| 5 | **done** | Finalize docs, changelog, and commit | Final commit | Spec, plan, code, and docs agree |
+| # | Phase | Purpose | Exit criteria |
+|---|---|---|---|
+| 1 | **setup** | Initialize `kodit` in the project | `kodit.json` and `.kodit/tmp/` exist and configuration is validated |
+| 2 | **milestone-planning** | Agree the scope of the next milestone | Milestone scope agreed and recorded |
+| 3 | **implement-loop** | Work each milestone item to completion | Every milestone item implemented |
+| 4 | **review-loop** | Verify each implemented item | Every milestone item reviewed; deltas recorded |
+| 5 | **milestone-review** | Confirm the milestone achieved its goal | Milestone goal verified and retrospective captured |
+| 6 | **done** | Finalize the milestone | Milestone artifacts, docs, and changelog agree; work committed |
+
+### Inner item loop
+
+Inside `implement-loop` and `review-loop`, each milestone item runs the same inner
+loop. This is where the spec-driven discipline lives.
+
+| # | Step | Purpose | Artifact |
+|---|---|---|---|
+| 1 | **spec** | Capture the item's requirements | `specs/spec-NNN-<name>.md` |
+| 2 | **plan** | Turn the spec into an ordered approach | `specs/plan-NNN-<name>.md` (tasks embedded) |
+| 3 | **implement** | Execute the plan exactly | Code / skill files |
+| 4 | **review** | Verify against the spec | Review notes in the plan |
 
 Rules that govern the workflow:
 
-- No implementation begins without an approved spec and plan.
+- No milestone item is implemented without an approved spec and plan.
 - An approved spec or plan is not edited during implementation. Amend it via a
   new spec, or append a dated changelog entry to the existing one.
 - Artifacts use zero-padded sequential numbers: `spec-001-...`, `plan-001-...`.
+- Each phase's detailed steps, artifacts, and exit conditions are owned by that
+  phase's workflow skill, not by this document.
+
+## Runtime Layout
+
+Paths that `setup` creates in every adopting project.
+
+| Path | Committed | Purpose |
+|---|---|---|
+| `kodit.json` | Yes | Project configuration at the repository root. Schema owned by the `setup` skill. |
+| `.kodit/tmp/` | No (gitignored) | Temporary working artifacts, always markdown. Never load-bearing; promoted into a permanent artifact or discarded, and swept at phase boundaries. |
+
+The `kodit` repository itself stays markdown-first; `kodit.json` is the
+configuration that `kodit` writes into the projects that adopt it.
 
 ## Canonical Skill Format
 
 The normative format for every skill in this repository.
 
-**Location:** `skills/<skill-name>/SKILL.md`, with optional `references/` and
-`scripts/` subdirectories.
+**Location:** `skills/<category>/<skill-name>/SKILL.md`, with optional
+`references/` and `scripts/` subdirectories. `<category>` is `workflow` or
+`general`.
+
+### Skill Categories
+
+| Category | Role | Depends on |
+|---|---|---|
+| `workflow` | One skill per workflow phase. Sequences the phase, enforces its entry and exit criteria, and invokes general skills as needed. | `general` |
+| `general` | A single, reusable capability with no phase knowledge — for example interviewing the user, setting up `kodit`, or interacting with an issue tracker. | Nothing |
+
+Rules:
+
+- Dependency direction is one-way: workflow skills may reference general
+  skills, never the reverse.
+- Workflow skills invoke a general skill by relative path.
+- One responsibility per skill; overlapping skills are merged or resplit.
+- Skill names are globally unique across both categories.
+- New categories require a decision recorded in the decisions log.
 
 **Frontmatter — exactly two fields:**
 
@@ -98,7 +142,8 @@ description: <what the skill does and when to use it>
 
 Requirements:
 
-- `name` is lowercase kebab-case and matches the containing directory name.
+- `name` is lowercase kebab-case and matches the immediate containing directory
+  name.
 - `description` states trigger guidance, because agents select skills by
   description alone.
 - Instructions are discrete, ordered, and deterministic.
@@ -115,21 +160,31 @@ kodit/
 └── CONTEXT.md
 ```
 
-Planned layout (created as work proceeds):
+Planned layout (created as work proceeds; *(setup)* marks what the `setup` phase
+creates in an adopting project):
 
 ```
 kodit/
 ├── AGENTS.md
 ├── README.md
 ├── CONTEXT.md
-├── specs/               # workflow artifacts
+├── kodit.json            # project configuration (setup)
+├── .kodit/
+│   └── tmp/              # temporary working artifacts (setup, gitignored)
+├── specs/               # per-item workflow artifacts
 │   ├── spec-NNN-*.md
 │   └── plan-NNN-*.md
 └── skills/
-    └── <skill-name>/
-        ├── SKILL.md
-        ├── references/
-        └── scripts/
+    ├── workflow/
+    │   └── <skill-name>/
+    │       ├── SKILL.md
+    │       ├── references/
+    │       └── scripts/
+    └── general/
+        └── <skill-name>/
+            ├── SKILL.md
+            ├── references/
+            └── scripts/
 ```
 
 ## Terminology
@@ -137,21 +192,27 @@ kodit/
 | Term | Meaning |
 |---|---|
 | **Skill** | A self-contained markdown instruction set an agent can discover and follow. The unit of delivery in `kodit`. |
-| **Phase** | One of the five workflow stages: spec, plan, implement, review, done. |
-| **Spec** | A written statement of requirements for a change. Contains no implementation detail. |
+| **Workflow skill** | A skill in `skills/workflow/` that owns exactly one workflow phase. Orchestrates, and invokes general skills. |
+| **General skill** | A reusable, single-purpose capability in `skills/general/` with no phase knowledge. |
+| **Phase** | One of the six milestone workflow stages: setup, milestone-planning, implement-loop, review-loop, milestone-review, done. |
+| **Milestone** | A batch of work planned, implemented, and reviewed as one unit before finalization. |
+| **Spec** | A written statement of requirements for a milestone item. Contains no implementation detail. |
 | **Plan** | A technical approach derived from a spec, expressed as ordered, verifiable tasks. |
 | **Task** | A single, independently verifiable unit of work inside a plan. |
-| **Artifact** | Any file produced by a phase and committed to the repo (spec, plan, review notes). |
+| **Artifact** | Any file produced by a phase. Permanent artifacts live under `specs/` and are committed; temporary artifacts live in `.kodit/tmp/` and are not. |
+| **Temporary artifact** | A markdown scratch file in `.kodit/tmp/`. Never load-bearing; promoted or discarded. |
+| **Configuration** | `kodit.json`, at the repository root, written by `setup`. |
 | **Agent** | Any coding agent that consumes `kodit` skills. Never a specific vendor in normative text. |
 
 ## Current State
 
-- Repository initialized with `git`, branch `main`.
+- Repository initialized with `git`, branch `master`.
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
-- No skills exist yet. No `specs/` or `skills/` directories have been created.
+- No skills exist yet. No `specs/`, `skills/`, or `.kodit/` directories have
+  been created, and no `kodit.json` exists.
 - No runtime code, dependencies, or package manifest.
 
-Next up: scaffold the five workflow skills.
+Next up: scaffold the six workflow skills.
 
 ## Decisions Log
 
@@ -164,3 +225,8 @@ Next up: scaffold the five workflow skills.
 | 2026-09-19 | Keep the repository markdown-first with no runtime code. | Any code (e.g. a future installer) requires a prior decision recorded here. |
 | 2026-09-19 | Protect `master` and `dev`; all work happens on `feature/*` branches. | `master` holds released state, `dev` is the integration branch, and feature branches keep unreviewed work off both. Prevents direct commits and force-pushes to protected branches. |
 | 2026-09-19 | Compress `AGENTS.md` and `README.md` for conciseness. | `AGENTS.md` is now terse and rule-focused; `README.md` is human-readable. The YAML frontmatter validation command is canonical in `README.md` Contributing, and `AGENTS.md`'s Setup & Verification section was removed as redundant with README Getting Started. |
+| 2026-09-19 | Supersede the five-phase workflow with a six-phase milestone workflow: setup → milestone-planning → implement-loop → review-loop → milestone-review → done. | Milestone framing matches how a solo developer batches work, and maps cleanly onto an issue tracker. The per-item spec → plan → implement → review discipline is retained as the inner loop inside `implement-loop` and `review-loop`, so `kodit` stays spec-driven. |
+| 2026-09-19 | Project configuration is `kodit.json` at the repository root. | A root-level JSON file is a familiar convention (alongside `package.json` and friends) and is machine-readable for agents. It lives outside `.kodit/`, which holds only temporary state. |
+| 2026-09-19 | Temporary working artifacts are markdown files in `.kodit/tmp/`, and `.kodit/` is gitignored. | Gives the workflow scratch space for interviews and drafts without polluting the committed tree. Nothing in `tmp/` is load-bearing: it is promoted into a permanent artifact or discarded. |
+| 2026-09-19 | Split skills into two categories: `skills/workflow/` (one orchestrator per phase) and `skills/general/` (single-purpose capabilities). | A one-way dependency (workflow → general) with one responsibility per skill keeps skills composable and non-overlapping, and makes them installable independently. New categories require a recorded decision. |
+| 2026-09-19 | Defer defining the specific skills and each phase's artifacts to the skills themselves. | The overview documents describe structure and rules; inventing an inventory before the skills exist would be speculative design. Each phase's artifacts are owned by its workflow skill. |

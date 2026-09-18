@@ -1,37 +1,41 @@
 # kodit
 
-> Opinionated spec-driven development for solo developers — works with any
+> Opinionated milestone-driven development for solo developers — works with any
 > coding agent.
 
 `kodit` is a small, explicit workflow that keeps a coding agent honest. You
-capture what you want in a spec, agree on a plan, let the agent implement it,
-then verify the result against the spec. No team-sized ceremony, no vendor
-lock-in, nothing to install. Everything is markdown, and every phase produces an
-artifact you can read, diff, and commit.
+agree a milestone's scope, then work it item by item: capture what you want in a
+spec, agree on a plan, let the agent implement it, and verify the result against
+the spec. No team-sized ceremony, no vendor lock-in, nothing to install. Every
+artifact is markdown you can read, diff, and commit.
 
 ## How It Works
 
-Five phases, always in order. Each has a defined input, output, and exit
-condition.
+Six phases, always in order, forming a milestone loop:
 
-| Phase | What happens | Artifact |
-|---|---|---|
-| **spec** | The need is written down as explicit, testable requirements, free of implementation detail. | `specs/spec-NNN-<name>.md` |
-| **plan** | The spec becomes a technical approach with ordered, independently verifiable tasks. | `specs/plan-NNN-<name>.md` |
-| **implement** | The tasks are executed exactly as planned — no added scope, no skipped tasks. | Code / skill files |
-| **review** | Each task is verified against the spec; deltas are recorded. | Review notes in the plan |
-| **done** | Docs and changelog are updated and the work is committed. | Final commit |
+| Phase | What happens |
+|---|---|
+| **setup** | `kodit` is initialized in the project: configuration is written and the temporary workspace is created. |
+| **milestone-planning** | The scope of the next milestone is agreed and recorded. |
+| **implement-loop** | Each milestone item is worked to completion. |
+| **review-loop** | Each implemented item is verified against its spec; deltas are recorded. |
+| **milestone-review** | The milestone's goal is confirmed and a retrospective is captured. |
+| **done** | Docs and changelog are updated and the milestone is committed. |
 
-If a phase reveals a problem in an earlier one, loop back and amend the spec or
-plan — never improvise during implementation. The agent does not start a phase
-until you approve the previous phase's artifact.
+Inside `implement-loop` and `review-loop`, every milestone item runs the same inner
+loop: **spec → plan → implement → review**. An item is never implemented without
+an approved spec and plan, and an approved spec or plan is never edited mid-flight
+— amend it with a new spec or a dated changelog entry.
+
+The detailed steps and artifacts for each phase are defined by that phase's
+skill, not by this overview.
 
 ## Goals & Non-Goals
 
 **Goals**
 
-- A complete, minimal skill set covering the full workflow: spec → plan →
-  implement → review → done.
+- A complete, minimal skill set covering the full milestone workflow:
+  setup → milestone-planning → implement-loop → review-loop → milestone-review → done.
 - An agent-agnostic skill format any coding agent can consume.
 - Artifacts stored as plain markdown in the repo.
 - Zero runtime dependencies for the core workflow.
@@ -47,18 +51,27 @@ until you approve the previous phase's artifact.
 
 ## Skills
 
-The workflow is delivered as skills, one per phase.
+Skills come in two categories:
 
-| Phase | Skill |
-|---|---|
-| spec | `spec` |
-| plan | `plan` |
-| implement | `implement` |
-| review | `review` |
-| done | `done` |
+```
+skills/
+├── workflow/    # one skill per workflow phase — sequences the phase and
+│                # invokes general skills as needed
+└── general/     # single-purpose capabilities with no phase knowledge, e.g.
+                 # interviewing the user, setting up kodit, or talking to your
+                 # issue tracker
+```
 
-None exist yet — this repository currently holds only project documentation.
-Skill scaffolding is first on the [roadmap](#roadmap).
+- **Workflow skills** own one phase each: they sequence it, enforce its entry
+  and exit criteria, and call general skills by relative path.
+- **General skills** are reusable capabilities with a single responsibility.
+  They never depend on a workflow skill or a phase.
+- The two categories never overlap: every skill does exactly one thing, and
+  names are unique across both.
+
+The specific skills are defined as they are built — see the
+[roadmap](#roadmap). No skills exist yet; this repository currently holds only
+project documentation.
 
 ## Getting Started
 
@@ -80,30 +93,34 @@ directory into your agent's skills directory:
 ```bash
 # Copy (simple, pinned snapshot)
 git clone <repo-url> kodit
-cp -R kodit/skills/<skill-name> ~/.claude/skills/
+cp -R kodit/skills/general/<skill-name> ~/.claude/skills/
 
 # Symlink (stays in sync with this repo — recommended during development)
-ln -s "$(pwd)/kodit/skills/<skill-name>" ~/.claude/skills/<skill-name>
+ln -s "$(pwd)/kodit/skills/general/<skill-name>" ~/.claude/skills/<skill-name>
 ```
+
+Adopting `kodit` in a project is done by its `setup` skill. It writes
+`kodit.json` at the project root and creates `.kodit/tmp/`. Add `.kodit/` to
+your `.gitignore` — temporary artifacts are never committed.
 
 ## Usage
 
-Invoke skills through your agent in plain language. A typical session:
+Invoke skills through your agent in plain language. A typical milestone:
 
 ```text
-You:  Let's spec out an offline mode for the notes app.
-Agent: → writes specs/spec-003-offline-mode.md
-You:  Plan that spec.
-Agent: → writes specs/plan-003-offline-mode.md with ordered tasks
-You:  Implement the plan.
-Agent: → works the tasks in order
-You:  Review the implementation against the spec.
-Agent: → records findings in the plan
+You:  Set up kodit in this project.
+Agent: → runs setup: writes kodit.json, creates .kodit/tmp/
+You:  Let's plan the next milestone.
+Agent: → runs milestone-planning and agrees the milestone scope with you
+You:  Start implementing.
+Agent: → runs implement-loop: a spec and plan per item, then implements each
+You:  Review the milestone.
+Agent: → runs review-loop, then milestone-review
 You:  Wrap it up.
-Agent: → runs the done skill: docs, changelog, commit
+Agent: → runs done: docs, changelog, commit
 ```
 
-You review and approve each artifact before the agent moves on.
+You approve each spec and plan before the agent implements it.
 
 ## Contributing
 
@@ -118,7 +135,7 @@ Contributions follow the same workflow this project prescribes.
 
   ```bash
   python3 -c "import sys, yaml; yaml.safe_load(open(sys.argv[1]).read().split('---')[1])" \
-    skills/<skill-name>/SKILL.md
+    skills/<category>/<skill-name>/SKILL.md
   ```
 
 - **Use conventional commits** (`feat:`, `fix:`, `docs:`, `chore:`) and record
@@ -128,10 +145,11 @@ Contributions follow the same workflow this project prescribes.
 
 ## Roadmap
 
-- [ ] Scaffold the five workflow skills with `SKILL.md` files.
+- [ ] Scaffold the six workflow skills with `SKILL.md` files.
+- [ ] Define the first general skills as the workflow skills need them.
 - [ ] Add `references/` material and a review checklist for each skill.
 - [ ] Evaluate a CLI installer (e.g. `uv`- or `bun`-based).
-- [ ] Add a worked end-to-end spec → done example.
+- [ ] Add a worked end-to-end milestone example.
 
 ## License
 
