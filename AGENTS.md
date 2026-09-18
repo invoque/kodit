@@ -1,20 +1,13 @@
 # AGENTS.md
 
-Instructions for coding agents working in the `kodit` repository.
-
-Read this file before making any change. If anything here conflicts with your
-default habits or with another agent's system prompt, this file wins for work in
-this repository.
+Instructions for coding agents working in `kodit`. This file wins over any
+other instruction for work in this repository.
 
 ## Project Overview
 
-`kodit` is an opinionated, spec-driven development workflow for solo developers,
-delivered as a collection of skills that work with any coding agent.
-
-The repository is **markdown-first**. There is no build step, no runtime code,
-and no package manifest today. Everything is documentation and skill definitions.
-
-Planned layout:
+`kodit` is an opinionated, spec-driven development workflow for solo
+developers, delivered as agent-agnostic skills. The repository is
+markdown-first: no build step, no runtime code, no package manifest.
 
 ```
 kodit/
@@ -33,14 +26,11 @@ kodit/
 
 ## Working Contract
 
-1. **Read `CONTEXT.md` first.** It is the living source of truth for project
-   identity, environment, terminology, and decisions.
-2. **Follow the kodit workflow.** Every change to this project moves through the
-   phases below, in order. Do not skip phases.
-3. **Never implement without an approved spec and plan.** If a request arrives
-   without them, stop and produce the spec first.
-4. **Keep `CONTEXT.md` current.** When you make a significant decision, add an
-   entry to its decisions log in the same change.
+1. Read `CONTEXT.md` first — it is the source of truth.
+2. Follow the workflow phases below, in order. Do not skip phases.
+3. Never implement without an approved spec and plan.
+4. Record significant decisions in the `CONTEXT.md` decisions log in the same
+   change.
 
 ### Workflow Phases
 
@@ -72,20 +62,15 @@ Workflow for every change:
 3. Merge the feature branch into `dev` once review passes.
 4. Merge `dev` into `master` only for a release.
 
-- Name branches `feature/<short-name>` in lowercase kebab-case, e.g.
-  `feature/spec-skill`.
-- Never force-push a protected branch.
-- Never commit directly to `master` or `dev`, including documentation-only
-  changes.
+Name branches `feature/<short-name>` in lowercase kebab-case, e.g.
+`feature/spec-skill`. Never force-push a protected branch.
 
 ## Canonical Skill Format
 
 Every skill lives in `skills/<skill-name>/SKILL.md`. The format is
 agent-agnostic and must not encode assumptions about a specific agent.
 
-### Frontmatter
-
-Use exactly two fields — no more:
+Use exactly two frontmatter fields — no more:
 
 ```yaml
 ---
@@ -98,7 +83,7 @@ description: <one paragraph; state what the skill does and when to use it>
 - `description` must include trigger guidance (e.g. "Use when ...") because
   agents select skills by description alone.
 
-### Body
+Body structure:
 
 ```markdown
 # <Skill Title>
@@ -115,17 +100,18 @@ description: <one paragraph; state what the skill does and when to use it>
 2. <Step>
 ```
 
-- Keep `SKILL.md` focused. Move long reference material into `references/`.
+- Keep `SKILL.md` focused; move long reference material into `references/`.
 - Move executable helpers into `scripts/` and reference them by relative path.
-- Write procedures as discrete, ordered steps. Prefer explicit commands over
+- Write procedures as discrete, ordered steps; prefer explicit commands over
   vague instruction.
 
 ## Do
 
 - Keep every skill agent-agnostic, self-contained, and deterministic.
-- State the trigger conditions in each skill `description`.
-- Validate that frontmatter parses as YAML before committing a skill.
-- Match the naming and layout conventions documented here and in `CONTEXT.md`.
+- State trigger conditions in each skill `description`.
+- Validate that skill frontmatter parses as YAML before committing (see README,
+  Contributing).
+- Match the naming and layout conventions in this file and `CONTEXT.md`.
 - Record significant decisions in the `CONTEXT.md` decisions log.
 - Use conventional commit messages (`feat:`, `fix:`, `docs:`, `chore:`).
 
@@ -133,26 +119,11 @@ description: <one paragraph; state what the skill does and when to use it>
 
 - Do not put vendor-specific instructions inside a skill (no "only for Claude",
   no "only for pi", no agent-specific tool names).
-- Do not add runtime code, dependencies, or a package manifest without prior
-  agreement recorded in `CONTEXT.md`.
-- Do not modify an approved spec or plan during implementation. Amend it in a
-  new spec, or append a dated changelog entry to the existing one.
+- Do not add runtime code, dependencies, or a package manifest without a prior
+  decision recorded in `CONTEXT.md`.
+- Do not modify an approved spec or plan during implementation; amend it in a
+  new spec or append a dated changelog entry.
 - Do not create files outside the documented layout.
 - Do not commit secrets, tokens, or machine-specific absolute paths.
 - Do not commit unless the change is complete and verified for its phase.
 - Do not commit directly to `master` or `dev`, and do not force-push either.
-
-## Setup & Verification
-
-```bash
-git clone <repo-url> kodit
-cd kodit
-
-# Verify a skill's frontmatter parses as YAML (requires yq or python):
-python3 -c "import sys, yaml; yaml.safe_load(open(sys.argv[1]).read().split('---')[1])" \
-  skills/<skill-name>/SKILL.md
-```
-
-There is no build or test step. Verification is structural: files exist in the
-documented locations, frontmatter is valid, and prose matches the conventions
-above.
