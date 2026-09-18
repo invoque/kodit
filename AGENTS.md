@@ -55,6 +55,29 @@ kodit/
 Artifact naming: `spec-NNN-short-name.md` and `plan-NNN-short-name.md`, where
 `NNN` is a zero-padded sequential number (e.g. `spec-001-skill-format.md`).
 
+### Branching
+
+`master` and `dev` are **protected branches**. Never commit to them directly.
+
+| Branch | Role |
+|---|---|
+| `master` | Stable, released state. Only updated by merging `dev`. |
+| `dev` | Integration branch. Only updated by merging `feature/*`. |
+| `feature/*` | All work happens here. Branch from `dev`, merge back into `dev`. |
+
+Workflow for every change:
+
+1. Branch from the latest `dev`: `git switch dev && git pull && git switch -c feature/<short-name>`.
+2. Do all work — specs, plans, skills, docs — on the `feature/*` branch.
+3. Merge the feature branch into `dev` once review passes.
+4. Merge `dev` into `master` only for a release.
+
+- Name branches `feature/<short-name>` in lowercase kebab-case, e.g.
+  `feature/spec-skill`.
+- Never force-push a protected branch.
+- Never commit directly to `master` or `dev`, including documentation-only
+  changes.
+
 ## Canonical Skill Format
 
 Every skill lives in `skills/<skill-name>/SKILL.md`. The format is
@@ -117,6 +140,7 @@ description: <one paragraph; state what the skill does and when to use it>
 - Do not create files outside the documented layout.
 - Do not commit secrets, tokens, or machine-specific absolute paths.
 - Do not commit unless the change is complete and verified for its phase.
+- Do not commit directly to `master` or `dev`, and do not force-push either.
 
 ## Setup & Verification
 

@@ -162,3 +162,4 @@ Next up: scaffold the five workflow skills.
 | 2026-09-19 | Bootstrap as a git repository with an initial commit of the three docs. | Establishes history and a clean starting point; every later change follows the spec-driven workflow on top of it. |
 | 2026-09-19 | Canonical skill frontmatter is exactly `name` and `description`. | Matches the proven conventions of `graphify` and `linear-cli` and keeps skills portable across agents. Extra metadata fields were rejected to avoid coupling skills to tooling. |
 | 2026-09-19 | Keep the repository markdown-first with no runtime code. | Any code (e.g. a future installer) requires a prior decision recorded here. |
+| 2026-09-19 | Protect `master` and `dev`; all work happens on `feature/*` branches. | `master` holds released state, `dev` is the integration branch, and feature branches keep unreviewed work off both. Prevents direct commits and force-pushes to protected branches. |
