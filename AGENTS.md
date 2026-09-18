@@ -94,7 +94,7 @@ Temporary working artifacts, always markdown:
   promoted into a permanent artifact (typically under `specs/`); the rest is
   discarded.
 - Swept clean at phase boundaries.
-- Always gitignored. `.kodit/` is never committed.
+- Always gitignored. `.kodit/tmp` is never committed.
 
 ## Canonical Skill Format
 
