@@ -70,9 +70,10 @@ skills/
   names are unique across both.
 
 The specific skills are defined as they are built — see the
-[roadmap](#roadmap). The `setup` phase's skill, `setup-kodit`, exists along with
-its general companions (`kodit-config`, `issue-tracker`, `git-branching`) and
-`interview`; the remaining workflow skills are still to come.
+[roadmap](#roadmap). The `setup` and `milestone-planning` phases' skills
+(`setup-kodit`, `milestone-planning`) exist along with their general companions
+(`kodit-config`, `issue-tracker`, `git-branching`) and `interview`; the
+remaining workflow skills are still to come.
 
 ## Getting Started
 
@@ -152,7 +153,7 @@ Contributions follow the same workflow this project prescribes.
 ## Roadmap
 
 - [ ] Scaffold the six workflow skills with `SKILL.md` files (`setup-kodit`
-      done; `milestone-planning`, `implement-loop`, `review-loop`,
+      and `milestone-planning` done; `implement-loop`, `review-loop`,
       `milestone-review`, `done` to come).
 - [x] Define the first general skills as the workflow skills need them
       (`interview`, `kodit-config`, `issue-tracker`, `git-branching`).
