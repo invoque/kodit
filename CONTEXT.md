@@ -15,12 +15,12 @@ the same change.**
 | **Tagline** | Opinionated milestone-driven development for solo developers |
 | **Audience** | Individual developers working with coding agents |
 | **Form** | A collection of agent-agnostic skills, delivered as markdown |
-| **Status** | Two workflow skills implemented (`setup-kodit`, `milestone-planning`) with their general companions; remaining workflow skills pending |
+| **Status** | Three workflow skills implemented (`setup-kodit`, `milestone-planning`, `implement`) with their general companions; remaining workflow skills pending |
 
 ### Philosophy
 
 `kodit` is **opinionated** by design. It picks one workflow — setup,
-milestone-planning, implement-loop, review-loop, milestone-review, done — and does not
+milestone-planning, implement, review-loop, milestone-review, done — and does not
 try to support every process. It is built for the **solo developer**: enough
 structure to keep an agent accountable, without the roles, approvals, and
 handoffs of a team process. It is **agent-agnostic**: skills are plain markdown,
@@ -53,14 +53,14 @@ forming a milestone loop. Phases are not skipped.
 |---|---|---|---|
 | 1 | **setup** | Initialize `kodit` in the project | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is seeded, and configuration is validated |
 | 2 | **milestone-planning** | Agree the scope of the next milestone | Milestone scope agreed and recorded |
-| 3 | **implement-loop** | Work each milestone item to completion | Every milestone item implemented |
+| 3 | **implement** | Work each milestone item to completion | Every milestone item implemented |
 | 4 | **review-loop** | Verify each implemented item | Every milestone item reviewed; deltas recorded |
 | 5 | **milestone-review** | Confirm the milestone achieved its goal | Milestone goal verified and retrospective captured |
 | 6 | **done** | Finalize the milestone | Milestone artifacts, docs, and changelog agree; work committed |
 
 ### Inner item loop
 
-Inside `implement-loop` and `review-loop`, each milestone item runs the same inner
+Inside `implement` and `review-loop`, each milestone item runs the same inner
 loop. This is where the spec-driven discipline lives.
 
 | # | Step | Purpose | Artifact |
@@ -174,8 +174,8 @@ kodit/
 ├── README.md
 ├── CONTEXT.md
 └── skills/
-    ├── workflow/setup-kodit/
-    └── general/{interview, kodit-config, issue-tracker, git-branching}/
+    ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/
+    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing}/
 ```
 
 Planned layout (created as work proceeds; *(setup)* marks what the `setup` phase
@@ -218,7 +218,7 @@ kodit/
 | **Skill** | A self-contained markdown instruction set an agent can discover and follow. The unit of delivery in `kodit`. |
 | **Workflow skill** | A skill in `skills/workflow/` that owns exactly one workflow phase. Orchestrates, and invokes general skills. |
 | **General skill** | A reusable, single-purpose capability in `skills/general/` with no phase knowledge. |
-| **Phase** | One of the six milestone workflow stages: setup, milestone-planning, implement-loop, review-loop, milestone-review, done. |
+| **Phase** | One of the six milestone workflow stages: setup, milestone-planning, implement, review-loop, milestone-review, done. |
 | **Milestone** | A batch of work planned, implemented, and reviewed as one unit before finalization. |
 | **Issue tracker** | The committed, file-based record of work at `.kodit/issues/`. Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered `M-001`, `US-001`, `T-001`. |
 | **User story** | A requirement with acceptance criteria, stored as `.kodit/issues/M-001-*/US-001-*.md`, carrying its tasks in an embedded table. The unit a spec attaches to. |
@@ -240,13 +240,22 @@ kodit/
   planned by `.kodit/tmp/specs/spec-003-setup-kodit.md` and
   `.kodit/tmp/specs/plan-003-setup-kodit.md`; it was evaluated with with-skill
   and baseline runs (100% vs 47% assertion pass rate) and approved on review.
+- The second workflow skill exists: `skills/workflow/milestone-planning/`,
+  specified and planned by `.kodit/tmp/specs/spec-004-milestone-planning.md` and
+  `.kodit/tmp/specs/plan-004-milestone-planning.md`; evaluated over two
+  iterations and approved on review.
+- The third workflow skill exists: `skills/workflow/implement/`, with the
+  `plan-writing` general skill, specified and planned by
+  `.kodit/tmp/specs/spec-005-implement-skill.md` and
+  `.kodit/tmp/specs/plan-005-implement-skill.md`. It establishes the test-first
+  (RED → GREEN) convention and hands off to a not-yet-built `pr-request` skill.
 - Skills carry a mandatory conciseness standard (`AGENTS.md`), established by
   `spec-002` / `plan-002`.
 - `.kodit/tmp/` is in use for temporary artifacts (gitignored). No `kodit.json`
   exists in this repository, and there is still no runtime code, dependencies, or
   package manifest.
 
-Next up: scaffold the remaining five workflow skills.
+Next up: scaffold the remaining four workflow skills.
 
 ## Decisions Log
 
@@ -285,3 +294,9 @@ Next up: scaffold the remaining five workflow skills.
 | 2026-09-20 | `milestone-planning` sizes a milestone with soft caps: 2–5 stories, 2–6 tasks per story, ≤ ~20 tasks total. | Soft means a strong recommendation surfaced in the interview and restated as a sizing verdict at the checkpoint, never a rejection. The caps are a proxy for "finishable and reviewable before the next milestone"; a deliberate overage is accepted and recorded as a decision, so scope is reshaped rather than silently dropped. |
 | 2026-09-20 | `kodit-config` gains a fourth mode, **decisions**, which appends dated rows to the `CONTEXT.md` decisions log; `milestone-planning` uses it rather than writing the log itself. | Every phase must record significant decisions per `AGENTS.md`, but no general skill owned that write outside setup. Keeping it in `kodit-config` (which already owns `CONTEXT.md`) makes the capability phase-blind and reusable, and keeps workflow skills pure orchestrators. Append-only: existing rows are never rewritten. |
 | 2026-09-20 | `milestone-planning` hands off to a skill named `implement` (to be created), not `implement-loop`. | The user named the next phase skill `implement`; the phase table's `implement-loop` label will be reconciled when that skill is built. The handoff names the skill by name — no slash commands — because skills are agent-agnostic and installed flat. |
+| 2026-09-20 | TDD is mandatory in plans, enforced as a test-first RED → GREEN ordering; `implement` verifies the failing test/check ran before accepting the passing change. | The user requires TDD as a strict rule, but the repository had no such convention. Making the plan own the ordering and the orchestrator verify it keeps the discipline in the artifact that drives the work (so it is reviewable) rather than in prose. A test written after the code proves nothing, so the RED step must be observed. |
+| 2026-09-20 | When a project has no test command (`kodit.json` `project.test` absent), the RED → GREEN rule uses a verifiable substitute check — a command or observation that fails first and passes after. | `kodit` is markdown-first and adopting projects may lack a test runner; blocking them would break the workflow, while skipping the rule would hollow it out. Fail-first-then-pass is preserved; only the mechanism changes, and the substitution is recorded in the plan. |
+| 2026-09-20 | `implement` asks once per run whether plan approval is interactive or non-interactive: interactive pauses before each story's implementation; non-interactive accepts recommendations and presents the summary at the end. | A single upfront choice keeps a solo developer in control when they want it without forcing a per-task gate that would make large milestones tedious. The mode is a run-level decision, so it is asked once rather than re-litigated per task. |
+| 2026-09-20 | When a story has no spec, `implement` auto-generates `spec-US-NNN-*.md` from the story's acceptance criteria and body; an existing spec is reused, never rewritten. | The inner loop requires an approved spec before a plan, but milestone-planning records only stories and criteria. Deriving the spec from criteria the user already approved keeps the loop intact without a second interview per story, and never rewrites an approved artifact. |
+| 2026-09-20 | `implement` works one feature branch per milestone, `<feature_prefix>m-NNN-<slug>` from `dev`, commits each completed task on it, and hands off to a not-yet-built `pr-request` skill; the post-`pr-request` chain (review ordering, `review → done`) is deferred. | One branch per milestone gives the pull request a single reviewable unit and matches the one-milestone-in-flight rule; committing per task follows the existing immediate-commit decision. The pull-request flow was named before it exists, as `milestone-planning` named `implement`, and the review ordering will be reconciled when `pr-request` is built. |
+| 2026-09-20 | Story files gain a `## Plans` table (task → `.kodit/tmp/specs/plan-T-NNN-*.md`) once a plan exists; the task table's `Status` column stays the source of truth. | `AGENTS.md` attaches plans to tasks as separate untracked artifacts, so the committed story file would otherwise not reference the plan that drives its task. The index is a convenience link; status still flows through the `issue-tracker` state machines. |

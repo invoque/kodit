@@ -62,14 +62,14 @@ overview only.
 |---|---|---|---|
 | **setup** | Initialize a project for `kodit` | Project has not adopted `kodit` | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is seeded, and configuration is validated |
 | **milestone-planning** | Agree the scope of the next milestone | Setup complete; a milestone worth of work exists | Milestone scope agreed and recorded |
-| **implement-loop** | Work each milestone item to completion | Approved milestone scope | Every milestone item implemented |
-| **review-loop** | Verify each implemented item | Completed `implement-loop` | Every milestone item reviewed; deltas recorded |
+| **implement** | Work each milestone item to completion | Approved milestone scope | Every milestone item implemented |
+| **review-loop** | Verify each implemented item | Completed `implement` | Every milestone item reviewed; deltas recorded |
 | **milestone-review** | Confirm the milestone achieved its goal | Completed `review-loop` | Milestone goal verified and retrospective captured |
 | **done** | Finalize the milestone | Passing `milestone-review` | Milestone artifacts, docs, and changelog agree; work committed |
 
 The six phases form an outer milestone loop —
-`setup → milestone-planning → implement-loop → review-loop → milestone-review → done`.
-Inside `implement-loop` and `review-loop`, each milestone item runs an inner loop:
+`setup → milestone-planning → implement → review-loop → milestone-review → done`.
+Inside `implement` and `review-loop`, each milestone item runs an inner loop:
 
 | Inner step | Purpose | Artifact |
 |---|---|---|
