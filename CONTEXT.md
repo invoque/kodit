@@ -212,9 +212,9 @@ kodit/
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
 - The first skill exists: `skills/general/interview/SKILL.md`, specified and
   planned by `specs/spec-001-interview-skill.md` and
-  `specs/plan-001-interview-skill.md`.
-- Work for the skill lives on `feature/interview-skill`, pending the user's
-  final review before merging to `dev`.
+  `specs/plan-001-interview-skill.md`; merged to `dev`.
+- Skills carry a mandatory conciseness standard (`AGENTS.md`), established by
+  `specs/spec-002-terse-skills.md` and `specs/plan-002-terse-skills.md`.
 - `.kodit/tmp/` is in use for temporary artifacts (gitignored). No `kodit.json`
   exists yet, and there is still no runtime code, dependencies, or package
   manifest.
@@ -241,3 +241,4 @@ Next up: scaffold the six workflow skills.
 | 2026-09-19 | Commit every completed task immediately; never leave finished work uncommitted. | Keeps the working tree reflecting real progress and prevents losing completed work. Complements the existing rule that incomplete or unverified changes must not be committed. |
 | 2026-09-19 | The first skill is `interview`, a general skill implementing the design-tree interview method, with its working artifact at `.kodit/tmp/design-tree-<topic>.md`. | All three governing documents name interviewing as the prototypical general skill, and it is the prerequisite for spec-driven work: it produces the shared understanding every milestone item starts from. The method — a tree of decisions advanced one round of frontier questions at a time, with facts found by the agent and decisions owned by the user — was chosen over free-form questioning because it is deterministic, terminates when the frontier is empty, and leaves nothing silently assumed. |
 | 2026-09-19 | `opencode` is the agent CLI used on this machine; skills and tooling must not assume `claude`. | The machine's harness is `opencode`. Vendor-specific instructions are already forbidden in skills, and this extends to the development tooling: the skill-creator description-optimization scripts, which shell out to `claude`, are adapted to `opencode` when used. |
+| 2026-09-19 | Every skill must be clean, concise, and terse: `SKILL.md` body under 100 lines, `description` at most ~80 words, each idea stated once. | Skills are read under token pressure, so every line spends context the agent needs for the work. The measurable caps force detail into `references/` and prevent the six planned workflow skills from inheriting the first skill's verbosity. Enforced by `AGENTS.md` and checked at spec/plan review; no tooling was added, keeping the repository markdown-first. |
