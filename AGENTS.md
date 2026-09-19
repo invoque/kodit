@@ -20,6 +20,7 @@ kodit/
 ├── kodit.json           # project configuration (setup)
 ├── .kodit/
 │   └── tmp/             # temporary working artifacts (setup, gitignored)
+│       └── workspaces/  # throwaway workspaces for testing (created on demand)
 ├── specs/               # per-item workflow artifacts (created on first use)
 │   ├── spec-NNN-*.md    # specifications
 │   └── plan-NNN-*.md    # implementation plans (tasks embedded)
@@ -95,6 +96,10 @@ Temporary working artifacts, always markdown:
   discarded.
 - Swept clean at phase boundaries.
 - Always gitignored. `.kodit/tmp` is never committed.
+- The one exception to "always markdown": when an agent needs a workspace
+  directory for testing (e.g. to exercise skill setup or workflow phases),
+  always use `.kodit/tmp/workspaces/`. Never create test workspaces elsewhere
+  in the repository.
 
 ## Canonical Skill Format
 
@@ -179,6 +184,7 @@ Body structure:
 - Do not modify an approved spec or plan during implementation; amend it in a
   new spec or append a dated changelog entry.
 - Do not create files outside the documented layout.
+- Do not create test workspaces outside `.kodit/tmp/workspaces/`.
 - Do not commit secrets, tokens, or machine-specific absolute paths.
 - Do not commit unless the change is complete and verified for its phase.
 - Do not commit directly to `master` or `dev`, and do not force-push either.
