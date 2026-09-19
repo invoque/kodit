@@ -148,8 +148,9 @@ Rules:
 
 - Dependency direction is one-way: workflow skills may reference general
   skills, never the reverse.
-- Workflow skills invoke a general skill by relative path, e.g. "follow
-  `skills/general/<skill-name>/SKILL.md`".
+- Workflow skills invoke a general skill by its skill name, e.g. "follow the
+  `interview` skill". Names are the reliable reference: agents flatten the tree
+  when installing, so paths do not always resolve.
 - One responsibility per skill. If two skills overlap, merge or resplit them so
   their responsibilities are disjoint.
 - Skill names are globally unique across both categories, because agents may

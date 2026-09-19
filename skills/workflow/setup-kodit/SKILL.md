@@ -25,7 +25,7 @@ before presenting the checkpoint or the final summary.
 
 ### 1. Check the project
 
-Follow `skills/general/kodit-config/SKILL.md` in **check mode**: adoption state,
+Follow the `kodit-config` skill in **check mode**: adoption state,
 `.kodit/tmp/`, git, and existing `setup-*.md` drafts. If `kodit.json` exists,
 present the completed state and stop — do not reconfigure unless the user asks.
 Otherwise, keep the reported resume point: the first step below with no draft.
@@ -34,19 +34,19 @@ Drafts already present are re-confirmed, not re-asked.
 ### 2. Settle project metadata
 
 If `.kodit/tmp/setup-project-metadata.md` is missing, follow
-`skills/general/kodit-config/SKILL.md` in **metadata mode** (it runs the
+the `kodit-config` skill in **metadata mode** (it runs the
 `interview`). Otherwise re-confirm the draft with the user.
 
 ### 3. Settle issue tracking
 
 If `.kodit/tmp/setup-issue-tracker.md` is missing, follow
-`skills/general/issue-tracker/SKILL.md` in **setup mode**. Otherwise re-confirm
+the `issue-tracker` skill in **setup mode**. Otherwise re-confirm
 the draft.
 
 ### 4. Settle git branching
 
 If `.kodit/tmp/setup-git-branching.md` is missing, follow
-`skills/general/git-branching/SKILL.md`. Otherwise re-confirm the draft.
+the `git-branching` skill. Otherwise re-confirm the draft.
 
 ### 5. Checkpoint — STOP
 
@@ -58,9 +58,9 @@ draft, and present the checkpoint again. Do not continue without approval.
 
 ### 6. Write the configuration
 
-Follow `skills/general/kodit-config/SKILL.md` in **write mode** to write
+Follow the `kodit-config` skill in **write mode** to write
 `kodit.json`, create or append `AGENTS.md`, `README.md`, and `CONTEXT.md`, write
-`.kodit/.gitignore`, and delete the `setup-*.md` drafts. Report each file and
+`.kodit/.gitignore`, and delete all `.kodit/tmp/setup-*.md` drafts. Report each file and
 whether it was created or appended.
 
 ### 7. Hand off

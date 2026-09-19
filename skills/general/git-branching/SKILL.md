@@ -18,7 +18,7 @@ Settles the branch model and records it for `kodit.json` and the generated docs.
 
 Invoked by `setup-kodit` during the setup phase. Read
 `references/strategies.md` for the model options and defaults. Follow
-`skills/general/interview/SKILL.md` for the branching decisions. Output:
+the `interview` skill for the branching decisions. Output:
 `.kodit/tmp/setup-git-branching.md`, plus any branch or remote changes the user
 approves.
 
@@ -38,7 +38,7 @@ skip. Do not run `git init` without approval.
 
 ### 3. Settle the model with interview
 
-Follow `skills/general/interview/SKILL.md` with topic "git branching model" and
+Follow the `interview` skill with topic "git branching model" and
 the field list from `references/strategies.md` as context: main branch, dev
 branch, feature prefix, bugfix prefix, optional staging branch, optional remote.
 Recommend the defaults and adapt them to the branches already present.

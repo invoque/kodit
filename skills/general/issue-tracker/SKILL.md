@@ -18,7 +18,7 @@ Configures and operates the project's issue tracker.
 
 Invoked in two modes. Read `references/file-based.md` for the full conventions
 before writing any issue artifact. Follow
-`skills/general/interview/SKILL.md` for the backend choice.
+the `interview` skill for the backend choice.
 
 - **Setup mode** — choose a backend, check its requirements, seed the tracker,
   and write `.kodit/tmp/setup-issue-tracker.md`.

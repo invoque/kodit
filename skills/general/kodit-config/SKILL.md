@@ -16,7 +16,7 @@ artifacts are written.
 
 ## Usage
 
-Invoked as three modes. Follow `skills/general/interview/SKILL.md` for the
+Invoked as three modes. Follow the `interview` skill for the
 metadata interview. Read `references/kodit-json-schema.md` for the config
 contract and `references/templates.md` for output templates.
 
@@ -43,7 +43,7 @@ contract and `references/templates.md` for output templates.
 1. Read the project for facts first: name, description, language, build and
    test commands — from `README.md`, manifests, and the conversation. Never ask
    for what you can look up.
-2. Follow `skills/general/interview/SKILL.md` with topic "project metadata" and
+2. Follow the `interview` skill with topic "project metadata" and
    the field list from `references/templates.md` as context. Use that
    reference's template as the record shape.
 3. Write `.kodit/tmp/setup-project-metadata.md` once the interview confirms.
@@ -60,5 +60,5 @@ contract and `references/templates.md` for output templates.
    overwrite or remove existing content. Use the templates' section headings so
    the append is idempotent.
 4. Write `.kodit/.gitignore` containing `tmp`. Never ignore `.kodit/issues/`.
-5. Remove the three `setup-*.md` drafts.
+5. Remove all `.kodit/tmp/setup-*.md` drafts.
 6. Report every file written and whether it was created or appended.

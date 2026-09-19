@@ -123,7 +123,8 @@ Rules:
 
 - Dependency direction is one-way: workflow skills may reference general
   skills, never the reverse.
-- Workflow skills invoke a general skill by relative path.
+- Workflow skills invoke a general skill by its skill name; paths do not always
+  resolve once agents flatten the tree at install time.
 - One responsibility per skill; overlapping skills are merged or resplit.
 - Skill names are globally unique across both categories.
 - New categories require a decision recorded in the decisions log.
