@@ -1,6 +1,6 @@
 # spec-002 — mandatory skill conciseness
 
-**Status:** draft
+**Status:** approved
 **Date:** 2026-09-19
 **Milestone item:** terse skills, enforced for all future skills
 
