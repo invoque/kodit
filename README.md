@@ -130,7 +130,9 @@ Contributions follow the same workflow this project prescribes.
   PR.
 - **Stay agent-agnostic.** No vendor-specific instructions or agent-specific
   tool names inside a skill.
-- **Follow the canonical format** defined in `AGENTS.md`.
+- **Follow the canonical format** defined in `AGENTS.md`, including the
+  conciseness standard: a `SKILL.md` body under 100 lines and a `description` of
+  at most ~80 words.
 - **Validate frontmatter** before committing:
 
   ```bash
