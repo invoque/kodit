@@ -15,7 +15,7 @@ the same change.**
 | **Tagline** | Opinionated milestone-driven development for solo developers |
 | **Audience** | Individual developers working with coding agents |
 | **Form** | A collection of agent-agnostic skills, delivered as markdown |
-| **Status** | Bootstrap — documentation only, no skills implemented yet |
+| **Status** | First general skill implemented (`interview`); workflow skills pending |
 
 ### Philosophy
 
@@ -41,6 +41,7 @@ Environment facts relevant to working here:
 | **Skill sources of truth** | Defined in this repo under `skills/`, installed into an agent's skills directory |
 | **Skill directories in use on this machine** | `~/.claude/skills/` (Claude Code), `~/.agents/skills/` (agent-agnostic / pi) |
 | **Documented tooling** | `python3` (3.14) and `uv` for frontmatter validation; `bun` available |
+| **Agent CLI in use** | `opencode`, exclusively — `claude` is not used on this machine |
 | **Not on PATH** | `node` / `npm` — do not assume they exist |
 
 ## Workflow Definition
@@ -207,11 +208,16 @@ kodit/
 
 ## Current State
 
-- Repository initialized with `git`, branch `master`.
+- Repository initialized with `git`; `master` is stable, `dev` is integration.
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
-- No skills exist yet. No `specs/`, `skills/`, or `.kodit/` directories have
-  been created, and no `kodit.json` exists.
-- No runtime code, dependencies, or package manifest.
+- The first skill exists: `skills/general/interview/SKILL.md`, specified and
+  planned by `specs/spec-001-interview-skill.md` and
+  `specs/plan-001-interview-skill.md`.
+- Work for the skill lives on `feature/interview-skill`, pending the user's
+  final review before merging to `dev`.
+- `.kodit/tmp/` is in use for temporary artifacts (gitignored). No `kodit.json`
+  exists yet, and there is still no runtime code, dependencies, or package
+  manifest.
 
 Next up: scaffold the six workflow skills.
 
@@ -233,3 +239,5 @@ Next up: scaffold the six workflow skills.
 | 2026-09-19 | Defer defining the specific skills and each phase's artifacts to the skills themselves. | The overview documents describe structure and rules; inventing an inventory before the skills exist would be speculative design. Each phase's artifacts are owned by its workflow skill. |
 | 2026-09-19 | Agents needing a workspace directory for testing always use `.kodit/tmp/workspaces/`. | Keeps test workspaces inside the gitignored temporary area so they can never pollute the committed tree, and gives every agent one predictable, collocated location. Test workspaces are ephemeral and swept with `.kodit/tmp/`. |
 | 2026-09-19 | Commit every completed task immediately; never leave finished work uncommitted. | Keeps the working tree reflecting real progress and prevents losing completed work. Complements the existing rule that incomplete or unverified changes must not be committed. |
+| 2026-09-19 | The first skill is `interview`, a general skill implementing the design-tree interview method, with its working artifact at `.kodit/tmp/design-tree-<topic>.md`. | All three governing documents name interviewing as the prototypical general skill, and it is the prerequisite for spec-driven work: it produces the shared understanding every milestone item starts from. The method — a tree of decisions advanced one round of frontier questions at a time, with facts found by the agent and decisions owned by the user — was chosen over free-form questioning because it is deterministic, terminates when the frontier is empty, and leaves nothing silently assumed. |
+| 2026-09-19 | `opencode` is the agent CLI used on this machine; skills and tooling must not assume `claude`. | The machine's harness is `opencode`. Vendor-specific instructions are already forbidden in skills, and this extends to the development tooling: the skill-creator description-optimization scripts, which shell out to `claude`, are adapted to `opencode` when used. |
