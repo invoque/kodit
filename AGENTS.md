@@ -19,10 +19,16 @@ kodit/
 ├── CONTEXT.md           # project context, decisions, environment
 ├── kodit.json           # project configuration (setup)
 ├── .kodit/
+│   ├── issues/          # issue tracker (setup, committed)
+│   │   ├── README.md    # conventions: taxonomy, labels, state machines
+│   │   ├── INDEX.md     # project charter: goal + milestone index
+│   │   └── M-001-*/     # milestone dirs (later phases; created on first use)
+│   │       ├── INDEX.md     # milestone charter: goal, status, story index
+│   │       └── US-001-*.md  # user story with embedded task table
 │   └── tmp/             # temporary working artifacts (setup, gitignored)
 │       ├── specs/       # per-item spec/plan artifacts (created on first use)
-│       │   ├── spec-NNN-*.md  # specifications
-│       │   └── plan-NNN-*.md  # implementation plans (tasks embedded)
+│       │   ├── spec-US-NNN-*.md  # specifications (per user story)
+│       │   └── plan-T-NNN-*.md   # implementation plans (per task)
 │       └── workspaces/  # throwaway workspaces for testing (created on demand)
 └── skills/
     ├── workflow/        # one skill per workflow phase (orchestrators)
@@ -54,7 +60,7 @@ overview only.
 
 | Phase | Purpose | Entry criteria | Exit criteria |
 |---|---|---|---|
-| **setup** | Initialize a project for `kodit` | Project has not adopted `kodit` | `kodit.json` and `.kodit/tmp/` exist and configuration is validated |
+| **setup** | Initialize a project for `kodit` | Project has not adopted `kodit` | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is seeded, and configuration is validated |
 | **milestone-planning** | Agree the scope of the next milestone | Setup complete; a milestone worth of work exists | Milestone scope agreed and recorded |
 | **implement-loop** | Work each milestone item to completion | Approved milestone scope | Every milestone item implemented |
 | **review-loop** | Verify each implemented item | Completed `implement-loop` | Every milestone item reviewed; deltas recorded |
@@ -67,24 +73,40 @@ Inside `implement-loop` and `review-loop`, each milestone item runs an inner loo
 
 | Inner step | Purpose | Artifact |
 |---|---|---|
-| **spec** | Capture the item's requirements | `.kodit/tmp/specs/spec-NNN-<name>.md` |
-| **plan** | Turn the spec into an ordered approach | `.kodit/tmp/specs/plan-NNN-<name>.md` (tasks embedded) |
+| **spec** | Capture the item's requirements | `.kodit/tmp/specs/spec-US-NNN-<name>.md` |
+| **plan** | Turn the spec into an ordered approach | `.kodit/tmp/specs/plan-T-NNN-<name>.md` (tasks embedded) |
 | **implement** | Execute the plan exactly | Code / skill files |
 | **review** | Verify against the spec | Review notes in the plan |
 
-Artifact naming: `spec-NNN-short-name.md` and `plan-NNN-short-name.md` under
-`.kodit/tmp/specs/`, where `NNN` is a zero-padded sequential number (e.g.
-`spec-001-skill-format.md`).
+Artifact naming: specs attach to user stories (`spec-US-NNN-short-name.md`) and
+plans to tasks (`plan-T-NNN-short-name.md`) under `.kodit/tmp/specs/`, where
+`NNN` is a zero-padded sequential number drawn from the work item's ID (e.g.
+`spec-US-001-skill-format.md`).
 
 ## Runtime Layout
 
-Two paths are created by `setup` in every adopting project.
+Two paths are created by the setup phase in every adopting project.
 
 ### `kodit.json`
 
 Project configuration at the repository root, alongside any other project
-manifest. It is committed and written by the `setup` phase. Its exact schema is
-owned by the `setup` workflow skill and its general skills.
+manifest. It is committed and written by the setup phase. Its exact schema is
+owned by the `kodit-config` general skill and referenced by the `setup-kodit`
+workflow skill.
+
+### `.kodit/issues/`
+
+The file-based issue tracker. **Committed** — issues are load-bearing, unlike
+`.kodit/tmp/`. Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered
+globally and never reused (`M-001`, `US-001`, `T-001`):
+
+- `README.md` — static conventions: the tree, labels, and state machines.
+- `INDEX.md` — the project charter: goal plus milestone index.
+- `M-001-*/INDEX.md` — milestone charter; `M-001-*/US-001-*.md` — user stories,
+  each carrying its tasks in an embedded table.
+
+The setup phase seeds only `README.md` and `INDEX.md`; milestone-planning creates
+milestones and stories. Full conventions live in the seeded `README.md`.
 
 ### `.kodit/tmp/`
 
@@ -100,6 +122,10 @@ Temporary working artifacts, always markdown:
 - Exception: spec and plan artifacts live in `.kodit/tmp/specs/` (see the inner
   loop above). They are local working artifacts, never committed, and are
   exempt from the phase-boundary sweep — they persist across phases.
+- The setup phase records its progress in `.kodit/tmp/setup-*.md` drafts
+  (`setup-project-metadata.md`, `setup-issue-tracker.md`,
+  `setup-git-branching.md`). Their presence is the resume point; the write step
+  deletes them once the final artifacts exist.
 - The one exception to "always markdown": when an agent needs a workspace
   directory for testing (e.g. to exercise skill setup or workflow phases),
   always use `.kodit/tmp/workspaces/`. Never create test workspaces elsewhere
@@ -205,7 +231,8 @@ for the actual work. Every skill must be clean, concise, and terse.
   rationale, summaries, or restatements of steps or of this file.
 - Do not let two skills overlap in responsibility.
 - Do not let a general skill depend on a workflow skill or a workflow phase.
-- Do not make `.kodit/tmp/` load-bearing, and do not commit `.kodit/`.
+- Do not make `.kodit/tmp/` load-bearing, and do not commit `.kodit/tmp/`
+  (`.kodit/issues/` is committed).
 - Do not modify an approved spec or plan during implementation; amend it in a
   new spec or append a dated changelog entry.
 - Do not create files outside the documented layout.
