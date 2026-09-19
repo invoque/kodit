@@ -86,6 +86,7 @@ Paths that `setup` creates in every adopting project.
 |---|---|---|
 | `kodit.json` | Yes | Project configuration at the repository root. Schema owned by the `setup` skill. |
 | `.kodit/tmp/` | No (gitignored) | Temporary working artifacts, always markdown. Never load-bearing; promoted into a permanent artifact or discarded, and swept at phase boundaries. |
+| `.kodit/tmp/workspaces/` | No (gitignored) | Throwaway workspaces agents create for testing. Always used for test workspaces; ephemeral and swept with `.kodit/tmp/`. |
 
 The `kodit` repository itself stays markdown-first; `kodit.json` is the
 configuration that `kodit` writes into the projects that adopt it.
@@ -230,3 +231,5 @@ Next up: scaffold the six workflow skills.
 | 2026-09-19 | Temporary working artifacts are markdown files in `.kodit/tmp/`, and `.kodit/` is gitignored. | Gives the workflow scratch space for interviews and drafts without polluting the committed tree. Nothing in `tmp/` is load-bearing: it is promoted into a permanent artifact or discarded. |
 | 2026-09-19 | Split skills into two categories: `skills/workflow/` (one orchestrator per phase) and `skills/general/` (single-purpose capabilities). | A one-way dependency (workflow → general) with one responsibility per skill keeps skills composable and non-overlapping, and makes them installable independently. New categories require a recorded decision. |
 | 2026-09-19 | Defer defining the specific skills and each phase's artifacts to the skills themselves. | The overview documents describe structure and rules; inventing an inventory before the skills exist would be speculative design. Each phase's artifacts are owned by its workflow skill. |
+| 2026-09-19 | Agents needing a workspace directory for testing always use `.kodit/tmp/workspaces/`. | Keeps test workspaces inside the gitignored temporary area so they can never pollute the committed tree, and gives every agent one predictable, collocated location. Test workspaces are ephemeral and swept with `.kodit/tmp/`. |
+| 2026-09-19 | Commit every completed task immediately; never leave finished work uncommitted. | Keeps the working tree reflecting real progress and prevents losing completed work. Complements the existing rule that incomplete or unverified changes must not be committed. |
