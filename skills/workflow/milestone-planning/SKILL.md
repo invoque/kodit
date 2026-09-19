@@ -53,8 +53,10 @@ Present the expected result for review, in the format from
 `references/sizing-and-examples.md`: the milestone goal, each story with its
 acceptance criteria and task table, the allocated `M`/`US`/`T` numbers, the
 list of files to be created or updated, and a sizing verdict. Route each change
-request back to step 3 and present again. Write nothing until the user
-approves.
+request back to step 3 and present again.
+
+This is a pause for approval within the same run, not the end: once the user
+approves, continue to step 5. Write nothing until then.
 
 ### 5. Record the milestone
 
