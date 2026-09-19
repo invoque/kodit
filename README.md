@@ -17,12 +17,12 @@ Six phases, always in order, forming a milestone loop:
 |---|---|
 | **setup** | `kodit` is initialized in the project: configuration is written and the temporary workspace is created. |
 | **milestone-planning** | The scope of the next milestone is agreed and recorded. |
-| **implement-loop** | Each milestone item is worked to completion. |
+| **implement** | Each milestone item is worked to completion. |
 | **review-loop** | Each implemented item is verified against its spec; deltas are recorded. |
 | **milestone-review** | The milestone's goal is confirmed and a retrospective is captured. |
 | **done** | Docs and changelog are updated and the milestone is committed. |
 
-Inside `implement-loop` and `review-loop`, every milestone item runs the same inner
+Inside `implement` and `review-loop`, every milestone item runs the same inner
 loop: **spec → plan → implement → review**. An item is never implemented without
 an approved spec and plan, and an approved spec or plan is never edited mid-flight
 — amend it with a new spec or a dated changelog entry.
@@ -35,7 +35,7 @@ skill, not by this overview.
 **Goals**
 
 - A complete, minimal skill set covering the full milestone workflow:
-  setup → milestone-planning → implement-loop → review-loop → milestone-review → done.
+  setup → milestone-planning → implement → review-loop → milestone-review → done.
 - An agent-agnostic skill format any coding agent can consume.
 - Artifacts stored as plain markdown in the repo.
 - Zero runtime dependencies for the core workflow.
@@ -70,10 +70,11 @@ skills/
   names are unique across both.
 
 The specific skills are defined as they are built — see the
-[roadmap](#roadmap). The `setup` and `milestone-planning` phases' skills
-(`setup-kodit`, `milestone-planning`) exist along with their general companions
-(`kodit-config`, `issue-tracker`, `git-branching`) and `interview`; the
-remaining workflow skills are still to come.
+[roadmap](#roadmap). The `setup`, `milestone-planning`, and `implement` phases'
+skills (`setup-kodit`, `milestone-planning`, `implement`) exist along with their
+general companions (`kodit-config`, `issue-tracker`, `git-branching`,
+`plan-writing`) and `interview`; the remaining workflow skills are still to
+come.
 
 ## Getting Started
 
@@ -118,8 +119,8 @@ Agent: → runs setup: writes kodit.json, creates .kodit/tmp/
 You:  Let's plan the next milestone.
 Agent: → runs milestone-planning and agrees the milestone scope with you
 You:  Start implementing.
-Agent: → runs implement-loop: a spec and plan per item, then implements each
-You:  Review the milestone.
+Agent: → runs implement: a spec and plan per item, then implements each
+You:  Reset the milestone for review.
 Agent: → runs review-loop, then milestone-review
 You:  Wrap it up.
 Agent: → runs done: docs, changelog, commit
@@ -152,11 +153,12 @@ Contributions follow the same workflow this project prescribes.
 
 ## Roadmap
 
-- [ ] Scaffold the six workflow skills with `SKILL.md` files (`setup-kodit`
-      and `milestone-planning` done; `implement-loop`, `review-loop`,
+- [ ] Scaffold the six workflow skills with `SKILL.md` files (`setup-kodit`,
+      `milestone-planning`, and `implement` done; `review-loop`,
       `milestone-review`, `done` to come).
 - [x] Define the first general skills as the workflow skills need them
-      (`interview`, `kodit-config`, `issue-tracker`, `git-branching`).
+      (`interview`, `kodit-config`, `issue-tracker`, `git-branching`,
+      `plan-writing`).
 - [ ] Add `references/` material and a review checklist for each skill.
 - [ ] Evaluate a CLI installer (e.g. `uv`- or `bun`-based).
 - [ ] Add a worked end-to-end milestone example.
