@@ -105,6 +105,17 @@ Source of truth for this project: purpose, environment, and decisions.
 | {{date}} | Branch model {{git.main_branch}} / {{git.dev_branch}} / {{git.feature_prefix}} / {{git.bugfix_prefix}} | {{branch_rationale}} |
 ```
 
+## Decisions log entry (decisions mode)
+
+Append rows to the `## Decisions Log` table in `CONTEXT.md`. One row per
+settled decision, most recent last; never rewrite existing rows. If the section
+or table is missing, create it using the header from the create/append section
+above.
+
+```markdown
+| {{date}} | {{decision}} | {{rationale}} |
+```
+
 ## `.kodit/.gitignore`
 
 ```text
