@@ -4,9 +4,10 @@ description: >-
   Use when a workflow skill needs to inspect, validate, or write a project's
   kodit files — kodit.json, AGENTS.md, README.md, CONTEXT.md, and .kodit/.
   Provides the kodit.json schema, checks adoption state and resumes an
-  interrupted setup, runs the project-metadata interview, and writes the final
-  artifacts from the setup drafts. Invoked by the setup-kodit workflow skill;
-  the schema is the single source of truth for every other kodit skill.
+  interrupted setup, runs the project-metadata interview, writes the final
+  artifacts from the setup drafts, and appends entries to the CONTEXT.md
+  decisions log. Invoked by the setup-kodit and milestone-planning workflow
+  skills; the schema is the single source of truth for every other kodit skill.
 ---
 
 # kodit-config
@@ -16,15 +17,17 @@ artifacts are written.
 
 ## Usage
 
-Invoked as three modes. Follow the `interview` skill for the
-metadata interview. Read `references/kodit-json-schema.md` for the config
-contract and `references/templates.md` for output templates.
+Invoked as four modes. Follow the `interview` skill for the metadata
+interview. Read `references/kodit-json-schema.md` for the config contract and
+`references/templates.md` for output templates.
 
 - **Check mode** — inspect adoption state and report where to resume.
 - **Metadata mode** — interview for project metadata; write
   `.kodit/tmp/setup-project-metadata.md`.
 - **Write mode** — turn the setup drafts into final artifacts; remove the
   drafts.
+- **Decisions mode** — append settled decisions to the `CONTEXT.md` decisions
+  log.
 
 ## What You Must Do When Invoked
 
@@ -62,3 +65,16 @@ contract and `references/templates.md` for output templates.
 4. Write `.kodit/.gitignore` containing `tmp`. Never ignore `.kodit/issues/`.
 5. Remove all `.kodit/tmp/setup-*.md` drafts.
 6. Report every file written and whether it was created or appended.
+
+### Decisions mode
+
+1. Take the settled decisions — each a decision plus its rationale. Do not
+   invent decisions; record only what was agreed.
+2. Read `CONTEXT.md`. If it is missing, create it from the template in
+   `references/templates.md`.
+3. Append one dated row per decision to the Decisions Log table
+   (`references/templates.md` gives the shape). Match the existing table's
+   format and heading; never rewrite or reorder existing rows.
+4. Confirm the entries with the caller before writing when the caller did not
+   already present them for approval.
+5. Report the rows appended.
