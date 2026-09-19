@@ -162,9 +162,26 @@ Body structure:
 - Write procedures as discrete, ordered steps; prefer explicit commands over
   vague instruction.
 
+### Conciseness (mandatory)
+
+Skills are read under token pressure: every line spends context the agent needs
+for the actual work. Every skill must be clean, concise, and terse.
+
+- `SKILL.md` body stays under **100 lines** (frontmatter excluded). When a skill
+  needs more, move formats, templates, and long examples into `references/`
+  rather than cutting required detail.
+- `description` is one paragraph of **at most ~80 words** stating what the skill
+  does and when to trigger it.
+- State each idea exactly once: no preamble, no philosophy section, no closing
+  summary, no principle that restates a step.
+- Write imperative steps; cut any sentence that does not change what the agent
+  does.
+- Never restate a rule this file already states.
+
 ## Do
 
 - Keep every skill agent-agnostic, self-contained, and deterministic.
+- Keep every skill terse: under the body line cap, one idea stated once.
 - State trigger conditions in each skill `description`.
 - Validate that skill frontmatter parses as YAML before committing (see README,
   Contributing).
@@ -180,6 +197,8 @@ Body structure:
   no "only for pi", no agent-specific tool names).
 - Do not add runtime code, dependencies, or a package manifest without a prior
   decision recorded in `CONTEXT.md`.
+- Do not exceed the skill body line cap, and do not pad a skill with preamble,
+  rationale, summaries, or restatements of steps or of this file.
 - Do not let two skills overlap in responsibility.
 - Do not let a general skill depend on a workflow skill or a workflow phase.
 - Do not make `.kodit/tmp/` load-bearing, and do not commit `.kodit/`.
