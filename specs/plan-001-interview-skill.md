@@ -102,3 +102,26 @@ answer.
    unstable. Resolved by amendment 4: stable IDs.
 
 Iteration-2 reruns all six cells with the revised skill.
+
+### 2026-09-19 — iteration-2 review
+
+Same three prompts, revised skill, six fresh runs
+(`.kodit/tmp/workspaces/interview-workspace/iteration-2`).
+
+**All four fixes verified.** The greenfield run no longer seeds "side project →
+low budget" as a fact; it lists those inferences explicitly as not settled and
+carries a labeled assumption instead. Rounds are ordered most-consequential-first
+and stay within the soft cap (4/6/6 and 6/4/2). Question numbering is continuous
+(Q1–Q14, Q1–Q12, Q1–Q17). Tree nodes carry stable IDs that survive status
+changes. Regressions checked: exactly one recommendation per question in all
+runs, and no settled decision is re-asked (eval 2 references settled nodes
+rather than questioning them).
+
+**User review outcome.** All three with-skill runs marked "looks great"; the
+baselines were rejected, one explicitly because its questions were not
+numbered — the failure the skill exists to prevent. Skill approved for
+finalization; merge to `dev` deferred pending the user's final review.
+
+**Description optimization.** Deferred to a follow-up step using an
+`opencode`-based harness (the machine uses `opencode`, not `claude`; the
+skill-creator optimizer scripts are hardwired to the latter).
