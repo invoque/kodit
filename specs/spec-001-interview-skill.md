@@ -151,3 +151,32 @@ confirms.
 3. **Partially settled.** "I'm sketching a small expense-splitting app for my
    flatmates. We already decided: SQLite, no accounts/multi-user sync, and a
    simple web UI — not a mobile app. Help me nail down the rest."
+
+## Changelog
+
+### 2026-09-19 — amendments from the iteration-1 review
+
+Four amendments, none of which alter R1–R8 or the acceptance criteria; they
+sharpen R2, R4, and R6 based on observed behaviour in the first eval round.
+
+1. **Inferred preferences are not settled facts (sharpens R2/R5).** Only
+   decisions the user actually stated, and facts established from the
+   environment, may be seeded as settled. Inferences about the user's
+   preferences, priorities, or budget are not facts: if a recommendation
+   depends on one, the agent either asks it as a question or states it
+   explicitly as a labeled assumption in the round body, and never folds it
+   silently into its reasoning. (Observation: in eval 0 the agent inferred
+   "low budget / prefers operational simplicity" from "side project" and
+   treated it as settled, then used it to justify a recommendation.)
+2. **Frontier ordering and a soft round-size guideline (amends R4).** The
+   knowledge is still asked whole, but ordered most-consequential-first,
+   where consequence is how much the answer reshapes the tree or unblocks.
+   When more than roughly six questions are open at once, ask the top of the
+   order and let the rest wait for the next round rather than emitting a wall.
+3. **Continuous question numbering (clarifies R4).** Question numbers run
+   across the whole interview, not per round: round 2 continues after round
+   1's last number, so a reference like "Q7" is unambiguous for the session.
+   The round-format template shows the shape of a question, not a reset.
+4. **Stable tree node IDs (amends R6).** Each node receives an ID when it is
+   created and keeps it for life; settling, opening, or blocking a node
+   changes its status, never its ID.

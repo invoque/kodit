@@ -77,4 +77,28 @@ loop before committing. Commits happen on `feature/interview-skill`; merge to
 
 ## Review notes
 
-_(filled in during review)_
+### 2026-09-19 — iteration-1 review
+
+Qualitative review of three with-skill runs against three no-skill baselines
+(workspace: `.kodit/tmp/workspaces/interview-workspace/iteration-1`).
+
+**Confirmed working.** Settled decisions were seeded and never re-asked (eval
+2); dependent questions correctly waited for later rounds (eval 1); the round
+format was followed exactly; every with-skill run ended at the confirmation
+gate, while every baseline front-loaded a full design or schema before any
+answer.
+
+**Findings and resolutions.**
+
+1. *Over-seeded inference.* In eval 0 the agent inferred "low budget tolerance,
+   prefers operational simplicity" from "side project" and seeded it as a fact,
+   then used it to justify a recommendation. Resolved by spec changelog
+   amendment 1: inferred preferences are never settled facts.
+2. *Round-size inflation.* Rounds reached 5–6 questions (17 in one session).
+   Resolved by amendment 2: order most-consequential-first, soft ~6 guideline.
+3. *Inconsistent numbering.* Evals 1–2 restarted at Q1 each round; eval 0
+   numbered continuously. Resolved by amendment 3: continuous numbering.
+4. *Shifting node IDs.* A node renumbered on settling, making references
+   unstable. Resolved by amendment 4: stable IDs.
+
+Iteration-2 reruns all six cells with the revised skill.
