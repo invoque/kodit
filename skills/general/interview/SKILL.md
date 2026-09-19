@@ -1,6 +1,19 @@
 ---
 name: interview
-description: Relentlessly interview the user until you share an understanding of what is being designed, before writing specs, plans, or code. Maps the conversation as a design tree and advances it one round of questions at a time. Use whenever a task is underspecified, whenever you are about to plan or design something, whenever the user asks you to "interview me" or "ask me questions first", and whenever you catch yourself assuming an answer the user never gave. When in doubt, interview rather than guess.
+description: >-
+  Use when the user wants to think something through with you before you build
+  it — by being asked questions. Trigger when they say things like "interview
+  me", "ask me whatever you need to know", or "question me until we've settled
+  it"; when they bring a half-formed idea and need help pinning down
+  requirements, scope, or what to actually build; when they're torn between
+  design options or stuck on a decision; and before you write any spec, plan,
+  PRD, or design for a feature, schema, or system that still has open decisions.
+  Runs a structured Q&A, with rounds of pointed questions each carrying a
+  recommendation, until every decision is settled and confirmed — nothing gets
+  designed or implemented on guesses. Not for how-to questions, debugging,
+  well-specified tasks, job-interview practice, or when the user says to skip
+  questions and just use sensible defaults. When in doubt, interview rather
+  than guess.
 ---
 
 # Interview
