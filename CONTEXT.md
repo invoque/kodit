@@ -65,8 +65,8 @@ loop. This is where the spec-driven discipline lives.
 
 | # | Step | Purpose | Artifact |
 |---|---|---|---|
-| 1 | **spec** | Capture the item's requirements | `specs/spec-NNN-<name>.md` |
-| 2 | **plan** | Turn the spec into an ordered approach | `specs/plan-NNN-<name>.md` (tasks embedded) |
+| 1 | **spec** | Capture the item's requirements | `.kodit/tmp/specs/spec-NNN-<name>.md` |
+| 2 | **plan** | Turn the spec into an ordered approach | `.kodit/tmp/specs/plan-NNN-<name>.md` (tasks embedded) |
 | 3 | **implement** | Execute the plan exactly | Code / skill files |
 | 4 | **review** | Verify against the spec | Review notes in the plan |
 
@@ -75,7 +75,8 @@ Rules that govern the workflow:
 - No milestone item is implemented without an approved spec and plan.
 - An approved spec or plan is not edited during implementation. Amend it via a
   new spec, or append a dated changelog entry to the existing one.
-- Artifacts use zero-padded sequential numbers: `spec-001-...`, `plan-001-...`.
+- Artifacts use zero-padded sequential numbers under `.kodit/tmp/specs/`:
+  `spec-001-...`, `plan-001-...`.
 - Each phase's detailed steps, artifacts, and exit conditions are owned by that
   phase's workflow skill, not by this document.
 
@@ -173,9 +174,9 @@ kodit/
 ├── kodit.json            # project configuration (setup)
 ├── .kodit/
 │   └── tmp/              # temporary working artifacts (setup, gitignored)
-├── specs/               # per-item workflow artifacts
-│   ├── spec-NNN-*.md
-│   └── plan-NNN-*.md
+│       └── specs/        # per-item spec/plan artifacts (untracked)
+│           ├── spec-NNN-*.md
+│           └── plan-NNN-*.md
 └── skills/
     ├── workflow/
     │   └── <skill-name>/
@@ -201,8 +202,8 @@ kodit/
 | **Spec** | A written statement of requirements for a milestone item. Contains no implementation detail. |
 | **Plan** | A technical approach derived from a spec, expressed as ordered, verifiable tasks. |
 | **Task** | A single, independently verifiable unit of work inside a plan. |
-| **Artifact** | Any file produced by a phase. Permanent artifacts live under `specs/` and are committed; temporary artifacts live in `.kodit/tmp/` and are not. |
-| **Temporary artifact** | A markdown scratch file in `.kodit/tmp/`. Never load-bearing; promoted or discarded. |
+| **Artifact** | Any file produced by a phase. Spec and plan artifacts live under `.kodit/tmp/specs/`; they are local working artifacts, never committed, and exempt from the phase-boundary sweep. All other committed artifacts are skill files, docs, and code. |
+| **Temporary artifact** | A markdown scratch file in `.kodit/tmp/`, other than spec/plan artifacts. Never load-bearing; promoted or discarded. |
 | **Configuration** | `kodit.json`, at the repository root, written by `setup`. |
 | **Agent** | Any coding agent that consumes `kodit` skills. Never a specific vendor in normative text. |
 
@@ -211,10 +212,11 @@ kodit/
 - Repository initialized with `git`; `master` is stable, `dev` is integration.
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
 - The first skill exists: `skills/general/interview/SKILL.md`, specified and
-  planned by `specs/spec-001-interview-skill.md` and
-  `specs/plan-001-interview-skill.md`; merged to `dev`.
+  planned by `.kodit/tmp/specs/spec-001-interview-skill.md` and
+  `.kodit/tmp/specs/plan-001-interview-skill.md`; merged to `dev`.
 - Skills carry a mandatory conciseness standard (`AGENTS.md`), established by
-  `specs/spec-002-terse-skills.md` and `specs/plan-002-terse-skills.md`.
+  `.kodit/tmp/specs/spec-002-terse-skills.md` and
+  `.kodit/tmp/specs/plan-002-terse-skills.md`.
 - `.kodit/tmp/` is in use for temporary artifacts (gitignored). No `kodit.json`
   exists yet, and there is still no runtime code, dependencies, or package
   manifest.
@@ -242,3 +244,4 @@ Next up: scaffold the six workflow skills.
 | 2026-09-19 | The first skill is `interview`, a general skill implementing the design-tree interview method, with its working artifact at `.kodit/tmp/design-tree-<topic>.md`. | All three governing documents name interviewing as the prototypical general skill, and it is the prerequisite for spec-driven work: it produces the shared understanding every milestone item starts from. The method — a tree of decisions advanced one round of frontier questions at a time, with facts found by the agent and decisions owned by the user — was chosen over free-form questioning because it is deterministic, terminates when the frontier is empty, and leaves nothing silently assumed. |
 | 2026-09-19 | `opencode` is the agent CLI used on this machine; skills and tooling must not assume `claude`. | The machine's harness is `opencode`. Vendor-specific instructions are already forbidden in skills, and this extends to the development tooling: the skill-creator description-optimization scripts, which shell out to `claude`, are adapted to `opencode` when used. |
 | 2026-09-19 | Every skill must be clean, concise, and terse: `SKILL.md` body under 100 lines, `description` at most ~80 words, each idea stated once. | Skills are read under token pressure, so every line spends context the agent needs for the work. The measurable caps force detail into `references/` and prevent the six planned workflow skills from inheriting the first skill's verbosity. Enforced by `AGENTS.md` and checked at spec/plan review; no tooling was added, keeping the repository markdown-first. |
+| 2026-09-19 | Move spec and plan artifacts from `specs/` to `.kodit/tmp/specs/`; they are untracked and exempt from the tmp sweep. | Specs and plans are local working artifacts whose value is realized in the code and skills they produce, so committing their per-item churn adds noise without durable benefit. The sweep exemption prevents accidental loss and keeps the numbered spec history locally across phases and milestones. |
