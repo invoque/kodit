@@ -70,8 +70,9 @@ skills/
   names are unique across both.
 
 The specific skills are defined as they are built — see the
-[roadmap](#roadmap). No skills exist yet; this repository currently holds only
-project documentation.
+[roadmap](#roadmap). The `setup` phase's skill, `setup-kodit`, exists along with
+its general companions (`kodit-config`, `issue-tracker`, `git-branching`) and
+`interview`; the remaining workflow skills are still to come.
 
 ## Getting Started
 
@@ -99,9 +100,12 @@ cp -R kodit/skills/general/<skill-name> ~/.claude/skills/
 ln -s "$(pwd)/kodit/skills/general/<skill-name>" ~/.claude/skills/<skill-name>
 ```
 
-Adopting `kodit` in a project is done by its `setup` skill. It writes
-`kodit.json` at the project root and creates `.kodit/tmp/`. Add `.kodit/` to
-your `.gitignore` — temporary artifacts are never committed.
+Adopting `kodit` in a project is done by its `setup-kodit` skill. It writes
+`kodit.json` at the project root, appends `kodit` sections to `AGENTS.md`,
+`README.md`, and `CONTEXT.md` (creating them if absent), and creates `.kodit/`
+with a committed file-based issue tracker and a gitignored `tmp/` area. Add
+`.kodit/tmp/` to your `.gitignore` — temporary artifacts are never committed —
+but keep `.kodit/issues/` under version control.
 
 ## Usage
 
@@ -147,8 +151,11 @@ Contributions follow the same workflow this project prescribes.
 
 ## Roadmap
 
-- [ ] Scaffold the six workflow skills with `SKILL.md` files.
-- [ ] Define the first general skills as the workflow skills need them.
+- [ ] Scaffold the six workflow skills with `SKILL.md` files (`setup-kodit`
+      done; `milestone-planning`, `implement-loop`, `review-loop`,
+      `milestone-review`, `done` to come).
+- [x] Define the first general skills as the workflow skills need them
+      (`interview`, `kodit-config`, `issue-tracker`, `git-branching`).
 - [ ] Add `references/` material and a review checklist for each skill.
 - [ ] Evaluate a CLI installer (e.g. `uv`- or `bun`-based).
 - [ ] Add a worked end-to-end milestone example.
