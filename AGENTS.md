@@ -20,10 +20,10 @@ kodit/
 ├── kodit.json           # project configuration (setup)
 ├── .kodit/
 │   └── tmp/             # temporary working artifacts (setup, gitignored)
+│       ├── specs/       # per-item spec/plan artifacts (created on first use)
+│       │   ├── spec-NNN-*.md  # specifications
+│       │   └── plan-NNN-*.md  # implementation plans (tasks embedded)
 │       └── workspaces/  # throwaway workspaces for testing (created on demand)
-├── specs/               # per-item workflow artifacts (created on first use)
-│   ├── spec-NNN-*.md    # specifications
-│   └── plan-NNN-*.md    # implementation plans (tasks embedded)
 └── skills/
     ├── workflow/        # one skill per workflow phase (orchestrators)
     │   └── <skill-name>/
@@ -67,13 +67,14 @@ Inside `implement-loop` and `review-loop`, each milestone item runs an inner loo
 
 | Inner step | Purpose | Artifact |
 |---|---|---|
-| **spec** | Capture the item's requirements | `specs/spec-NNN-<name>.md` |
-| **plan** | Turn the spec into an ordered approach | `specs/plan-NNN-<name>.md` (tasks embedded) |
+| **spec** | Capture the item's requirements | `.kodit/tmp/specs/spec-NNN-<name>.md` |
+| **plan** | Turn the spec into an ordered approach | `.kodit/tmp/specs/plan-NNN-<name>.md` (tasks embedded) |
 | **implement** | Execute the plan exactly | Code / skill files |
 | **review** | Verify against the spec | Review notes in the plan |
 
-Artifact naming: `spec-NNN-short-name.md` and `plan-NNN-short-name.md`, where
-`NNN` is a zero-padded sequential number (e.g. `spec-001-skill-format.md`).
+Artifact naming: `spec-NNN-short-name.md` and `plan-NNN-short-name.md` under
+`.kodit/tmp/specs/`, where `NNN` is a zero-padded sequential number (e.g.
+`spec-001-skill-format.md`).
 
 ## Runtime Layout
 
@@ -92,10 +93,13 @@ Temporary working artifacts, always markdown:
 - One file per task, named in lowercase kebab-case (e.g.
   `milestone-003-interview-notes.md`).
 - Never load-bearing. Anything still needed after its phase ends must be
-  promoted into a permanent artifact (typically under `specs/`); the rest is
-  discarded.
+  promoted into a permanent artifact (typically a skill file, doc, or a
+  `CONTEXT.md` decision); the rest is discarded.
 - Swept clean at phase boundaries.
 - Always gitignored. `.kodit/tmp` is never committed.
+- Exception: spec and plan artifacts live in `.kodit/tmp/specs/` (see the inner
+  loop above). They are local working artifacts, never committed, and are
+  exempt from the phase-boundary sweep — they persist across phases.
 - The one exception to "always markdown": when an agent needs a workspace
   directory for testing (e.g. to exercise skill setup or workflow phases),
   always use `.kodit/tmp/workspaces/`. Never create test workspaces elsewhere
