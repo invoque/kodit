@@ -171,6 +171,8 @@ Body structure:
 - Match the naming and layout conventions in this file and `CONTEXT.md`.
 - Record significant decisions in the `CONTEXT.md` decisions log.
 - Use conventional commit messages (`feat:`, `fix:`, `docs:`, `chore:`).
+- Commit every completed task on its `feature/*` branch before moving on;
+  never leave finished work uncommitted.
 
 ## Don't
 
