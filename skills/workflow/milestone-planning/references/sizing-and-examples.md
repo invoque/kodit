@@ -127,3 +127,21 @@ Approve, or tell me what to change.
 **Decisions recorded:** <n> appended to `CONTEXT.md`.
 **Next:** run the `implement` skill to start implementation.
 ```
+
+## Reviewer's checklist
+
+Run this before approving the checkpoint (step 4). Every box maps to the
+phase's exit criteria — "milestone scope agreed and recorded".
+
+- [ ] The goal is one coherent outcome a solo developer can finish before the
+      next milestone starts.
+- [ ] Every story states who it is for and what changes, and has at least one
+      testable acceptance criterion.
+- [ ] Every story has 2–6 tasks; the milestone has ≤ ~20 tasks; counts are
+      within the soft caps or the overage is a conscious, recorded choice.
+- [ ] `M`/`US`/`T` numbers are the next global values and are not reused.
+- [ ] The file plan names every create and update, and nothing outside
+      `.kodit/issues/` and `CONTEXT.md` will change.
+- [ ] No implementation plan, task sequencing, or assignment is proposed — that
+      belongs to the implement phase.
+- [ ] The user has explicitly approved.
