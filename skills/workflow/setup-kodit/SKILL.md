@@ -52,16 +52,20 @@ the `git-branching` skill. Otherwise re-confirm the draft.
 
 Present the review summary in the format from `references/summary-format.md`:
 per-section tables from the three drafts, the exact `kodit.json` that will be
-written, and a plan of which files will be created versus appended. Ask the user
-to review. Route each change request back to the step that owns it, rewrite that
+written, rendered previews of each document's managed block, and a file plan
+with per-file actions (create, append, no-op, migrate, or legacy-retained).
+If legacy sections are detected, show their bounded diff. Ask the user to
+review. Route each change request back to the step that owns it, rewrite that
 draft, and present the checkpoint again. Do not continue without approval.
 
 ### 6. Write the configuration
 
 Follow the `kodit-config` skill in **write mode** to write
-`kodit.json`, create or append `AGENTS.md`, `README.md`, and `CONTEXT.md`, write
-`.kodit/.gitignore`, and delete all `.kodit/tmp/setup-*.md` drafts. Report each file and
-whether it was created or appended.
+`kodit.json`, render managed blocks into `AGENTS.md`, `README.md`, and
+`CONTEXT.md` (creating shells, appending, or migrating per the document-state
+matrix), write `.kodit/.gitignore`, and delete all `.kodit/tmp/setup-*.md`
+drafts. Report each file and its action: created, appended, no-op, migrated,
+or legacy-retained.
 
 ### 7. Hand off
 
