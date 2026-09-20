@@ -69,8 +69,7 @@ skills/
 - The two categories never overlap: every skill does exactly one thing, and
   names are unique across both.
 
-The specific skills are defined as they are built — see the
-[roadmap](#roadmap). The `setup`, `milestone-planning`, and `implement` phases'
+The specific skills are defined as they are built. The `setup`, `milestone-planning`, and `implement` phases'
 skills (`setup-kodit`, `milestone-planning`, `implement`) exist along with their
 general companions (`kodit-config`, `issue-tracker`, `git-branching`,
 `plan-writing`, `github-pr`, `github-pr-state`, `github-pr-merge`,
@@ -157,17 +156,6 @@ Contributions follow the same workflow this project prescribes.
 - **Work on `feature/*` branches.** `master` and `dev` are protected; see
   `AGENTS.md` for the full working contract.
 
-## Roadmap
-
-- [ ] Scaffold the six workflow skills with `SKILL.md` files (`setup-kodit`,
-      `milestone-planning`, and `implement` done; `review-loop`,
-      `milestone-review`, `done` to come).
-- [x] Define the first general skills as the workflow skills need them
-      (`interview`, `kodit-config`, `issue-tracker`, `git-branching`,
-      `plan-writing`).
-- [ ] Add `references/` material and a review checklist for each skill.
-- [ ] Evaluate a CLI installer (e.g. `uv`- or `bun`-based).
-- [ ] Add a worked end-to-end milestone example.
 
 ## License
 
