@@ -1,0 +1,108 @@
+{
+  "skill_name": "pr-review",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Review the pull request for the active milestone. The branch feature/m-001-password-reset into dev already has an open PR, all checks pass, the implementation matches the approved spec and plan, and GitHub reviews can be posted.",
+      "expected_output": "Agent validates setup, locates exactly one active milestone, selects the single open PR via github-pr-state, presents the review context, coordinates implementation-review, writes review-M-001-*.md, publishes a comment to GitHub, updates passed task statuses to done via issue-tracker, appends review notes to affected stories, and stops without merging.",
+      "files": [],
+      "expectations": [
+        "Uses kodit-config in check mode before proceeding",
+        "Uses issue-tracker in operate mode to identify the active milestone",
+        "Uses github-pr-state for PR selection and GitHub state",
+        "Uses implementation-review for technical judgment",
+        "Creates .kodit/tmp/specs/review-M-NNN-*.md",
+        "Publishes a GitHub comment when no blockers exist",
+        "Transitions at least one task from review to done",
+        "Appends a review note to the affected user story",
+        "Does not merge the PR"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Review the pull request for the active milestone. The PR exists, but there is a failing required check and a spec mismatch in story US-001. GitHub publishing is available.",
+      "expected_output": "Agent validates setup, locates exactly one active milestone, selects the single open PR, presents the review context, coordinates implementation-review, records blockers in review-M-001-*.md, publishes request-changes to GitHub, transitions the affected tasks from review to implement, updates story review notes, and tells the user to run implement to fix the blockers.",
+      "files": [],
+      "expectations": [
+        "Uses kodit-config in check mode before proceeding",
+        "Uses issue-tracker in operate mode to identify the active milestone",
+        "Uses github-pr-state for PR selection and GitHub state",
+        "Uses implementation-review for technical judgment",
+        "Creates .kodit/tmp/specs/review-M-NNN-*.md",
+        "Identifies at least one blocker",
+        "Publishes REQUEST_CHANGES when blockers exist",
+        "Transitions at least one blocked task from review to implement",
+        "Appends a review note to the affected user story",
+        "Clearly tells the user to run implement next",
+        "Does not merge the PR"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Review the pull request for the active milestone. There is an active milestone, but no open PR exists and GitHub access is unavailable.",
+      "expected_output": "Agent validates setup and milestone state, detects the missing PR or missing GitHub access, stops immediately at step 3 without writing any review record, changing tracker state, or falling back to local-only review. Reports the blocker and tells the user to run pr-request.",
+      "files": [],
+      "expectations": [
+        "Detects that no PR exists or GitHub access is missing",
+        "Stops immediately at step 3 without proceeding to steps 4-9",
+        "Writes no review record file",
+        "Changes no task status in any tracker file",
+        "Appends no review note to any story file",
+        "Clearly states the missing prerequisite",
+        "Recommends pr-request as the next step",
+        "Does not merge the PR"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "Review the pull request for the active milestone. Two open pull requests exist for the same branch: PR #42 'M-001 — password reset' by alice opened 2 days ago, and PR #43 'fix typo' by bob targeting the same branch opened 1 hour ago. GitHub review publishing is available.",
+      "expected_output": "Agent validates setup, locates exactly one active milestone, detects multiple candidate PRs, stops immediately at step 3 without writing any review record, publishing, or changing tracker state. Names both PRs and asks the user to disambiguate.",
+      "files": [],
+      "expectations": [
+        "Detects that multiple PRs exist for the milestone branch",
+        "Stops immediately at step 3 without proceeding to steps 4-9",
+        "Writes no review record file",
+        "Writes no GitHub review",
+        "Changes no task status in any tracker file",
+        "Appends no review note to any story file",
+        "Names both candidate PRs and asks the user to disambiguate",
+        "Does not merge any PR"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Review the pull request for the active milestone. The PR exists, all checks pass, and the implementation matches the approved spec and plan. GitHub review publishing is NOT available — you have read-only access.",
+      "expected_output": "Agent validates setup, locates exactly one active milestone, selects the single open PR, completes local review record and tracker updates, does NOT attempt to publish a GitHub review, clearly reports the publishing limitation, and stops without merging.",
+      "files": [],
+      "expectations": [
+        "Uses kodit-config in check mode before proceeding",
+        "Uses issue-tracker in operate mode to identify the active milestone",
+        "Uses github-pr-state for PR selection and GitHub state",
+        "Uses implementation-review for technical judgment",
+        "Creates .kodit/tmp/specs/review-M-NNN-*.md",
+        "Transitions at least one task from review to done",
+        "Appends a review note to the affected user story",
+        "Does NOT attempt to publish a GitHub review",
+        "Clearly reports that publishing was not possible due to permissions",
+        "Does not merge the PR"
+      ]
+    },
+    {
+      "id": 6,
+      "prompt": "Review the pull request for the active milestone. Milestone M-001 has two stories: US-001 with tasks T-001/T-002/T-003, and US-002 with tasks T-004/T-005. All tasks in review. The PR has two blockers: T-001 token expiry is 48h instead of 24h (spec violation), and T-005 UI shows strength indicator but does not block submission for weak passwords (missing acceptance criteria). Everything else is correct. GitHub review publishing is available.",
+      "expected_output": "Agent validates setup, locates exactly one active milestone, selects the single open PR, maps findings to correct stories/tasks, publishes REQUEST_CHANGES, transitions T-001 and T-005 from review to implement, transitions T-002/T-003/T-004 from review to done, appends review notes to both US-001 and US-002, and stops.",
+      "files": [],
+      "expectations": [
+        "Maps the T-001 finding to US-001 correctly",
+        "Maps the T-005 finding to US-002 correctly",
+        "Transitions T-001 from review to implement",
+        "Transitions T-005 from review to implement",
+        "Transitions T-002, T-003, T-004 from review to done",
+        "Appends a review note to US-001",
+        "Appends a review note to US-002",
+        "Publishes REQUEST_CHANGES due to blockers",
+        "Does not merge the PR"
+      ]
+    }
+  ]
+}

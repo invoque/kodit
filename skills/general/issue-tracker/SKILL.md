@@ -54,3 +54,6 @@ the `interview` skill for the backend choice.
    `labels`, `type`, or `parent` as asked.
 5. When the caller reports a pull request URL for a milestone branch, write it as
    `**PR:** <url>` in the milestone charter without changing any status.
+6. When a review workflow reports outcomes, append a `## Review` note to each
+   affected user story file and move task rows only along allowed transitions:
+   pass moves `review → done`; blockers move `review → implement`.
