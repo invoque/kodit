@@ -1,0 +1,41 @@
+{
+  "skill_name": "github-pr-merge",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Merge the active milestone PR after confirmation. The confirmation object lists PR https://github.com/example/repo/pull/45, reviewed SHA abc123, squash merge as the allowed method, and no branch deletion requested. All checks pass, the PR is not blocked, and the authenticated identity is eligible to approve.",
+      "expected_output": "Agent validates GitHub access, reads current PR state, confirms the head matches the reviewed SHA, approves only after confirmation, merges using the repository-allowed method, and returns a successful merge result without using an admin bypass.",
+      "files": [],
+      "expectations": [
+        "Uses github-pr-merge instead of github-pr or github-pr-state for the merge",
+        "Confirms the current PR head matches the reviewed SHA",
+        "Merges only after explicit confirmation is supplied",
+        "Uses the repository-allowed merge method",
+        "Does not use an admin bypass"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Merge the active milestone PR. The confirmation object lists PR https://github.com/example/repo/pull/50, reviewed SHA def456, squash merge, and branch deletion requested. The authenticated GitHub identity is the PR author and cannot approve the PR.",
+      "expected_output": "Agent reports the ineligible approval identity, stops without merging, and instructs the caller to arrange a separate eligible approval before rerunning.",
+      "files": [],
+      "expectations": [
+        "Detects the self-approval constraint",
+        "Does not attempt to publish an APPROVE review",
+        "Does not merge the PR",
+        "Clearly states that a separate eligible approval is required"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Merge the active milestone PR. The PR is mergeable, but the current head SHA differs from the reviewed SHA because new commits were pushed since the review.",
+      "expected_output": "Agent re-reads PR state, detects the head mismatch, refuses to merge on stale review evidence, and asks for a fresh review or confirmation against the current head.",
+      "files": [],
+      "expectations": [
+        "Refuses to merge when the reviewed SHA no longer matches the current head",
+        "Does not use the stale review as sufficient approval evidence",
+        "Requests a fresh review or explicit reconfirmation against the current head"
+      ]
+    }
+  ]
+}
