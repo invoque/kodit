@@ -31,18 +31,18 @@ If `.kodit/tmp/setup-git-branching.md` is missing, follow `git-branching`. Other
 
 ### 5. Checkpoint — STOP
 
-Present the review summary: per-section tables from the three drafts, the exact `kodit.json` that will be written, and a create-vs-append file plan. **Nothing is written until you approve.** Change requests route back to the step that owns them; the checkpoint re-presents after each fix.
+Present the review summary: per-section tables from the three drafts, the exact `kodit.json` that will be written, rendered previews of each document's managed block, and a file plan with per-file actions (create, append, no-op, migrate, or legacy-retained). If legacy sections are detected, show their bounded diff. **Nothing is written until you approve.** Change requests route back to the step that owns them; the checkpoint re-presents after each fix.
 
 ### 6. Write the configuration
 
 Follow `kodit-config` in **write mode** to:
 - Write `kodit.json` at the project root.
-- Create or append `AGENTS.md`, `README.md`, and `CONTEXT.md`.
+- Render managed blocks into `AGENTS.md`, `README.md`, and `CONTEXT.md` (creating shells, appending, or migrating per the document-state matrix).
 - Create `.kodit/.gitignore`.
 - Create the issue tracker seed files at `.kodit/issues/`.
 - Delete all `.kodit/tmp/setup-*.md` drafts.
 
-Each file is reported as created or appended.
+Each file is reported with its action: created, appended, no-op, migrated, or legacy-retained.
 
 ### 7. Hand off
 
@@ -59,10 +59,10 @@ Present the final summary — what was written, the branch/issue configuration, 
 
 ## Artifacts Created
 
-- `kodit.json` — project configuration
-- `.kodit/issues/README.md` and `.kodit/issues/INDEX.md` — issue tracker seed
-- `.kodit/.gitignore` — excludes `tmp/` from version control
-- Appended sections in `AGENTS.md`, `README.md`, `CONTEXT.md`
+- `kodit.json` -- project configuration
+- `.kodit/issues/README.md` and `.kodit/issues/INDEX.md` -- issue tracker seed
+- `.kodit/.gitignore` -- excludes `tmp/` from version control
+- Marker-delimited managed blocks in `AGENTS.md`, `README.md`, `CONTEXT.md`
 
 ## Handoff
 
