@@ -175,7 +175,7 @@ kodit/
 ├── CONTEXT.md
 └── skills/
     ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/, workflow/pr-request/, workflow/pr-review/
-    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing, github-pr, github-pr-state, implementation-review}/
+    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing, github-pr, github-pr-state, code-review}/
 ```
 
 Planned layout (created as work proceeds; *(setup)* marks what the `setup` phase
@@ -236,7 +236,7 @@ kodit/
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
 - General skills: `interview` (spec-001), plus `kodit-config`, `issue-tracker`,
   `git-branching`, `plan-writing`, `github-pr`, `github-pr-state`, and
-  `implementation-review`.
+  `code-review`.
 - The first workflow skill exists: `skills/workflow/setup-kodit/`, specified and
   planned by `.kodit/tmp/specs/spec-003-setup-kodit.md` and
   `.kodit/tmp/specs/plan-003-setup-kodit.md`; it was evaluated with with-skill
@@ -251,7 +251,7 @@ kodit/
   `.kodit/tmp/specs/plan-005-implement-skill.md`. It establishes the test-first
   (RED → GREEN) convention.
 - The fourth workflow skill exists: `skills/workflow/pr-review/`, using the new
-  `github-pr-state` and `implementation-review` companions; `pr-request` hands
+  `github-pr-state` and `code-review` companions; `pr-request` hands
   off to it, and the issue tracker now supports a durable `## Review` note on
   reviewed user stories.
 - Skills carry a mandatory conciseness standard (`AGENTS.md`), established by
@@ -312,3 +312,4 @@ Next up: scaffold the remaining three phase workflow skills and complete review-
 | 2026-09-20 | GitHub PR inspection and constrained review publishing live in a new general skill, `github-pr-state`. | Separates PR creation (`github-pr`) from PR state reads and REQUEST_CHANGES/COMMENT publishing, preserving one-responsibility skills without duplicating mechanics. |
 | 2026-09-20 | Technical implementation review lives in a new general skill, `implementation-review`. | Keeps judgment reusable and independent of GitHub mechanics and tracker writes, so `pr-review` can stay a pure orchestrator. |
 | 2026-09-20 | User stories gain an append-only `## Review` note for PR-linked review outcomes. | Gives reviewed work durable context directly on the story without inventing a new tracker state; task status moves remain the only state machine writes. |
+| 2026-09-20 | Rename general skill `implementation-review` to `code-review`. | The shorter name better describes the skill's purpose (technical code judgment against specs) and avoids confusion with the `pr-review` workflow orchestrator. |

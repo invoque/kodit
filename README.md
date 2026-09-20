@@ -73,7 +73,7 @@ The specific skills are defined as they are built — see the
 [roadmap](#roadmap). The `setup`, `milestone-planning`, and `implement` phases'
 skills (`setup-kodit`, `milestone-planning`, `implement`) exist along with their
 general companions (`kodit-config`, `issue-tracker`, `git-branching`,
-`plan-writing`, `github-pr`, `github-pr-state`, `implementation-review`) and
+`plan-writing`, `github-pr`, `github-pr-state`, `code-review`) and
 `interview`; the `pr-request` workflow exists and hands off to the new
 `pr-review` workflow, while the remaining phase skills are still to come.
 

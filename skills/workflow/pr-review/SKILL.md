@@ -53,7 +53,7 @@ mergeability, current task states, and whether a GitHub review can be published.
 
 ### 5. Coordinate the technical review
 
-Follow the `implementation-review` skill. Supply the active milestone, relevant
+Follow the `code-review` skill. Supply the active milestone, relevant
 specs/plans, task list, and the PR facts from `github-pr-state`. Receive
 findings, severity counts, and recommended status moves.
 

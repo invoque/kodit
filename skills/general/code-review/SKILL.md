@@ -1,5 +1,5 @@
 ---
-name: implementation-review
+name: code-review
 description: >-
   Use when a Kodit caller needs a technical review of implemented work against
   approved specs, plans, acceptance criteria, and evidence — compare the PR or
@@ -8,7 +8,7 @@ description: >-
   issue status, or milestone records.
 ---
 
-# implementation-review
+# code-review
 
 Review implementation facts against requirements and produce structured findings.
 
