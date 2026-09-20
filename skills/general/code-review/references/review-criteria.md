@@ -1,6 +1,6 @@
 # Review criteria
 
-Defines how `implementation-review` classifies findings and derives a story-level
+Defines how `code-review` classifies findings and derives a story-level
 verdict.
 
 ## Severity levels
