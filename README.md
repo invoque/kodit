@@ -78,6 +78,10 @@ general companions (`kodit-config`, `issue-tracker`, `git-branching`,
 to the new `pr-review` workflow, and the new `pr-approve` workflow finalizes a
 reviewed milestone PR, while the remaining phase skills are still to come.
 
+**User-facing workflow documentation** is in [`docs/`](docs/README.md) — a
+navigable guide covering the six implemented workflow skills, their approval
+points, and handoff chain.
+
 ## Getting Started
 
 Requirements:

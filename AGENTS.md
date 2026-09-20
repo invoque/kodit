@@ -17,6 +17,15 @@ kodit/
 ├── AGENTS.md            # this file — agent instructions
 ├── README.md            # human-facing overview
 ├── CONTEXT.md           # project context, decisions, environment
+├── docs/                # user-facing documentation
+│   ├── README.md        # workflow skills index and guide
+│   └── workflow/        # per-skill user guides
+│       ├── setup-kodit.md
+│       ├── milestone-planning.md
+│       ├── implement.md
+│       ├── pr-request.md
+│       ├── pr-review.md
+│       └── pr-approve.md
 ├── kodit.json           # project configuration (setup)
 ├── .kodit/
 │   ├── issues/          # issue tracker (setup, committed)
