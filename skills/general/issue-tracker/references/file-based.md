@@ -129,6 +129,7 @@ required; `labels` is a list (may be empty). `type` is inherited by its tasks.
 # M-001 — <goal>
 
 **Status:** planned
+**PR:** <url, when a pull request is open; omit otherwise>
 **Created:** 2026-09-19
 
 ## Goal
@@ -140,6 +141,10 @@ required; `labels` is a list (may be empty). `type` is inherited by its tasks.
 |----|-------|--------|
 | US-001 | <title> | open |
 ```
+
+Opening a pull request adds or updates the optional `**PR:**` line in the
+milestone charter. This write is idempotent and changes no task, story, or
+milestone status; the milestone stays `active` until its stories close it.
 
 When a story is added or changes status, update the milestone table; when a
 milestone is added or changes status, update the project table. The tables are

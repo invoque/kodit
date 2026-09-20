@@ -52,3 +52,5 @@ the `interview` skill for the backend choice.
 3. Keep IDs stable and unique: never renumber, never reuse a retired ID.
 4. Query by reading `.kodit/issues/`, filtering on frontmatter `status`,
    `labels`, `type`, or `parent` as asked.
+5. When the caller reports a pull request URL for a milestone branch, write it as
+   `**PR:** <url>` in the milestone charter without changing any status.
