@@ -100,6 +100,10 @@ access without support.
 | T-001 | Add reset-token model and expiry | open |
 | T-002 | Send reset email | open |
 | T-003 | Reset form and confirmation page | open |
+
+## Review
+<!-- Optional, appended on first review. Latest entry first. -->
+- **2026-09-20** PR <url> | Review file `.kodit/tmp/specs/review-M-001-password-reset.md` | Verdict: pass | Fixes required: none
 ```
 
 Frontmatter rules: `id`, `title`, `type`, `status`, `parent`, `created` are

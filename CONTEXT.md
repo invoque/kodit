@@ -174,8 +174,8 @@ kodit/
 ├── README.md
 ├── CONTEXT.md
 └── skills/
-    ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/
-    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing}/
+    ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/, workflow/pr-request/, workflow/pr-review/
+    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing, github-pr, github-pr-state, implementation-review}/
 ```
 
 Planned layout (created as work proceeds; *(setup)* marks what the `setup` phase
@@ -235,7 +235,8 @@ kodit/
 - Repository initialized with `git`; `master` is stable, `dev` is integration.
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
 - General skills: `interview` (spec-001), plus `kodit-config`, `issue-tracker`,
-  and `git-branching`.
+  `git-branching`, `plan-writing`, `github-pr`, `github-pr-state`, and
+  `implementation-review`.
 - The first workflow skill exists: `skills/workflow/setup-kodit/`, specified and
   planned by `.kodit/tmp/specs/spec-003-setup-kodit.md` and
   `.kodit/tmp/specs/plan-003-setup-kodit.md`; it was evaluated with with-skill
@@ -248,14 +249,18 @@ kodit/
   `plan-writing` general skill, specified and planned by
   `.kodit/tmp/specs/spec-005-implement-skill.md` and
   `.kodit/tmp/specs/plan-005-implement-skill.md`. It establishes the test-first
-  (RED → GREEN) convention and hands off to a not-yet-built `pr-request` skill.
+  (RED → GREEN) convention.
+- The fourth workflow skill exists: `skills/workflow/pr-review/`, using the new
+  `github-pr-state` and `implementation-review` companions; `pr-request` hands
+  off to it, and the issue tracker now supports a durable `## Review` note on
+  reviewed user stories.
 - Skills carry a mandatory conciseness standard (`AGENTS.md`), established by
   `spec-002` / `plan-002`.
 - `.kodit/tmp/` is in use for temporary artifacts (gitignored). No `kodit.json`
   exists in this repository, and there is still no runtime code, dependencies, or
   package manifest.
 
-Next up: scaffold the remaining four workflow skills.
+Next up: scaffold the remaining three phase workflow skills and complete review-loop tooling.
 
 ## Decisions Log
 
@@ -303,3 +308,7 @@ Next up: scaffold the remaining four workflow skills.
 | 2026-09-20 | `pr-request` is a pure orchestrator; all git/GitHub work lives in a new general skill, `github-pr`, with a bundled PR title/body template. | The mandatory rule requires workflow skills to delegate: `pr-request` sequences checks and handoffs only, while `github-pr` owns remote/branch validation, idempotent PR creation via GitHub MCP or `gh`, and the reusable template. Plain `git` alone cannot open a GitHub PR. |
 | 2026-09-20 | An open PR is recorded as optional `**PR:** <url>` in the milestone charter; task, story, and milestone statuses do not change. | No `pending`/`pr-open` state exists, tasks already sit at `review` after `implement`, and only review can move them to `done`. A metadata line keeps the tracker truthful without inventing a state transition. |
 | 2026-09-20 | Skill eval definitions live with the skill (`evals/evals.json`); transient iteration results live under `.kodit/tmp/workspaces/`. | Follows the skill-creator layout for definitions while respecting the kodit rule that test workspaces stay gitignored under `.kodit/tmp/workspaces/` and are swept at phase boundaries. |
+| 2026-09-20 | `pr-review` is a user-invoked workflow helper after `pr-request`, not a formal milestone phase. | Keeps the six-phase loop intact while filling the missing review-handoff step; workflow skills stay orchestrators and delegate GitHub/implementation work. |
+| 2026-09-20 | GitHub PR inspection and constrained review publishing live in a new general skill, `github-pr-state`. | Separates PR creation (`github-pr`) from PR state reads and REQUEST_CHANGES/COMMENT publishing, preserving one-responsibility skills without duplicating mechanics. |
+| 2026-09-20 | Technical implementation review lives in a new general skill, `implementation-review`. | Keeps judgment reusable and independent of GitHub mechanics and tracker writes, so `pr-review` can stay a pure orchestrator. |
+| 2026-09-20 | User stories gain an append-only `## Review` note for PR-linked review outcomes. | Gives reviewed work durable context directly on the story without inventing a new tracker state; task status moves remain the only state machine writes. |
