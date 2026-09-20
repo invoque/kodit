@@ -1,0 +1,77 @@
+{
+  "skill_name": "kodit-config",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up kodit in a fresh Git project. The project is called 'taskflow', a TypeScript CLI tool. Build with 'npm run build', test with 'npm test'. Main branch is 'main', dev is 'develop', feature prefix is 'feat/', bugfix prefix is 'fix/'. Labels should include the defaults plus 'blocked' and 'priority'.",
+      "expected_output": "kodit.json written with correct fields. AGENTS.md, README.md, and CONTEXT.md created with marker-delimited managed blocks. No unresolved placeholders. Git-null handling not triggered. All three documents render the configured branches and labels.",
+      "files": [],
+      "expectations": [
+        "Creates AGENTS.md with <!-- kodit:agents:v1:start --> and <!-- kodit:agents:v1:end --> markers",
+        "Creates README.md with <!-- kodit:readme:v1:start --> and <!-- kodit:readme:v1:end --> markers",
+        "Creates CONTEXT.md with <!-- kodit:context:v1:start --> and <!-- kodit:context:v1:end --> markers",
+        "AGENTS.md contains the correct six-phase sequence with implement (not implement-loop)",
+        "README.md contains project.description from the metadata",
+        "CONTEXT.md renders branches as main / develop / feat/ / fix/",
+        "Labels in AGENTS.md include all seven configured labels (five defaults plus blocked and priority)",
+        "No unresolved {{...}} placeholders in any output file",
+        "kodit.json has version 1, correct project fields, and git section with configured values"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Set up kodit in a fresh project that does not use version control. The project is called 'notepad', a Python script. No build or test commands. Issue tracking should use the file-based backend at .kodit/issues.",
+      "expected_output": "kodit.json written with git: null. AGENTS.md, README.md, and CONTEXT.md created. Branch paragraphs say 'Not configured' or are omitted. No branch placeholders in any output.",
+      "files": [],
+      "expectations": [
+        "kodit.json has git set to null",
+        "AGENTS.md contains 'Version control is not configured' instead of branch placeholders",
+        "README.md omits the branch sentence (no branch paragraph present)",
+        "CONTEXT.md renders Branches as 'Not configured'",
+        "CONTEXT.md has only one initial decision row (adoption), not two (no branch model row)",
+        "No {{git.main_branch}} or similar placeholders remain in any output",
+        "Tracker fields render as file at .kodit/issues"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Append a kodit section to an existing README.md that already has a custom '## My Notes' section with project-specific content. The README has no prior kodit content and no legacy sections. Project is 'webapp', a Go service.",
+      "expected_output": "The existing README.md content is preserved. A new managed block is appended at the end. The custom '## My Notes' section is byte-preserved.",
+      "files": ["evals/files/existing-readme.md"],
+      "expectations": [
+        "README.md contains the original '## My Notes' section unchanged",
+        "A new <!-- kodit:readme:v1:start --> block is appended after existing content",
+        "The managed block contains project description from kodit.json",
+        "No existing content was deleted or reordered",
+        "The file plan shows 'append (managed block)' for README.md"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "The project has AGENTS.md with a legacy '## kodit Workflow' section (no markers) that matches the old template output exactly. Set up kodit and detect the legacy section. Offer migration.",
+      "expected_output": "Legacy section is detected. A migration diff is shown in the checkpoint. After approval, the legacy section is replaced with the current managed block. Other content is preserved.",
+      "files": ["evals/files/legacy-agents.md"],
+      "expectations": [
+        "Legacy '## kodit Workflow' section is detected without markers",
+        "Migration mode is triggered with a bounded before/after diff",
+        "After approval, the legacy section is replaced with <!-- kodit:agents:v1:start/end --> managed block",
+        "Content outside the legacy section boundaries is preserved",
+        "The file plan shows 'migrate' for AGENTS.md",
+        "The new managed block contains the correct six-phase sequence with implement (not implement-loop)"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "Re-run kodit setup on a project where all three documents already have current managed blocks (<!-- kodit:agents:v1:start -->, etc.). The project is 'demo', a Rust library.",
+      "expected_output": "All three documents report no-op. No files are modified. The checkpoint shows 'already up to date' for each managed document.",
+      "files": ["evals/files/pre-migrated-agents.md", "evals/files/pre-migrated-readme.md", "evals/files/pre-migrated-context.md"],
+      "expectations": [
+        "AGENTS.md action is no-op",
+        "README.md action is no-op",
+        "CONTEXT.md action is no-op",
+        "No bytes were changed in any of the three documents",
+        "The final summary reports no files modified for the three managed documents"
+      ]
+    }
+  ]
+}
