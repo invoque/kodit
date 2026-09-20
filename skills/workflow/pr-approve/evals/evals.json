@@ -1,0 +1,43 @@
+{
+  "skill_name": "pr-approve",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "The PR review for the active milestone is clean. Approve and merge the milestone PR now. The repository allows squash merge, required checks pass, review evidence matches the current head SHA, and the user confirms the merge.",
+      "expected_output": "Agent validates setup and milestone state, locates the reviewed PR, presents confirmation, publishes approval only when eligible, delegates merge to github-pr-merge, records the merge in the milestone charter, and summarizes the result without prescribing the next workflow.",
+      "files": [],
+      "expectations": [
+        "Uses kodit-config in check mode before proceeding",
+        "Uses github-pr-state to confirm PR readiness",
+        "Requires explicit user confirmation before GitHub actions",
+        "Delegates approve/merge to github-pr-merge",
+        "Records **Merged:** in the milestone charter after success",
+        "Does not prescribe milestone-planning as the next step"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "The active milestone PR is clean, but the user is the PR author and there is no other eligible reviewer configured. The user still wants to finalize the merge.",
+      "expected_output": "Agent detects the ineligible approval identity, stops before any remote approval or merge, explains the manual approval requirement, and tells the user to approve the PR manually and rerun.",
+      "files": [],
+      "expectations": [
+        "Uses github-pr-state to detect the approval constraint",
+        "Does not publish an APPROVE review",
+        "Does not merge the PR",
+        "Clearly instructs the user to approve manually and rerun"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "The active milestone was already merged by hand outside the workflow. Update the tracker so the milestone records the merge, but do not attempt to merge it again.",
+      "expected_output": "Agent detects the already-merged GitHub state, avoids duplicate remote actions, reconciles the milestone and project tables, writes the merge record in the milestone charter, and stops.",
+      "files": [],
+      "expectations": [
+        "Detects that the PR is already merged",
+        "Does not attempt a duplicate merge",
+        "Reconciles tracker indexes",
+        "Records **Merged:** in the milestone charter"
+      ]
+    }
+  ]
+}

@@ -57,3 +57,8 @@ the `interview` skill for the backend choice.
 6. When a review workflow reports outcomes, append a `## Review` note to each
    affected user story file and move task rows only along allowed transitions:
    pass moves `review → done`; blockers move `review → implement`.
+7. When a merge workflow reports a successful merge, verify the milestone’s
+   tasks are `done` or `wontfix`, reconcile derived story and milestone status,
+   and write `**Merged:** <timestamp> | <sha>` in the milestone charter only
+   after GitHub confirms an actual merge. Do not write the merge line for a
+   queued or merely approved PR.

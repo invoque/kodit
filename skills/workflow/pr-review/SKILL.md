@@ -5,7 +5,8 @@ description: >-
   "check the pull request", or run review for the active milestone. Verifies
   project state, locates exactly one active milestone and its PR, coordinates a
   technical review, records the result, publishes findings, updates story/task
-  notes/statuses, and stops by telling the user to run implement for blockers.
+  notes/statuses, and stops by telling the user to run implement for blockers or
+  pr-approve when clean.
 ---
 
 # pr-review
@@ -84,4 +85,5 @@ indexes only as the issue-tracker requires to stay consistent.
 
 Summarize milestone, PR, verdict, blocker count, changed tasks, and review file
 path. When blockers remain, tell the user to run **`implement`** to fix them.
-When there are none, do not merge; present the result and stop.
+When there are none, tell the user to run **`pr-approve`** to finalize merge
+handling.

@@ -15,7 +15,7 @@ the same change.**
 | **Tagline** | Opinionated milestone-driven development for solo developers |
 | **Audience** | Individual developers working with coding agents |
 | **Form** | A collection of agent-agnostic skills, delivered as markdown |
-| **Status** | Three workflow skills implemented (`setup-kodit`, `milestone-planning`, `implement`) with their general companions; remaining workflow skills pending |
+| **Status** | Six workflow helpers implemented (`setup-kodit`, `milestone-planning`, `implement`, `pr-request`, `pr-review`, `pr-approve`) with their general companions; remaining formal phase workflow skills pending |
 
 ### Philosophy
 
@@ -174,8 +174,8 @@ kodit/
 ├── README.md
 ├── CONTEXT.md
 └── skills/
-    ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/, workflow/pr-request/, workflow/pr-review/
-    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing, github-pr, github-pr-state, code-review}/
+    ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/, workflow/pr-request/, workflow/pr-review/, workflow/pr-approve/
+    └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing, github-pr, github-pr-state, github-pr-merge, code-review}/
 ```
 
 Planned layout (created as work proceeds; *(setup)* marks what the `setup` phase
@@ -235,8 +235,8 @@ kodit/
 - Repository initialized with `git`; `master` is stable, `dev` is integration.
 - The three governing documents exist: `AGENTS.md`, `README.md`, `CONTEXT.md`.
 - General skills: `interview` (spec-001), plus `kodit-config`, `issue-tracker`,
-  `git-branching`, `plan-writing`, `github-pr`, `github-pr-state`, and
-  `code-review`.
+  `git-branching`, `plan-writing`, `github-pr`, `github-pr-state`,
+  `github-pr-merge`, and `code-review`.
 - The first workflow skill exists: `skills/workflow/setup-kodit/`, specified and
   planned by `.kodit/tmp/specs/spec-003-setup-kodit.md` and
   `.kodit/tmp/specs/plan-003-setup-kodit.md`; it was evaluated with with-skill
@@ -254,6 +254,9 @@ kodit/
   `github-pr-state` and `code-review` companions; `pr-request` hands
   off to it, and the issue tracker now supports a durable `## Review` note on
   reviewed user stories.
+- The fifth workflow helper exists: `skills/workflow/pr-approve/`, which
+  finalizes a reviewed milestone PR by delegating approval and merge to
+  `github-pr-merge` and recording the merge result in the tracker.
 - Skills carry a mandatory conciseness standard (`AGENTS.md`), established by
   `spec-002` / `plan-002`.
 - `.kodit/tmp/` is in use for temporary artifacts (gitignored). No `kodit.json`
@@ -313,3 +316,8 @@ Next up: scaffold the remaining three phase workflow skills and complete review-
 | 2026-09-20 | Technical implementation review lives in a new general skill, `implementation-review`. | Keeps judgment reusable and independent of GitHub mechanics and tracker writes, so `pr-review` can stay a pure orchestrator. |
 | 2026-09-20 | User stories gain an append-only `## Review` note for PR-linked review outcomes. | Gives reviewed work durable context directly on the story without inventing a new tracker state; task status moves remain the only state machine writes. |
 | 2026-09-20 | Rename general skill `implementation-review` to `code-review`. | The shorter name better describes the skill's purpose (technical code judgment against specs) and avoids confusion with the `pr-review` workflow orchestrator. |
+| 2026-09-21 | GitHub approve and merge capability lives in a new general skill, `github-pr-merge`, respecting repository merge policy without admin bypass. | Keeps creation, state inspection, and merge mechanics in three disjoint general skills while preventing unsafe merge shortcuts. |
+| 2026-09-21 | `pr-approve` is a user-invoked workflow helper after a clean `pr-review`; it requires explicit confirmation before approval and merge. | Fills the missing finalize step without inventing a new formal milestone phase. |
+| 2026-09-21 | `github-pr-state` may publish `APPROVE`, `REQUEST_CHANGES`, or `COMMENT` when explicitly requested by the caller after confirmation. | Allows constrained approval publishing without breaking the existing review workflow responsibilities. |
+| 2026-09-21 | Milestone merge evidence is recorded as `**Merged:** <timestamp> | <sha>` in the milestone charter after GitHub confirms an actual merge. | Makes merge status durable without writing premature or queue-only markers. |
+| 2026-09-21 | `milestone-planning` refuses when any closed milestone still has an open or unmerged PR without a merge record. | Prevents starting the next milestone before the previous reviewed PR is actually merged or reconciled. |

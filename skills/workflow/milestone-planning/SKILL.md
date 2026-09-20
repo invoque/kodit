@@ -5,7 +5,8 @@ description: >-
   "scope the next chunk of work", "define the next set of stories" — or when
   setup-kodit hands off after setup. Interviews the user to a shared scope, then
   records the milestone, its stories, acceptance criteria, and tasks in the
-  issue tracker. Refuses when a milestone is still open or setup is incomplete.
+  issue tracker. Refuses when a milestone is still open, setup is incomplete, or
+  a reviewed milestone PR remains unmerged.
   Defines only the sequence and the review gate.
 ---
 
@@ -35,7 +36,9 @@ Follow the `issue-tracker` skill in **operate mode** to read the project charter
 and every milestone, deriving each milestone's status. If any milestone is not
 `closed` (`planned` or `active`), refuse: name it, and direct the user to
 implement it (the `implement` skill), close it, or explicitly re-scope it
-first. Do not plan a second milestone. Stop.
+first. If any milestone is `closed` but records a PR without a merge record, or
+records an open/queued PR, refuse and direct the user to reconcile the merge
+with the `pr-approve` skill first. Do not plan a second milestone. Stop.
 
 ### 3. Settle the scope
 

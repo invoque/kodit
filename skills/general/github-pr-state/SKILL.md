@@ -3,9 +3,9 @@ name: github-pr-state
 description: >-
   Use when any Kodit caller needs GitHub pull request state read or published
   without opening the PR — locate the milestone PR, inspect metadata, checks,
-  reviews, comments, diff, and merge capability, or publish a REQUEST_CHANGES /
-  COMMENT review. Never approve, merge, or create the PR; for creation use
-  github-pr.
+  reviews, comments, diff, and merge capability, or publish an APPROVE,
+  REQUEST_CHANGES, or COMMENT review. Never create or merge the PR; for
+  creation use github-pr and for approve/merge use github-pr-merge.
 ---
 
 # github-pr-state
@@ -53,9 +53,12 @@ reviewing skill precise facts.
 
 ### 5. Publish constrained review
 
-When asked, publish only `REQUEST_CHANGES` or `COMMENT`. Never approve. Always
+When asked, publish only `APPROVE`, `REQUEST_CHANGES`, or `COMMENT`. Always
 publish when the caller passes `blocker=True` and the GitHub capability allows
-it. For non-blockers, publish only when permitted.
+it. For `APPROVE`, publish only after explicit workflow confirmation and only
+when the authenticated identity is eligible; authors must not approve their own
+pull requests and permissions may prevent approval. For non-blockers, publish
+only when permitted.
 
 ### 6. Handle fallbacks cleanly
 

@@ -134,6 +134,7 @@ required; `labels` is a list (may be empty). `type` is inherited by its tasks.
 
 **Status:** planned
 **PR:** <url, when a pull request is open; omit otherwise>
+**Merged:** <timestamp | sha, after a successful merge; omit otherwise>
 **Created:** 2026-09-19
 
 ## Goal
@@ -149,6 +150,10 @@ required; `labels` is a list (may be empty). `type` is inherited by its tasks.
 Opening a pull request adds or updates the optional `**PR:**` line in the
 milestone charter. This write is idempotent and changes no task, story, or
 milestone status; the milestone stays `active` until its stories close it.
+
+After a successful merge workflow writes `**Merged:** <timestamp> | <sha>`,
+update the milestone and project index tables to keep the roadmap view in sync
+with the actual repository state.
 
 When a story is added or changes status, update the milestone table; when a
 milestone is added or changes status, update the project table. The tables are
