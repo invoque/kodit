@@ -52,8 +52,9 @@ other skill reads it.
   },
   "issue_tracker": {
     "type": "linear",
-    "team": "ENG",
-    "linear_project": "my-project",
+    "workspace": "invoque",
+    "team": { "key": "TEST", "id": "<resolved-id>" },
+    "linear_project": { "id": "<resolved-id>", "name": "my-project" },
     "status_map": {
       "spec": "In Progress",
       "plan": "In Progress",
@@ -119,13 +120,25 @@ other skill reads it.
 | Field | Required | Notes |
 |---|---|---|
 | `issue_tracker.type` | yes | Must be `"linear"`. |
-| `issue_tracker.team` | yes | Linear team key (e.g. `"ENG"`). Issues belong to this team. |
-| `issue_tracker.linear_project` | yes | Linear Project name or ID containing milestones. Created or selected during setup. |
+| `issue_tracker.workspace` | yes | Linear workspace slug (e.g. `"invoque"`). All operations target this workspace. |
+| `issue_tracker.team.key` | yes | Linear team key (e.g. `"TEST"`). Issues belong to this team. |
+| `issue_tracker.team.id` | yes | Resolved UUID of the team. Setup resolves and records this; every operation uses it. |
+| `issue_tracker.linear_project.id` | yes | Resolved UUID of the project containing milestones. Setup resolves or creates and records this. |
+| `issue_tracker.linear_project.name` | yes | Human-readable project name for display. |
 | `issue_tracker.status_map` | yes | Kodit status → Linear workflow state name. See `linear.md` for required keys. |
 
 ### Notes on Linear fields
 
 - `path` is **not** used for Linear. There is no local issue tree.
+- `workspace` is mandatory and authoritative. Setup mode verifies the workspace
+  exists and is accessible; every subsequent CLI/MCP call includes
+  `--workspace <workspace>`. No silent fallback to another workspace.
+- `team` is an object with both `key` and `id`. Setup mode resolves the team by
+  key within the workspace and records both. If the team does not exist and
+  cannot be created, setup stops.
+- `linear_project` is an object with both `id` and `name`. Provision mode
+  creates or finds the project and records both. The `id` is used for all
+  subsequent operations.
 - `issue_tracker.labels` is used for Kodit handoff labels stored in issue
   descriptions, not for Linear label creation.
 - `issue_tracker.status_map` maps each Kodit internal state to a Linear
@@ -141,6 +154,9 @@ other skill reads it.
   file backend, or `references/linear.md` for Linear).
 - `issue_tracker` is backend-swappable: changing `type` and its fields later is
   the migration path.
+- For Linear: `workspace`, `team.id`, and `linear_project.id` are resolved
+  during setup/provision and written as authoritative UUIDs. Every subsequent
+  operation uses these IDs, not human-readable names.
 - Never invent extra top-level keys. Add a field only with a schema version
   bump and a decision recorded in `CONTEXT.md`.
 - File-backed projects may stay on v1; v2 is only required when adding Linear.
@@ -167,8 +183,9 @@ other skill reads it.
   "project": { "name": "taskflow", "description": "Personal task tracking with weekly reviews.", "language": "typescript", "build": "npm run build", "test": "npm test" },
   "issue_tracker": {
     "type": "linear",
-    "team": "ENG",
-    "linear_project": "taskflow",
+    "workspace": "invoque",
+    "team": { "key": "TEST", "id": "8959b387-1e7f-4a55-ad57-7c8efce9d499" },
+    "linear_project": { "id": "21af77bf-96e2-47b4-a648-b5b2aac2cdf5", "name": "taskflow" },
     "status_map": {
       "spec": "In Progress",
       "plan": "In Progress",

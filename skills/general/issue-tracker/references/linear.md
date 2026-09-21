@@ -154,24 +154,33 @@ description:
 
 ## Provisioning
 
-After checkpoint approval, the setup-provision mode creates or verifies:
+After checkpoint approval, the provision mode creates or verifies resources
+**within the workspace and team recorded in `kodit.json`**:
 
-1. The Linear Project (if not found by name).
-2. Required workflow states (if missing from the team's workflow).
-3. Labels (if missing from the workspace).
+1. Verify `workspace` and `team.id` are present in `kodit.json`. Stop if not.
+2. The Linear Project (if not found by name **in the specified workspace**).
+3. Required workflow states (if missing from **the specified team's** workflow).
+4. Labels (if missing from **the specified workspace/team**).
+
+All CLI commands must include `--workspace <workspace>` explicitly. Never
+assume a default workspace.
 
 GraphQL mutations needed for provisioning:
 
 ```graphql
-# Create project
+# Create project (within the specified workspace)
 mutation { projectCreate(input: { name: "...", teamIds: ["..."] }) { success project { id } } }
 
-# Create workflow state
+# Create workflow state (for the specified team)
 mutation { workflowStateCreate(input: { teamId: "...", name: "...", type: "unstarted" }) { success workflowState { id } } }
 
-# Create label
+# Create label (for the specified workspace/team)
 mutation { issueLabelCreate(input: { name: "...", teamId: "..." }) { success issueLabel { id } } }
 ```
+
+**Never** create resources in a workspace/team other than the one in
+`kodit.json`. If the specified team does not exist, stop and report the
+failure — do not fall back to another team.
 
 ## Setup failure modes
 
@@ -193,16 +202,16 @@ backend is Linear.
 
 ### Read operations
 
-- List milestones: `linear milestone list --project <id>` or MCP equivalent.
-- List stories/tasks: `linear issue query --project <id> --milestone <name> --json`.
+- List milestones: `linear milestone list --workspace <ws> --project <id>` or MCP equivalent.
+- List stories/tasks: `linear issue query --workspace <ws> --project <id> --milestone <name> --json`.
 - Read story body: `linear issue view <id> --json`.
 - Read task status: `linear issue view <id> --json`.
 
 ### Write operations
 
-- Create milestone: `linear milestone create --project <id> --name "M-001 — ..."`.
-- Create story: `linear issue create --team <key> --title "[US-001] ..." --project <id> --milestone "M-001 — ..." --description-file <path>`.
-- Create task: `linear issue create --team <key> --title "[T-001] ..." --parent <story-id> --description-file <path>`.
+- Create milestone: `linear milestone create --workspace <ws> --project <id> --name "M-001 — ..."`.
+- Create story: `linear issue create --workspace <ws> --team <key> --title "[US-001] ..." --project <id> --milestone "M-001 — ..." --description-file <path>`.
+- Create task: `linear issue create --workspace <ws> --team <key> --title "[T-001] ..." --parent <story-id> --description-file <path>`.
 - Update task status: `linear issue update <id> --state "<state>"`.
 - Record PR: `linear issue comment add <milestone-id> --body-file <path>`.
 - Append review: `linear issue comment add <story-id> --body-file <path>`.

@@ -1,11 +1,14 @@
 {
   "skill_name": "issue-tracker",
+  "default_workspace": "invoque",
+  "default_team": "TEST",
   "evals": [
     {
       "id": 1,
       "prompt": "Set up issue tracking for a new project. I want to use the file-based backend. The project is called 'myapp', a Python web service. No special labels needed beyond the defaults.",
       "expected_output": "issue-tracker setup mode offers file-based as recommended, confirms default labels, writes setup-issue-tracker.md with backend=file, path=.kodit/issues, and the five default labels.",
       "files": [],
+      "allow_remote_writes": false,
       "expectations": [
         "Offers file-based as the recommended backend",
         "Confirms the five default labels",
@@ -16,16 +19,21 @@
     },
     {
       "id": 2,
-      "prompt": "Set up issue tracking for a new project. I want to use Linear. We have a team called 'ENG' and I want the project to be called 'taskflow'. I have the Linear MCP connected with write access.",
-      "expected_output": "issue-tracker setup mode offers Linear, confirms team and project name, runs access preflight confirming MCP write access, writes setup-issue-tracker.md with type=linear, team=ENG, linear_project=taskflow, and default labels.",
+      "prompt": "Set up issue tracking for a new project. I want to use Linear. We have a team called 'TEST' in the 'invoque' workspace and I want the project to be called 'taskflow'. I have the Linear MCP connected with write access.",
+      "expected_output": "issue-tracker setup mode verifies the invoque workspace exists, resolves team TEST to its ID, confirms project name, writes setup-issue-tracker.md with type=linear, workspace=invoque, team={key:TEST, id:<resolved>}, linear_project={name:taskflow}, and default labels. Does NOT create any Linear resources.",
       "files": [],
+      "allow_remote_writes": false,
       "expectations": [
         "Offers Linear as the selected backend",
-        "Confirms team key and project name",
+        "Verifies the invoque workspace exists",
+        "Resolves team TEST to its ID within invoque",
+        "Confirms project name 'taskflow'",
         "Runs access preflight and confirms MCP write capability",
         "Writes .kodit/tmp/setup-issue-tracker.md with type=linear",
-        "Records team=ENG and linear_project=taskflow",
-        "Includes default labels in the draft"
+        "Records workspace=invoque and team with key=TEST and resolved id",
+        "Records linear_project with name=taskflow",
+        "Includes default labels in the draft",
+        "Does NOT create any Linear resources (project, states, labels)"
       ]
     },
     {
@@ -33,6 +41,7 @@
       "prompt": "Set up issue tracking for a new project. I want to use Linear, but I don't have any Linear integration set up.",
       "expected_output": "issue-tracker setup mode detects no MCP or CLI, reports the two remediation paths (connect MCP or install CLI), offers file-based as the alternative, and stops without writing a draft.",
       "files": [],
+      "allow_remote_writes": false,
       "expectations": [
         "Detects that no Linear integration is available",
         "Reports the two remediation paths",
@@ -43,16 +52,22 @@
     },
     {
       "id": 4,
-      "prompt": "I have a Linear setup draft from earlier. Provision the issue tracker resources now. The kodit.json shows type=linear, team=ENG, linear_project=taskflow.",
-      "expected_output": "issue-tracker provision mode creates or finds the Linear project, ensures required workflow states exist, creates labels if missing, and reports what was created or verified.",
+      "prompt": "I have a Linear setup draft from earlier. Provision the issue tracker resources now. The kodit.json shows type=linear, workspace=invoque, team={key:TEST, id:<resolved-id>}, linear_project={name:taskflow}.",
+      "expected_output": "issue-tracker provision mode creates or finds the Linear project in the invoque workspace under team TEST, ensures required workflow states exist for TEST, creates labels if missing, and reports what was created or verified. All operations target invoque/TEST explicitly.",
       "files": [],
+      "allow_remote_writes": true,
+      "resource_prefix": "[kodit-eval-provision]",
       "expectations": [
         "Reads the setup draft and kodit.json",
-        "Creates or finds the Linear project",
-        "Verifies required workflow states exist",
-        "Creates labels if missing",
+        "Verifies workspace=invoque and team.id are present",
+        "Creates or finds the Linear project within invoque/TEST",
+        "Records the resolved project ID in kodit.json",
+        "Verifies required workflow states exist for team TEST",
+        "Creates labels if missing in invoque/TEST",
         "Reports what was created or verified",
-        "Does not create .kodit/issues/"
+        "Does not create .kodit/issues/",
+        "Does not create resources in any workspace other than invoque",
+        "Does not create resources for any team other than TEST"
       ]
     },
     {
@@ -60,6 +75,7 @@
       "prompt": "I have a file-based setup draft. Provision the issue tracker resources now. The kodit.json shows type=file.",
       "expected_output": "issue-tracker provision mode creates .kodit/issues/ with README.md and INDEX.md from the file-based conventions. Does not create milestones or stories.",
       "files": [],
+      "allow_remote_writes": false,
       "expectations": [
         "Creates .kodit/issues/ directory",
         "Creates README.md with file-based conventions",

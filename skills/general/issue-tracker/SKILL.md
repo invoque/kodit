@@ -30,25 +30,41 @@ write: `references/file-based.md` for file, `references/linear.md` for Linear.
 
 1. Offer the backend choice with a recommendation: **file-based** (default,
    fully supported) or **Linear** (requires MCP or CLI).
-2. For file-based: confirm labels from `kodit.json`. For Linear: confirm the
-   team key and project name, then run the access preflight:
-   - Check for a write-capable Linear MCP integration.
-   - Else check for an authenticated `linear-cli` (`linear auth whoami`).
-   - If neither works, report the two remediation paths (connect MCP or
-     install/authenticate CLI) and offer file-based as the alternative.
-3. Write `.kodit/tmp/setup-issue-tracker.md` with backend, labels, and any
-   Linear-specific fields (team, project, status_map). Do not create tracker
-   resources yet.
+2. For file-based: confirm labels from `kodit.json`. For Linear:
+   a. Ask the user for the **workspace** slug and **team** key.
+   b. Run the access preflight:
+      - Check for a write-capable Linear MCP integration.
+      - Else check for an authenticated `linear-cli` (`linear auth whoami`).
+      - If neither works, report the two remediation paths (connect MCP or
+        install/authenticate CLI) and offer file-based as the alternative.
+   c. Verify the workspace exists: `linear workspace list` or MCP equivalent.
+      If not found, stop and ask the user to confirm the workspace slug.
+   d. Verify the team exists within the workspace: `linear team list --workspace <ws>`
+      or MCP equivalent. If the team is not found and cannot be created (plan
+      limit), stop and ask the user to pick an existing team.
+   e. Record the resolved team ID in the draft.
+3. Write `.kodit/tmp/setup-issue-tracker.md` with backend, workspace, team key
+   and ID, labels, and any Linear-specific fields (linear_project, status_map).
+   **Do not create tracker resources yet.**
 
 ### Provision mode
 
 1. Read the setup draft and `kodit.json`.
 2. For file-based: create `.kodit/issues/` with `README.md` and `INDEX.md`
    from `references/file-based.md`. Do not create milestones or stories.
-3. For Linear: create or find the project, ensure required workflow states
-   exist, create labels, and record the project ID in `kodit.json`. See
-   `references/linear.md` for provisioning commands. Stop and name any
-   provisioning failure.
+3. For Linear:
+   a. Verify `workspace` and `team.id` are present in `kodit.json`. If not,
+      stop — do not guess or substitute defaults.
+   b. Create or find the project **within the specified workspace**:
+      `linear project list --workspace <workspace> --team <team-key>`.
+      If not found, create it: `linear project create --workspace <workspace>
+      --team <team-key> --name "<project-name>"`.
+   c. Record the resolved project ID in `kodit.json`.
+   d. Ensure required workflow states exist **for the specified team**.
+   e. Create labels if missing **for the specified workspace/team**.
+   f. Report what was created or verified.
+4. **Never** create a team, workflow state, or label in a workspace/team
+   other than the one recorded in `kodit.json`.
 
 ### Operate mode
 
