@@ -17,6 +17,9 @@ kodit/
 ├── AGENTS.md            # this file — agent instructions
 ├── README.md            # human-facing overview
 ├── CONTEXT.md           # project context, decisions, environment
+├── .github/
+│   └── workflows/
+│       └── validate-skills.yml  # CI: validates all skills via gh skill publish --dry-run
 ├── docs/                # user-facing documentation
 │   ├── README.md        # workflow skills index and guide
 │   └── workflow/        # per-skill user guides

@@ -173,6 +173,7 @@ kodit/
 ├── AGENTS.md
 ├── README.md
 ├── CONTEXT.md
+├── .github/workflows/validate-skills.yml
 └── skills/
     ├── workflow/setup-kodit/, workflow/milestone-planning/, workflow/implement/, workflow/pr-request/, workflow/pr-review/, workflow/pr-approve/
     └── general/{interview, kodit-config, issue-tracker, git-branching, plan-writing, github-pr, github-pr-state, github-pr-merge, code-review}/
@@ -186,6 +187,7 @@ kodit/
 ├── AGENTS.md
 ├── README.md
 ├── CONTEXT.md
+├── .github/workflows/validate-skills.yml  # CI: validates all skills on master push
 ├── kodit.json            # project configuration (setup)
 ├── .kodit/
 │   ├── issues/           # issue tracker (setup, committed)
@@ -323,3 +325,4 @@ Next up: scaffold the remaining three phase workflow skills and complete review-
 | 2026-09-21 | `milestone-planning` refuses when any closed milestone still has an open or unmerged PR without a merge record. | Prevents starting the next milestone before the previous reviewed PR is actually merged or reconciled. |
 | 2026-09-21 | User-facing workflow skill documentation lives in `docs/workflow/`, with `docs/README.md` as the index. | Separates user guides (navigable, detailed, aimed at skill users) from agent-facing `AGENTS.md` and human-facing `README.md`. The canonical skill definitions remain in `skills/workflow/*/SKILL.md`; `docs/` is a navigable summary. |
 | 2026-09-21 | Document templates use versioned marker-delimited managed blocks (`<!-- kodit:<doc>:v1:start/end -->`) instead of heading-based idempotency. | Markers give a single, unambiguous idempotency mechanism: reruns replace the block in-place without touching surrounding content. Heading-only matching was fragile (variant spellings caused duplicates) and could not safely migrate legacy sections. |
+| 2026-09-21 | Add `.github/workflows/validate-skills.yml` to validate all canonical skills on every push to `master`. | skills.sh indexes public GitHub repos passively; there is no publish API. The workflow runs `gh skill publish --dry-run` to enforce frontmatter and naming conventions in CI, making the public repo a valid skills.sh source. `GITHUB_TOKEN` with `contents: read` suffices because `--dry-run` swallows advisory remote-check errors. |

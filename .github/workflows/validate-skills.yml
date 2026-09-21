@@ -1,0 +1,28 @@
+name: Validate Skills
+
+on:
+  push:
+    branches: [master]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install GitHub CLI
+        run: |
+          curl -sL "https://github.com/cli/cli/releases/download/v2.90.0/gh_2.90.0_linux_amd64.tar.gz" -o gh.tar.gz
+          tar -xzf gh.tar.gz
+          sudo mv gh_2.90.0_linux_amd64/bin/gh /usr/local/bin/gh
+          gh --version
+
+      - name: Validate all skills
+        run: gh skill publish --dry-run
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
