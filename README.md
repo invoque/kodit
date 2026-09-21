@@ -160,7 +160,9 @@ Contributions follow the same workflow this project prescribes.
   ```
 
   This check also runs automatically via GitHub Actions on every push to `master`
-  (`.github/workflows/validate-skills.yml`).
+  (`.github/workflows/validate-skills.yml`). GitHub Releases are created only when
+  a `v*` tag is pushed (`.github/workflows/release-skills.yml`); use
+  `gh release create v<X>.<Y>.<Z> --verify-tag` locally if you prefer.
 
 - **Use conventional commits** (`feat:`, `fix:`, `docs:`, `chore:`) and record
   decisions in the `CONTEXT.md` decisions log.
