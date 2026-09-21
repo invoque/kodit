@@ -1,0 +1,72 @@
+{
+  "skill_name": "issue-tracker",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Set up issue tracking for a new project. I want to use the file-based backend. The project is called 'myapp', a Python web service. No special labels needed beyond the defaults.",
+      "expected_output": "issue-tracker setup mode offers file-based as recommended, confirms default labels, writes setup-issue-tracker.md with backend=file, path=.kodit/issues, and the five default labels.",
+      "files": [],
+      "expectations": [
+        "Offers file-based as the recommended backend",
+        "Confirms the five default labels",
+        "Writes .kodit/tmp/setup-issue-tracker.md with type=file",
+        "Does not create .kodit/issues/ yet (that happens in provision mode)",
+        "Records path as .kodit/issues"
+      ]
+    },
+    {
+      "id": 2,
+      "prompt": "Set up issue tracking for a new project. I want to use Linear. We have a team called 'ENG' and I want the project to be called 'taskflow'. I have the Linear MCP connected with write access.",
+      "expected_output": "issue-tracker setup mode offers Linear, confirms team and project name, runs access preflight confirming MCP write access, writes setup-issue-tracker.md with type=linear, team=ENG, linear_project=taskflow, and default labels.",
+      "files": [],
+      "expectations": [
+        "Offers Linear as the selected backend",
+        "Confirms team key and project name",
+        "Runs access preflight and confirms MCP write capability",
+        "Writes .kodit/tmp/setup-issue-tracker.md with type=linear",
+        "Records team=ENG and linear_project=taskflow",
+        "Includes default labels in the draft"
+      ]
+    },
+    {
+      "id": 3,
+      "prompt": "Set up issue tracking for a new project. I want to use Linear, but I don't have any Linear integration set up.",
+      "expected_output": "issue-tracker setup mode detects no MCP or CLI, reports the two remediation paths (connect MCP or install CLI), offers file-based as the alternative, and stops without writing a draft.",
+      "files": [],
+      "expectations": [
+        "Detects that no Linear integration is available",
+        "Reports the two remediation paths",
+        "Offers file-based as the alternative",
+        "Does not write a setup draft without confirmed access",
+        "Does not create any Linear resources"
+      ]
+    },
+    {
+      "id": 4,
+      "prompt": "I have a Linear setup draft from earlier. Provision the issue tracker resources now. The kodit.json shows type=linear, team=ENG, linear_project=taskflow.",
+      "expected_output": "issue-tracker provision mode creates or finds the Linear project, ensures required workflow states exist, creates labels if missing, and reports what was created or verified.",
+      "files": [],
+      "expectations": [
+        "Reads the setup draft and kodit.json",
+        "Creates or finds the Linear project",
+        "Verifies required workflow states exist",
+        "Creates labels if missing",
+        "Reports what was created or verified",
+        "Does not create .kodit/issues/"
+      ]
+    },
+    {
+      "id": 5,
+      "prompt": "I have a file-based setup draft. Provision the issue tracker resources now. The kodit.json shows type=file.",
+      "expected_output": "issue-tracker provision mode creates .kodit/issues/ with README.md and INDEX.md from the file-based conventions. Does not create milestones or stories.",
+      "files": [],
+      "expectations": [
+        "Creates .kodit/issues/ directory",
+        "Creates README.md with file-based conventions",
+        "Creates INDEX.md with project charter",
+        "Does not create milestones or stories",
+        "Reports what was created"
+      ]
+    }
+  ]
+}
