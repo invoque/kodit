@@ -19,7 +19,8 @@ kodit/
 ├── CONTEXT.md           # project context, decisions, environment
 ├── .github/
 │   └── workflows/
-│       └── validate-skills.yml  # CI: validates all skills via gh skill publish --dry-run
+│       ├── validate-skills.yml  # CI: validates all skills via gh skill publish --dry-run
+│       └── release-skills.yml   # CI: creates GitHub Release on v* tag push
 ├── docs/                # user-facing documentation
 │   ├── README.md        # workflow skills index and guide
 │   └── workflow/        # per-skill user guides
