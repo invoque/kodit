@@ -90,7 +90,12 @@ Requirements:
 - Optional: `python3` (with `pyyaml`) or `yq` to validate skill frontmatter.
 
 Until a CLI installer exists, install a skill by copying or symlinking its
-directory into your agent's skills directory:
+directory into your agent's skills directory. If the repository is public, you
+can also install directly via the skills CLI:
+
+```bash
+npx skills add invoque/kodit
+```
 
 | Agent | Skills directory |
 |---|---|
@@ -153,6 +158,9 @@ Contributions follow the same workflow this project prescribes.
   python3 -c "import sys, yaml; yaml.safe_load(open(sys.argv[1]).read().split('---')[1])" \
     skills/<category>/<skill-name>/SKILL.md
   ```
+
+  This check also runs automatically via GitHub Actions on every push to `master`
+  (`.github/workflows/validate-skills.yml`).
 
 - **Use conventional commits** (`feat:`, `fix:`, `docs:`, `chore:`) and record
   decisions in the `CONTEXT.md` decisions log.
