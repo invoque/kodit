@@ -69,8 +69,7 @@ skills/
 - The two categories never overlap: every skill does exactly one thing, and
   names are unique across both.
 
-The specific skills are defined as they are built — see the
-[roadmap](#roadmap). The `setup`, `milestone-planning`, and `implement` phases'
+The specific skills are defined as they are built. The `setup`, `milestone-planning`, and `implement` phases'
 skills (`setup-kodit`, `milestone-planning`, `implement`) exist along with their
 general companions (`kodit-config`, `issue-tracker`, `git-branching`,
 `plan-writing`, `github-pr`, `github-pr-state`, `github-pr-merge`,
@@ -91,7 +90,12 @@ Requirements:
 - Optional: `python3` (with `pyyaml`) or `yq` to validate skill frontmatter.
 
 Until a CLI installer exists, install a skill by copying or symlinking its
-directory into your agent's skills directory:
+directory into your agent's skills directory. If the repository is public, you
+can also install directly via the skills CLI:
+
+```bash
+npx skills add invoque/kodit
+```
 
 | Agent | Skills directory |
 |---|---|
@@ -109,11 +113,14 @@ ln -s "$(pwd)/kodit/skills/general/<skill-name>" ~/.claude/skills/<skill-name>
 ```
 
 Adopting `kodit` in a project is done by its `setup-kodit` skill. It writes
-`kodit.json` at the project root, appends `kodit` sections to `AGENTS.md`,
-`README.md`, and `CONTEXT.md` (creating them if absent), and creates `.kodit/`
-with a committed file-based issue tracker and a gitignored `tmp/` area. Add
-`.kodit/tmp/` to your `.gitignore` — temporary artifacts are never committed —
-but keep `.kodit/issues/` under version control.
+`kodit.json` at the project root, renders marker-delimited managed blocks into
+`AGENTS.md`, `README.md`, and `CONTEXT.md` (creating them if absent), and
+creates `.kodit/` with a committed file-based issue tracker and a gitignored
+`tmp/` area. Managed blocks are bounded by visible comment markers
+(e.g. `<!-- kodit:agents:v1:start/end -->`) so reruns are idempotent and
+existing human-authored content is never overwritten. Add `.kodit/tmp/` to your
+`.gitignore` -- temporary artifacts are never committed -- but keep
+`.kodit/issues/` under version control.
 
 ## Usage
 
@@ -152,22 +159,14 @@ Contributions follow the same workflow this project prescribes.
     skills/<category>/<skill-name>/SKILL.md
   ```
 
+  This check also runs automatically via GitHub Actions on every push to `master`
+  (`.github/workflows/validate-skills.yml`).
+
 - **Use conventional commits** (`feat:`, `fix:`, `docs:`, `chore:`) and record
   decisions in the `CONTEXT.md` decisions log.
 - **Work on `feature/*` branches.** `master` and `dev` are protected; see
   `AGENTS.md` for the full working contract.
 
-## Roadmap
-
-- [ ] Scaffold the six workflow skills with `SKILL.md` files (`setup-kodit`,
-      `milestone-planning`, and `implement` done; `review-loop`,
-      `milestone-review`, `done` to come).
-- [x] Define the first general skills as the workflow skills need them
-      (`interview`, `kodit-config`, `issue-tracker`, `git-branching`,
-      `plan-writing`).
-- [ ] Add `references/` material and a review checklist for each skill.
-- [ ] Evaluate a CLI installer (e.g. `uv`- or `bun`-based).
-- [ ] Add a worked end-to-end milestone example.
 
 ## License
 
