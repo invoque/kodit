@@ -33,5 +33,5 @@ Every finding must reference at least one of:
 ## Task mapping
 
 Findings map to a task when the evidence points to a specific implemented row in
-the story’s task table. When a finding spans multiple tasks, attach it to the
+the story's task list. When a finding spans multiple tasks, attach it to the
 broadest owning task and note the shared impact.

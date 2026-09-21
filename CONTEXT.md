@@ -97,7 +97,7 @@ Paths that `setup` creates in every adopting project.
 | Path | Committed | Purpose |
 |---|---|---|
 | `kodit.json` | Yes | Project configuration at the repository root. Schema owned by the `kodit-config` general skill. |
-| `.kodit/issues/` | Yes | File-based issue tracker: `README.md` conventions, `INDEX.md` project charter, `M-001-*/` milestone dirs with story files. Load-bearing. |
+| `.kodit/issues/` | Yes | File-based issue tracker: `README.md` conventions, `INDEX.md` project charter, `M-001-*/` milestone dirs with story files. Load-bearing. Only present for file-backed projects. |
 | `.kodit/tmp/` | No (gitignored) | Temporary working artifacts, always markdown. Never load-bearing; promoted into a permanent artifact or discarded, and swept at phase boundaries. |
 | `.kodit/tmp/workspaces/` | No (gitignored) | Throwaway workspaces agents create for testing. Always used for test workspaces; ephemeral and swept with `.kodit/tmp/`. |
 
@@ -224,8 +224,8 @@ kodit/
 | **General skill** | A reusable, single-purpose capability in `skills/general/` with no phase knowledge. |
 | **Phase** | One of the six milestone workflow stages: setup, milestone-planning, implement, review-loop, milestone-review, done. |
 | **Milestone** | A batch of work planned, implemented, and reviewed as one unit before finalization. |
-| **Issue tracker** | The committed, file-based record of work at `.kodit/issues/`. Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered `M-001`, `US-001`, `T-001`. |
-| **User story** | A requirement with acceptance criteria, stored as `.kodit/issues/M-001-*/US-001-*.md`, carrying its tasks in an embedded table. The unit a spec attaches to. |
+| **Issue tracker** | The project's issue record, either file-based at `.kodit/issues/` or external (Linear). Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered `M-001`, `US-001`, `T-001`. |
+| **User story** | A requirement with acceptance criteria. In file backend, stored as `.kodit/issues/M-001-*/US-001-*.md`. In Linear, a parent issue with a `[US-001]` prefix. Carries its tasks in an embedded table. The unit a spec attaches to. |
 | **Task** | A row inside a user story's task table; the unit a plan attaches to and the only level with the full status machine. |
 | **Spec** | A written statement of requirements for a milestone item. Contains no implementation detail. |
 | **Plan** | A technical approach derived from a spec, expressed as ordered, verifiable tasks. |

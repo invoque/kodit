@@ -39,9 +39,9 @@ Present: milestone goal, stories with acceptance criteria, task tables, allocate
 ### 5. Record the milestone
 
 Follow `issue-tracker` in operate mode to create:
-- `.kodit/issues/M-NNN-goal-name/INDEX.md` (charter, status: `planned`)
-- `.kodit/issues/M-NNN-goal-name/US-NNN-name.md` (stories with embedded task tables)
-- Updated row in `.kodit/issues/INDEX.md`
+- Milestone with its charter (status: `planned`)
+- Stories with acceptance criteria and embedded task tables
+- Updated project charter (add milestone row)
 
 Re-reads the tracker first; never duplicates an existing milestone or story.
 
@@ -68,9 +68,8 @@ Present the final summary: milestone, stories, numbers allocated, decisions reco
 
 ## Artifacts Created
 
-- `.kodit/issues/M-NNN-<name>/INDEX.md` — milestone charter
-- `.kodit/issues/M-NNN-<name>/US-NNN-<name>.md` — user stories
-- Updated `.kodit/issues/INDEX.md` — project charter index
+- Milestone and stories in the issue tracker (file or Linear)
+- Updated project charter (milestone index)
 - Appended decisions in `CONTEXT.md`
 
 ## Handoff

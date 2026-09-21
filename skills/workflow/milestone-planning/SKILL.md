@@ -42,11 +42,11 @@ with the `pr-approve` skill first. Do not plan a second milestone. Stop.
 
 ### 3. Settle the scope
 
-Gather context: the project charter from `.kodit/issues/INDEX.md`, any closed
-milestones, the next global `M`/`US`/`T` numbers from the tracker, and the
-sizing guidance in `references/sizing-and-examples.md`. Then follow the
-`interview` skill with topic "milestone scope" and that context. Steer toward
-milestone-sized chunks using the soft caps. If
+Gather context: the project charter, any closed milestones, the next global
+`M`/`US`/`T` numbers from the tracker, and the sizing guidance in
+`references/sizing-and-examples.md`. Then follow the `interview` skill with
+topic "milestone scope" and that context. Steer toward milestone-sized chunks
+using the soft caps. If
 `.kodit/tmp/design-tree-milestone-scope.md` exists, resume from it instead of
 re-asking settled decisions.
 
@@ -64,11 +64,10 @@ approves, continue to step 5. Write nothing until then.
 ### 5. Record the milestone
 
 Follow the `issue-tracker` skill in **operate mode** to create the milestone
-directory `M-NNN-goal-name/` with its `INDEX.md` charter (`status: planned`),
-the story files `US-NNN-name.md` (frontmatter, Story, Acceptance Criteria, and
-embedded Tasks table at `status: open`), and the new row in the project
-`INDEX.md`. Re-read the tracker first; never duplicate an existing milestone or
-story.
+with its charter (`status: planned`), the story files (frontmatter, Story,
+Acceptance Criteria, and embedded Tasks table at `status: open`), and update the
+project charter. Re-read the tracker first; never duplicate an existing milestone
+or story.
 
 ### 6. Record decisions
 

@@ -79,7 +79,7 @@ None explicitly. The user receives the review context (step 4) before the techni
 
 ## Artifacts Modified
 
-- User story files — appended `## Review` note
+- Story records — review notes appended via issue-tracker operate mode
 - Task statuses — `review → done` or `review → implement`
 
 ## Handoff

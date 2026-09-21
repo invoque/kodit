@@ -24,11 +24,26 @@ its owning step.
 | Test | pytest |
 
 ### Issue tracking
+
+The table adapts to the selected backend.
+
+**File backend:**
+
 | Field | Value |
 |---|---|
 | Backend | file-based |
 | Path | .kodit/issues |
 | Labels | ready-for-agent, ready-for-human, needs-info, needs-triage, wontfix |
+
+**Linear backend:**
+
+| Field | Value |
+|---|---|
+| Backend | linear |
+| Team | ENG |
+| Project | taskflow |
+| Labels | ready-for-agent, ready-for-human, needs-info, needs-triage, wontfix |
+| States required | In Progress, In Review, Done, Todo |
 
 ### Git branching
 | Field | Value |
@@ -78,8 +93,11 @@ its owning step.
 | README.md | append (managed block) |
 | CONTEXT.md | create (managed block) |
 | .kodit/.gitignore | create |
-| .kodit/issues/README.md | create |
-| .kodit/issues/INDEX.md | create |
+| .kodit/issues/README.md | create *(file backend only)* |
+| .kodit/issues/INDEX.md | create *(file backend only)* |
+| Linear project | create/verify *(Linear backend only)* |
+| Linear workflow states | create/verify *(Linear backend only)* |
+| Linear labels | create/verify *(Linear backend only)* |
 
 Approve this, or tell me what to change -- changes go back to the step that owns
 them and come back here for another look.
@@ -129,11 +147,26 @@ rather than omitting it.
 - **kodit.json** written at the project root.
 - **Docs:** AGENTS.md created (managed block), README.md appended (managed
   block), CONTEXT.md created (managed block).
-- **Issues:** file-based tracker seeded at .kodit/issues/ -- see
-  .kodit/issues/README.md for the conventions.
+- **Issues:** [backend-specific line].
 - **Git:** main `master`, dev `dev`, work on `feature/*` and `bugfix/*`.
   [Or: "No version control configured." if git is null]
 - **Skipped:** <any step skipped, with its reason -- omit this line if none>
 
 Next: invoke the **milestone-planning** skill to agree the first milestone.
+```
+
+### Backend-specific summary lines
+
+When `tracker.type` is `file`:
+
+```
+- **Issues:** file-based tracker seeded at .kodit/issues/ -- see
+  .kodit/issues/README.md for the conventions.
+```
+
+When `tracker.type` is `linear`:
+
+```
+- **Issues:** Linear at project `<linear_project>` (team `<team>`) -- see
+  issue-tracker `references/linear.md` for the conventions.
 ```

@@ -63,7 +63,7 @@ Present the merged PR, merge SHA, whether approval was published or required man
 
 ## Artifacts Modified
 
-- `.kodit/issues/M-NNN-<name>/INDEX.md` — `**Merged:**` line appended (after confirmed merge)
+- Milestone charter (`**Merged:**` line appended after confirmed merge) via issue-tracker operate mode
 
 ## Handoff
 

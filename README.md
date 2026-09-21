@@ -115,12 +115,12 @@ ln -s "$(pwd)/kodit/skills/general/<skill-name>" ~/.claude/skills/<skill-name>
 Adopting `kodit` in a project is done by its `setup-kodit` skill. It writes
 `kodit.json` at the project root, renders marker-delimited managed blocks into
 `AGENTS.md`, `README.md`, and `CONTEXT.md` (creating them if absent), and
-creates `.kodit/` with a committed file-based issue tracker and a gitignored
-`tmp/` area. Managed blocks are bounded by visible comment markers
+configures `.kodit/` with a gitignored `tmp/` area. Issue tracking uses either a
+committed file-based tracker under `.kodit/issues/` or an external service
+(Linear). Managed blocks are bounded by visible comment markers
 (e.g. `<!-- kodit:agents:v1:start/end -->`) so reruns are idempotent and
 existing human-authored content is never overwritten. Add `.kodit/tmp/` to your
-`.gitignore` -- temporary artifacts are never committed -- but keep
-`.kodit/issues/` under version control.
+`.gitignore` -- temporary artifacts are never committed.
 
 ## Usage
 

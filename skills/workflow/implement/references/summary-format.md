@@ -55,7 +55,7 @@ stay visible in the table with their real status.
   imply the skill already exists — it is a later stage.
 - Do not merge, tag, or push a protected branch. The pull-request flow and the
   review that follows own those steps.
-- Write nothing under `.kodit/issues/` here beyond what the `issue-tracker` skill
+- Write nothing to the issue tracker here beyond what the `issue-tracker` skill
   already applied during steps 6–9.
 - If any task is unfinished because it was skipped or blocked, say so plainly and
   do not claim the milestone is complete; report what remains.

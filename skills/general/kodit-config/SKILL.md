@@ -18,7 +18,7 @@ artifacts are written.
 
 ## Usage
 
-Invoked as five modes. Follow the `interview` skill for the metadata
+Invoked as six modes. Follow the `interview` skill for the metadata
 interview. Read `references/kodit-json-schema.md` for the config contract,
 `references/rendering-contract.md` for document normalization, and
 `references/templates.md` for output templates.
@@ -26,6 +26,9 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
 - **Check mode** -- inspect adoption state and report where to resume.
 - **Metadata mode** -- interview for project metadata; write
   `.kodit/tmp/setup-project-metadata.md`.
+- **Provision mode** -- after checkpoint approval, create or verify tracker
+  resources (file seed files or Linear project/states/labels) and write
+  `kodit.json`.
 - **Write mode** -- turn the setup drafts into final artifacts; remove the
   drafts.
 - **Migrate mode** -- detect legacy document sections and replace them with
@@ -69,10 +72,22 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
    the shell plus managed block. For existing files with a managed block, no-op
    if current, or migrate if older. For existing files without a managed block,
    detect legacy or append. Never overwrite content outside managed markers.
-5. Write `.kodit/.gitignore` containing `tmp`. Never ignore `.kodit/issues/`.
+5. Write `.kodit/.gitignore` containing `tmp`. Never ignore `.kodit/issues/`
+   when the backend is file-based.
 6. Remove all `.kodit/tmp/setup-*.md` drafts.
 7. Report every file written with its action: created, appended, no-op, migrated,
    or legacy-retained.
+
+### Provision mode
+
+1. Read the setup draft `setup-issue-tracker.md` and the written `kodit.json`.
+   If either is missing, stop and name it.
+2. Follow the `issue-tracker` skill in **provision mode** to create or verify
+   tracker resources. For file-based: seed `.kodit/issues/`. For Linear: create
+   or find the project, ensure states and labels exist.
+3. If provisioning succeeds and the backend is Linear, update `kodit.json` with
+   any discovered IDs (e.g. the resolved Linear project ID).
+4. Report what was created or verified.
 
 ### Migrate mode
 

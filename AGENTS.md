@@ -109,9 +109,10 @@ workflow skill.
 
 ### `.kodit/issues/`
 
-The file-based issue tracker. **Committed** — issues are load-bearing, unlike
-`.kodit/tmp/`. Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered
-globally and never reused (`M-001`, `US-001`, `T-001`):
+The file-based issue tracker (one of two supported backends; the other is
+Linear). **Committed** — issues are load-bearing, unlike `.kodit/tmp/`.
+Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered globally and
+never reused (`M-001`, `US-001`, `T-001`):
 
 - `README.md` — static conventions: the tree, labels, and state machines.
 - `INDEX.md` — the project charter: goal plus milestone index.
@@ -143,6 +144,22 @@ Temporary working artifacts, always markdown:
   directory for testing (e.g. to exercise skill setup or workflow phases),
   always use `.kodit/tmp/workspaces/`. Never create test workspaces elsewhere
   in the repository.
+
+### `.kodit/tmp/workspaces/` is created on demand; ephemeral and swept with `.kodit/tmp/`.
+
+## Issue tracker backends
+
+Two backends are supported for issue tracking:
+
+- **File-based** (default): issues live as committed markdown under
+  `.kodit/issues/`. Full conventions in the seeded `README.md`.
+- **Linear**: issues live in Linear via MCP or CLI. `issue_tracker.type` is
+  `"linear"` with team and project identifiers. See the `issue-tracker` skill's
+  `references/linear.md` for conventions.
+
+The backend is chosen during `setup-kodit` and recorded in `issue_tracker.type`.
+All workflow skills delegate to `issue-tracker` in operate mode, which dispatches
+by backend. The `.kodit/issues/` path is only relevant for file-backed projects.
 
 ## Canonical Skill Format
 

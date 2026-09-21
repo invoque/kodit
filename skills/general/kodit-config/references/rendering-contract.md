@@ -18,9 +18,12 @@ project:
   test: string|null     # null = not configured
 
 tracker:
-  type: string          # "file" today
-  path: string          # e.g. ".kodit/issues"
+  type: string          # "file" or "linear"
+  path: string|null     # ".kodit/issues" for file; null for linear
   labels: [string]      # configured label list
+  team: string|null     # Linear team key; null for file
+  linear_project: string|null  # Linear project name; null for file
+  status_map: map|null  # Kodit→Linear state map; null for file
 
 git:                    # null when no version control
   main_branch: string
@@ -38,9 +41,12 @@ git:                    # null when no version control
 | `Language` | `project.language` | metadata draft |
 | `Build` | `project.build` | metadata draft |
 | `Test` | `project.test` | metadata draft |
-| `Backend` | `tracker.type` | issue-tracker draft (`file-based` becomes `file`) |
-| `Path` | `tracker.path` | issue-tracker draft |
+| `Backend` | `tracker.type` | issue-tracker draft (`file-based` → `file`, `linear` → `linear`) |
+| `Path` | `tracker.path` | issue-tracker draft (file only) |
 | `Labels` | `tracker.labels` | issue-tracker draft |
+| `Team` | `tracker.team` | issue-tracker draft (Linear only) |
+| `Linear Project` | `tracker.linear_project` | issue-tracker draft (Linear only) |
+| `Status Map` | `tracker.status_map` | issue-tracker draft (Linear only) |
 | `Main branch` | `git.main_branch` | branching draft |
 | `Dev branch` | `git.dev_branch` | branching draft |
 | `Feature prefix` | `git.feature_prefix` | branching draft |
@@ -52,9 +58,12 @@ git:                    # null when no version control
 | Input | Output | Rule |
 |---|---|---|
 | `file-based` | `file` | Backend name normalization |
+| `linear` | `linear` | Backend name passthrough |
 | `none`, `null`, empty | `Not configured` | Display value for absent fields |
 | Date | `YYYY-MM-DD` | ISO 8601 date only, no time |
 | Labels | escaped strings | Escape `\|` in table cells |
+| `tracker.team` (Linear) | rendered as `Team \| <key>` | Linear setup table row |
+| `tracker.linear_project` (Linear) | rendered as `Project \| <name>` | Linear setup table row |
 
 ## Shared workflow fragments
 
@@ -132,9 +141,12 @@ Content order:
 4. Inner loop from shared fragments.
 5. Artifact naming: `spec-US-NNN-*.md`, `plan-T-NNN-*.md` in `.kodit/tmp/specs/`.
 6. Issue taxonomy, statuses, and labels from configured list.
-7. Branch rules when Git is configured; "Version control is not configured" when
+7. Tracker location: when `file`, state `.kodit/issues/` and conventions pointer.
+   When `linear`, state "Linear at project `<tracker.linear_project>` (team
+   `<tracker.team>`)" and point to `references/linear.md` in the tracker skill.
+8. Branch rules when Git is configured; "Version control is not configured" when
    `git` is `null`.
-8. Decision recording rule.
+9. Decision recording rule.
 
 When `git` is `null`, omit the branch paragraph entirely and substitute the
 no-version-control line.
@@ -148,7 +160,9 @@ Content order:
 2. Project description from `project.description`.
 3. Concise workflow overview: the six-phase sequence.
 4. Pointer to `CONTEXT.md`, `AGENTS.md`, `kodit.json`.
-5. Tracker location and conventions pointer.
+5. Tracker location and conventions pointer: when `file`, reference
+   `.kodit/issues/`; when `linear`, reference the Linear project and
+   `references/linear.md`.
 6. Branch rules when Git is configured; omit branch paragraph when `git` is
    `null`.
 
@@ -161,7 +175,7 @@ Content order:
 2. `### Project`: name, description, language (or "Not configured").
 3. `### Environment`: build (or "Not configured"), test (or "Not configured"),
    branches when Git is configured (or "Not configured"), issue tracking type
-   and path.
+   and location (file path or Linear project/team).
 4. `### Decisions Log`: `| Date | Decision | Rationale |` table seeded with:
    - Row 1: adoption decision with today's date.
    - Row 2 (Git only): branch model with today's date.
