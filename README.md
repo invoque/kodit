@@ -139,7 +139,8 @@ You:  Wrap it up.
 Agent: → runs done: docs, changelog, commit
 ```
 
-You approve each spec and plan before the agent implements it.
+You choose the scope of each segment — just the next task, or the rest of the
+milestone — and the agent checkpoints with you after every commit.
 
 ## Contributing
 

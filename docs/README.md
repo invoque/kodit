@@ -30,7 +30,7 @@ Each skill hands off by name to the next. There is no central dispatcher; you in
 |---|---|---|---|
 | [setup-kodit](workflow/setup-kodit.md) | Initialize `kodit` in a project | Metadata, issue tracking, git branching, checkpoint approval | `milestone-planning` |
 | [milestone-planning](workflow/milestone-planning.md) | Agree the next milestone's scope | Interview, checkpoint approval | `implement` |
-| [implement](workflow/implement.md) | Work every task in a milestone to completion | Interactive/non-interactive, per-story approval (interactive only) | `pr-request` |
+| [implement](workflow/implement.md) | Work an open milestone one checkpoint at a time | Scope per segment (one task / rest of milestone / stop), re-asked after every commit; spec+plan approval on single-task scope | `pr-request` |
 | [pr-request](workflow/pr-request.md) | Open a PR for the milestone branch | None | `pr-review` |
 | [pr-review](workflow/pr-review.md) | Review a milestone PR and close the loop | None (receives review context) | `implement` or `pr-approve` |
 | [pr-approve](workflow/pr-approve.md) | Finalize a reviewed PR via approval and merge | Confirmation gate, branch cleanup | — (terminal) |
@@ -47,8 +47,9 @@ The workflow requires explicit approval at these points:
 |---|---|
 | `setup-kodit` step 5 | Project metadata, issue config, git config, and the exact `kodit.json` before anything is written |
 | `milestone-planning` step 4 | Milestone goal, stories, tasks, and file plan |
-| `implement` step 4 | One-time choice: interactive (approve each story's spec+plans) or non-interactive |
-| `implement` step 8 | Per-story spec and plans (interactive mode only) |
+| `implement` step 4 | Scope of the segment: one task, the rest of the milestone, or stop (re-asked at every post-commit checkpoint) |
+| `implement` step 5 | The spec and plan of the task (single-task scope only) |
+| `implement` step 7 | Whether to hand off to `pr-request` at milestone completion |
 | `pr-approve` step 4 | Approval and merge actions before any remote write |
 
 ## Safety Invariants

@@ -254,6 +254,11 @@ kodit/
   `.kodit/tmp/specs/spec-005-implement-skill.md` and
   `.kodit/tmp/specs/plan-005-implement-skill.md`. It establishes the test-first
   (RED → GREEN) convention.
+- `implement` was reworked into a checkpoint-per-unit loop (spec
+  `spec-US-007-implement-checkpoint-loop.md`): it computes the next task, asks
+  whether to run one task or the rest of the milestone, commits each task, and
+  re-asks after every commit. The interactive/non-interactive mode gate was
+  removed.
 - The fourth workflow skill exists: `skills/workflow/pr-review/`, using the new
   `github-pr-state` and `code-review` companions; `pr-request` hands
   off to it, and the issue tracker now supports a durable `## Review` note on
@@ -336,3 +341,4 @@ Next up: scaffold the remaining three phase workflow skills and complete review-
 | 2026-09-22 | Add an eval-only fixture runner at `skills/general/issue-tracker/evals/stage_evals.py` that stages deterministic workspaces and fixtures; the skill-creator `eval-viewer` remains the rendering tool. | Manual eval staging produced nondeterministic runs (the no-integration eval used the machine's authenticated `cifo` CLI). A staging script supplies fixture data and a failing fake CLI so no-integration tests never reach real Linear, and stages both with_skill and without_skill runs for comparison. This is executable eval tooling, not runtime code for adopting projects. |
 | 2026-09-22 | The `invoque` TEST team (canonical key `TES`, id `4019459a-...`) is a durable eval fixture; its labels and workflow states are verified, never created or deleted by evals. | Making team-level resources durable avoids repeated destructive churn and keeps the eval focused on project provisioning. Unique `[kodit-eval-provision]` project names isolate each live run for cleanup. |
 | 2026-09-22 | The iteration-3 benchmark shows 100% pass rate for both with-skill and baseline runs, indicating the current assertions do not discriminate skill value. | Deterministic fixtures removed the environment-driven failures, revealing that the assertions test outcomes a capable baseline can also achieve. The skill's value is in process discipline (correct conventions, structured drafts, setup/provision separation), which the current assertions do not capture. Tightening assertions is future work. |
+| 2026-09-22 | Supersede the 2026-09-20 interactive/non-interactive decision: `implement` now computes the next task itself, asks at invocation and after every commit whether to run **one task**, **the rest of the milestone**, or **stop**, and commits each task before each checkpoint. | A full-milestone run gave a solo developer no supported way to work one reviewed task at a time, and no post-commit decision point. Making the scope a per-segment answer replaces the run-level mode gate with one repeated question: single-task scope keeps the spec/plan approval gate, milestone scope trades it for full checkpoint control after each commit. Computing the next unit rather than asking the user for an ID keeps the tracker the source of truth. Starting a literal next milestone stays out of scope — the PR flow must close the current one first. |
