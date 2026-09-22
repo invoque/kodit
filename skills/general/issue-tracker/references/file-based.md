@@ -1,6 +1,6 @@
 # File-based issue tracker conventions
 
-This is the canonical reference for the file-based backend. `setup` seeds
+This is the canonical reference for the file-based backend. `provision` seeds
 `.kodit/issues/` with the tree and the two files below; `milestone-planning` and
 later phases add milestones, stories, and tasks.
 
@@ -159,9 +159,9 @@ When a story is added or changes status, update the milestone table; when a
 milestone is added or changes status, update the project table. The tables are
 the roadmap view — keep them in sync with the files.
 
-## Conventions produced by `setup`
+## Conventions produced by `provision`
 
-`setup` writes the project charter (`INDEX.md`) and this reference (as
+`provision` writes the project charter (`INDEX.md`) and this reference (as
 `.kodit/issues/README.md`). It does not create milestone directories or stories.
 `milestone-planning` creates `M-XXX-*` directories, their `INDEX.md`, and their
 story files, allocating the next global `M`/`US` numbers.

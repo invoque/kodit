@@ -51,7 +51,7 @@ forming a milestone loop. Phases are not skipped.
 
 | # | Phase | Purpose | Exit criteria |
 |---|---|---|---|
-| 1 | **setup** | Initialize `kodit` in the project | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is seeded, and configuration is validated |
+| 1 | **setup** | Initialize `kodit` in the project | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is provisioned, and configuration is validated |
 | 2 | **milestone-planning** | Agree the scope of the next milestone | Milestone scope agreed and recorded |
 | 3 | **implement** | Work each milestone item to completion | Every milestone item implemented |
 | 4 | **review-loop** | Verify each implemented item | Every milestone item reviewed; deltas recorded |
@@ -97,7 +97,7 @@ Paths that `setup` creates in every adopting project.
 | Path | Committed | Purpose |
 |---|---|---|
 | `kodit.json` | Yes | Project configuration at the repository root. Schema owned by the `kodit-config` general skill. |
-| `.kodit/issues/` | Yes | File-based issue tracker: `README.md` conventions, `INDEX.md` project charter, `M-001-*/` milestone dirs with story files. Load-bearing. |
+| `.kodit/issues/` | Yes | File-based issue tracker: `README.md` conventions, `INDEX.md` project charter, `M-001-*/` milestone dirs with story files. Load-bearing. Only present for file-backed projects. |
 | `.kodit/tmp/` | No (gitignored) | Temporary working artifacts, always markdown. Never load-bearing; promoted into a permanent artifact or discarded, and swept at phase boundaries. |
 | `.kodit/tmp/workspaces/` | No (gitignored) | Throwaway workspaces agents create for testing. Always used for test workspaces; ephemeral and swept with `.kodit/tmp/`. |
 
@@ -224,8 +224,8 @@ kodit/
 | **General skill** | A reusable, single-purpose capability in `skills/general/` with no phase knowledge. |
 | **Phase** | One of the six milestone workflow stages: setup, milestone-planning, implement, review-loop, milestone-review, done. |
 | **Milestone** | A batch of work planned, implemented, and reviewed as one unit before finalization. |
-| **Issue tracker** | The committed, file-based record of work at `.kodit/issues/`. Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered `M-001`, `US-001`, `T-001`. |
-| **User story** | A requirement with acceptance criteria, stored as `.kodit/issues/M-001-*/US-001-*.md`, carrying its tasks in an embedded table. The unit a spec attaches to. |
+| **Issue tracker** | The project's issue record, either file-based at `.kodit/issues/` or external (Linear). Taxonomy is PROJECT → MILESTONE → USER STORY → TASK, numbered `M-001`, `US-001`, `T-001`. |
+| **User story** | A requirement with acceptance criteria. In file backend, stored as `.kodit/issues/M-001-*/US-001-*.md`. In Linear, a parent issue with a `[US-001]` prefix. Carries its tasks in an embedded table. The unit a spec attaches to. |
 | **Task** | A row inside a user story's task table; the unit a plan attaches to and the only level with the full status machine. |
 | **Spec** | A written statement of requirements for a milestone item. Contains no implementation detail. |
 | **Plan** | A technical approach derived from a spec, expressed as ordered, verifiable tasks. |
@@ -329,3 +329,10 @@ Next up: scaffold the remaining three phase workflow skills and complete review-
 | 2026-09-21 | Document templates use versioned marker-delimited managed blocks (`<!-- kodit:<doc>:v1:start/end -->`) instead of heading-based idempotency. | Markers give a single, unambiguous idempotency mechanism: reruns replace the block in-place without touching surrounding content. Heading-only matching was fragile (variant spellings caused duplicates) and could not safely migrate legacy sections. |
 | 2026-09-21 | Add `.github/workflows/validate-skills.yml` to validate all canonical skills on every push to `master`. | skills.sh indexes public GitHub repos passively; there is no publish API. The workflow runs `gh skill publish --dry-run` to enforce frontmatter and naming conventions in CI, making the public repo a valid skills.sh source. `GITHUB_TOKEN` with `contents: read` suffices because `--dry-run` swallows advisory remote-check errors. |
 | 2026-09-21 | Add `.github/workflows/release-skills.yml` to create GitHub Releases on `v*` tag push, with `workflow_dispatch` for backfills. | GitHub Releases make tagged versions browsable and downloadable. `gh release create --verify-tag --generate-notes` is idempotent and never overwrites an existing release. skills.sh listing is independent — it depends on user installs, not GitHub Releases. Separate from validation to avoid releasing on every merge. |
+| 2026-09-22 | Linear backend requires `workspace`, object-valued `team` with `key` and `id`, and object-valued `linear_project` with `id` and `name` in `kodit.json` (v2 schema). | Setup resolves all IDs during preflight and records them authoritatively; every subsequent operation uses resolved UUIDs. Prevents silent workspace/team drift. |
+| 2026-09-22 | Provision mode reads the setup draft, not `kodit.json`, as the source of truth. `kodit.json` is written only by write mode after provisioning succeeds. | The setup → provision → write ordering requires provision to consume the draft (which contains all config) and append resolved IDs; write mode then produces the final `kodit.json`. This prevents provision from requiring a file that does not yet exist. |
+| 2026-09-22 | Eval viewer recursively collects output files from nested directories under `outputs/`, preserving relative paths. | Subagents may mirror project structure (e.g. `.kodit/issues/`) into outputs. A flat scan misses these files, causing blank output panels. Recursive collection with relative path display handles any nesting. |
+| 2026-09-22 | Eval definitions include `allow_remote_writes` and `resource_prefix` fields to enforce sandbox policy. Setup and baseline evals never make remote writes; only explicitly authorized provisioning evals may. | Prevents eval runs from accidentally mutating real Linear workspaces. The `resource_prefix` ensures any live-created resources are uniquely identifiable for cleanup. |
+| 2026-09-22 | Add an eval-only fixture runner at `skills/general/issue-tracker/evals/stage_evals.py` that stages deterministic workspaces and fixtures; the skill-creator `eval-viewer` remains the rendering tool. | Manual eval staging produced nondeterministic runs (the no-integration eval used the machine's authenticated `cifo` CLI). A staging script supplies fixture data and a failing fake CLI so no-integration tests never reach real Linear, and stages both with_skill and without_skill runs for comparison. This is executable eval tooling, not runtime code for adopting projects. |
+| 2026-09-22 | The `invoque` TEST team (canonical key `TES`, id `4019459a-...`) is a durable eval fixture; its labels and workflow states are verified, never created or deleted by evals. | Making team-level resources durable avoids repeated destructive churn and keeps the eval focused on project provisioning. Unique `[kodit-eval-provision]` project names isolate each live run for cleanup. |
+| 2026-09-22 | The iteration-3 benchmark shows 100% pass rate for both with-skill and baseline runs, indicating the current assertions do not discriminate skill value. | Deterministic fixtures removed the environment-driven failures, revealing that the assertions test outcomes a capable baseline can also achieve. The skill's value is in process discipline (correct conventions, structured drafts, setup/provision separation), which the current assertions do not capture. Tightening assertions is future work. |

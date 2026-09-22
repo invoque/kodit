@@ -43,13 +43,13 @@ below.
 (`plan-T-NNN-*.md`) attach to tasks, both in `.kodit/tmp/specs/`. They are
 local working artifacts, never committed.
 
-**Issues:** file-based under `.kodit/issues/`. Taxonomy is
+**Issues:** [render backend line]. Taxonomy is
 PROJECT -> MILESTONE -> USER STORY -> TASK, numbered `M-001`, `US-001`, `T-001`
-globally. Tasks are rows inside the story file: tasks run
+globally. Tasks run
 `open -> spec -> plan -> implement -> review -> done`, stories run
 `open -> in-progress -> done`, milestones run `planned -> active -> closed`.
-Labels are handoff signals: [render from configured labels]. The full
-conventions live in `.kodit/issues/README.md`.
+Labels are handoff signals: [render from configured labels]. [render
+conventions pointer].
 
 **Branches:** [render from git model, or "Version control is not configured for
 this project."]
@@ -58,6 +58,34 @@ Record significant decisions in `CONTEXT.md` in the same change. Use
 conventional commit messages.
 
 <!-- kodit:agents:v1:end -->
+```
+
+### Backend line rendering (AGENTS.md)
+
+When `tracker.type` is `file`, render:
+
+```
+file-based under `.kodit/issues/`
+```
+
+When `tracker.type` is `linear`, render:
+
+```
+Linear at project `{{tracker.linear_project.name}}` (team `{{tracker.team.key}}`)
+```
+
+### Conventions pointer rendering (AGENTS.md)
+
+When `tracker.type` is `file`, render:
+
+```
+The full conventions live in `.kodit/issues/README.md`.
+```
+
+When `tracker.type` is `linear`, render:
+
+```
+The full conventions live in the issue-tracker skill's `references/linear.md`.
 ```
 
 ### Branch rendering (AGENTS.md)
@@ -99,11 +127,24 @@ setup -> milestone-planning -> implement -> review-loop -> milestone-review ->
 done. Project context and decisions live in `CONTEXT.md`; agent instructions in
 `AGENTS.md`; configuration in `kodit.json`.
 
-Track work as milestones -> user stories -> tasks under `.kodit/issues/`
-(conventions in `.kodit/issues/README.md`). [Branch sentence when Git is
-configured; omitted when `git` is `null`.]
+Track work as milestones -> user stories -> tasks [render tracker location].
+[Branch sentence when Git is configured; omitted when `git` is `null`.]
 
 <!-- kodit:readme:v1:end -->
+```
+
+### Tracker location rendering (README.md)
+
+When `tracker.type` is `file`, render:
+
+```
+under `.kodit/issues/` (conventions in `.kodit/issues/README.md`)
+```
+
+When `tracker.type` is `linear`, render:
+
+```
+in Linear at project `{{tracker.linear_project.name}}` (team `{{tracker.team.key}}`)
 ```
 
 ### Branch rendering (README.md)
@@ -139,18 +180,46 @@ When appending to an existing file, add only the managed block.
 - **Build:** {{project.build}}
 - **Test:** {{project.test}}
 - **Branches:** [render from git model, or "Not configured"]
-- **Issue tracking:** {{tracker.type}} at `{{tracker.path}}`
+- **Issue tracking:** [render tracking line]
 
 ### Decisions Log
 
 | Date | Decision | Rationale |
 |---|---|---|
-| {{date}} | Adopt `kodit` with file-based issue tracking | Track milestones, stories, and tasks as committed markdown. |
+| {{date}} | Adopt `kodit` with [backend] issue tracking | [rationale]. |
 [Second row only when Git is configured:]
 
 | {{date}} | Branch model {{git.main_branch}} / {{git.dev_branch}} / {{git.feature_prefix}} / {{git.bugfix_prefix}} | Adapted to existing repository branches. |
 
 <!-- kodit:context:v1:end -->
+```
+
+### Tracking line rendering (CONTEXT.md)
+
+When `tracker.type` is `file`, render:
+
+```
+file at `.kodit/issues`
+```
+
+When `tracker.type` is `linear`, render:
+
+```
+Linear at project `{{tracker.linear_project.name}}` (team `{{tracker.team.key}}`)
+```
+
+### Adoption decision rendering (CONTEXT.md)
+
+When `tracker.type` is `file`, the first decision row renders as:
+
+```
+| {{date}} | Adopt `kodit` with file-based issue tracking | Track milestones, stories, and tasks as committed markdown. |
+```
+
+When `tracker.type` is `linear`, render:
+
+```
+| {{date}} | Adopt `kodit` with Linear issue tracking | Track milestones, stories, and tasks in Linear. |
 ```
 
 ### Date format

@@ -30,9 +30,9 @@ authentication, or the remote is absent.
 
 ### 2. Locate the candidate PR
 
-Check the milestone charter for a recorded PR URL first. When absent, search by
-head/base (`gh pr list --head <head> --base <base> --state open` or MCP
-equivalent). Return one of:
+Check the milestone's recorded PR URL first (via issue-tracker operate mode).
+When absent, search by head/base (`gh pr list --head <head> --base <base>
+--state open` or MCP equivalent). Return one of:
 
 - `none`,
 - a single selected PR with the selection reason,
