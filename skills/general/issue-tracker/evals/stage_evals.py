@@ -8,8 +8,8 @@ depend on the machine's Linear CLI configuration.
 Usage:
     python stage_evals.py <workspace-root> [--evals-json evals.json]
 
-After staging, the main agent spawns subagents to execute each eval, then
-calls this script with --grade to grade the outputs.
+After staging, the main agent spawns subagents to execute each eval and writes
+outputs/; grading is performed separately by the eval harness.
 """
 
 import argparse
@@ -41,6 +41,7 @@ FIXTURES = {
         {"name": "Canceled", "type": "canceled"},
         {"name": "Duplicate", "type": "duplicate"},
         {"name": "In Review", "type": "started"},
+        {"name": "Blocked", "type": "unstarted"},
     ],
 }
 
@@ -169,52 +170,12 @@ def _stage_linear_setup(eval_dir: Path, fixtures: dict) -> None:
 
 
 def _stage_linear_provision(eval_dir: Path, fixtures: dict) -> None:
-    """Stage Linear provision eval: provide kodit.json and setup draft."""
-    # Write kodit.json
-    kodit_json = {
-        "version": 2,
-        "project": {
-            "name": fixtures["project_name"],
-            "description": "Personal task tracking with weekly reviews.",
-            "language": "typescript",
-            "build": "npm run build",
-            "test": "npm test",
-        },
-        "issue_tracker": {
-            "type": "linear",
-            "workspace": fixtures["workspace"],
-            "team": {
-                "key": fixtures["team_key_canonical"],
-                "id": fixtures["team_id"],
-            },
-            "linear_project": {"name": fixtures["project_name"]},
-            "status_map": {
-                "spec": "In Progress",
-                "plan": "In Progress",
-                "implement": "In Progress",
-                "review": "In Review",
-                "done": "Done",
-                "story_open": "Todo",
-                "story_in_progress": "In Progress",
-                "story_done": "Done",
-                "milestone_planned": "In Progress",
-                "milestone_active": "In Progress",
-                "milestone_closed": "Done",
-            },
-            "labels": fixtures["labels"],
-        },
-        "git": {
-            "main_branch": "main",
-            "dev_branch": "develop",
-            "feature_prefix": "feat/",
-            "bugfix_prefix": "fix/",
-            "staging_branch": None,
-            "remote": "origin",
-        },
-    }
-    (eval_dir / "kodit.json").write_text(json.dumps(kodit_json, indent=2) + "\n")
+    """Stage Linear provision eval: provide the setup draft only.
 
-    # Write setup draft
+    Provision mode runs before `kodit.json` exists (write mode produces it
+    afterward), so no kodit.json is staged — its absence is part of what the
+    eval verifies.
+    """
     draft_dir = eval_dir / ".kodit" / "tmp"
     draft_dir.mkdir(parents=True, exist_ok=True)
     draft = (
@@ -230,15 +191,18 @@ def _stage_linear_provision(eval_dir: Path, fixtures: dict) -> None:
         + "\n".join(f"- {l}" for l in fixtures["labels"])
         + "\n\n"
         "## Status Map\n"
+        "- open: Todo\n"
         "- spec: In Progress\n"
         "- plan: In Progress\n"
         "- implement: In Progress\n"
         "- review: In Review\n"
         "- done: Done\n"
+        "- blocked: Blocked\n"
+        "- wontfix: Canceled\n"
         "- story_open: Todo\n"
         "- story_in_progress: In Progress\n"
         "- story_done: Done\n"
-        "- milestone_planned: In Progress\n"
+        "- milestone_planned: Todo\n"
         "- milestone_active: In Progress\n"
         "- milestone_closed: Done\n"
     )
@@ -246,31 +210,10 @@ def _stage_linear_provision(eval_dir: Path, fixtures: dict) -> None:
 
 
 def _stage_file_provision(eval_dir: Path) -> None:
-    """Stage file provision eval: provide kodit.json and setup draft."""
-    kodit_json = {
-        "version": 1,
-        "project": {
-            "name": "myapp",
-            "description": "A Python web service.",
-            "language": "python",
-            "build": None,
-            "test": None,
-        },
-        "issue_tracker": {
-            "type": "file",
-            "path": ".kodit/issues",
-            "labels": [
-                "ready-for-agent",
-                "ready-for-human",
-                "needs-info",
-                "needs-triage",
-                "wontfix",
-            ],
-        },
-        "git": None,
-    }
-    (eval_dir / "kodit.json").write_text(json.dumps(kodit_json, indent=2) + "\n")
+    """Stage file provision eval: provide the setup draft only.
 
+    Provision mode runs before `kodit.json` exists, so none is staged.
+    """
     draft_dir = eval_dir / ".kodit" / "tmp"
     draft_dir.mkdir(parents=True, exist_ok=True)
     draft = (
@@ -327,9 +270,8 @@ def main() -> None:
 
     evals_json = args.evals_json
     if evals_json is None:
-        # Find evals.json relative to this script
-        script_dir = Path(__file__).resolve().parent
-        evals_json = script_dir.parent / "evals" / "evals.json"
+        # evals.json sits next to this script.
+        evals_json = Path(__file__).resolve().parent / "evals.json"
 
     if not evals_json.exists():
         print(f"Error: evals.json not found at {evals_json}", file=__import__("sys").stderr)
