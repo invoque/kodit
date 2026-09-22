@@ -47,10 +47,12 @@ Mirror the shape the repository already uses, trimmed to a milestone item:
 (none yet)
 ```
 
-Status runs `draft → approved → done`; `implement` treats a freshly generated
-spec as approved once the user approves it (interactive) or the run proceeds
-(non-interactive). One `R<n>` per acceptance criterion, in the same order — the
-spec is a faithful restatement of *what*, never *how*.
+Status runs `draft → approved → done`. In a single-task scope `implement`
+presents the spec and waits for approval before implementing; in a milestone
+scope it treats a freshly generated spec as approved as the run proceeds, with
+the post-commit checkpoint as the correction point. One `R<n>` per acceptance
+criterion, in the same order — the spec is a faithful restatement of *what*,
+never *how*.
 
 ## Generating a spec
 
