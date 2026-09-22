@@ -49,22 +49,23 @@ write: `references/file-based.md` for file, `references/linear.md` for Linear.
 
 ### Provision mode
 
-1. Read the setup draft and `kodit.json`.
+1. Read the setup draft `.kodit/tmp/setup-issue-tracker.md`. The draft is the
+   source of truth during provisioning — `kodit.json` does not exist yet.
 2. For file-based: create `.kodit/issues/` with `README.md` and `INDEX.md`
    from `references/file-based.md`. Do not create milestones or stories.
 3. For Linear:
-   a. Verify `workspace` and `team.id` are present in `kodit.json`. If not,
+   a. Verify `workspace` and `team.id` are present in the draft. If not,
       stop — do not guess or substitute defaults.
    b. Create or find the project **within the specified workspace**:
       `linear project list --workspace <workspace> --team <team-key>`.
       If not found, create it: `linear project create --workspace <workspace>
       --team <team-key> --name "<project-name>"`.
-   c. Record the resolved project ID in `kodit.json`.
+   c. Append the resolved project ID to the draft (do not write kodit.json).
    d. Ensure required workflow states exist **for the specified team**.
    e. Create labels if missing **for the specified workspace/team**.
    f. Report what was created or verified.
 4. **Never** create a team, workflow state, or label in a workspace/team
-   other than the one recorded in `kodit.json`.
+   other than the one recorded in the draft.
 
 ### Operate mode
 

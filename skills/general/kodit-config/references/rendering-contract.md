@@ -21,8 +21,9 @@ tracker:
   type: string          # "file" or "linear"
   path: string|null     # ".kodit/issues" for file; null for linear
   labels: [string]      # configured label list
-  team: string|null     # Linear team key; null for file
-  linear_project: string|null  # Linear project name; null for file
+  workspace: string|null  # Linear workspace slug; null for file
+  team: object|null     # {key: string, id: string}; null for file
+  linear_project: object|null  # {id: string, name: string}; null for file
   status_map: map|null  # Kodit→Linear state map; null for file
 
 git:                    # null when no version control
@@ -44,8 +45,11 @@ git:                    # null when no version control
 | `Backend` | `tracker.type` | issue-tracker draft (`file-based` → `file`, `linear` → `linear`) |
 | `Path` | `tracker.path` | issue-tracker draft (file only) |
 | `Labels` | `tracker.labels` | issue-tracker draft |
-| `Team` | `tracker.team` | issue-tracker draft (Linear only) |
-| `Linear Project` | `tracker.linear_project` | issue-tracker draft (Linear only) |
+| `Workspace` | `tracker.workspace` | issue-tracker draft (Linear only) |
+| `Team key` | `tracker.team.key` | issue-tracker draft (Linear only) |
+| `Team ID` | `tracker.team.id` | issue-tracker draft (Linear only, resolved during provision) |
+| `Project name` | `tracker.linear_project.name` | issue-tracker draft (Linear only) |
+| `Project ID` | `tracker.linear_project.id` | issue-tracker draft (Linear only, resolved during provision) |
 | `Status Map` | `tracker.status_map` | issue-tracker draft (Linear only) |
 | `Main branch` | `git.main_branch` | branching draft |
 | `Dev branch` | `git.dev_branch` | branching draft |
@@ -142,8 +146,8 @@ Content order:
 5. Artifact naming: `spec-US-NNN-*.md`, `plan-T-NNN-*.md` in `.kodit/tmp/specs/`.
 6. Issue taxonomy, statuses, and labels from configured list.
 7. Tracker location: when `file`, state `.kodit/issues/` and conventions pointer.
-   When `linear`, state "Linear at project `<tracker.linear_project>` (team
-   `<tracker.team>`)" and point to `references/linear.md` in the tracker skill.
+   When `linear`, state "Linear at project `<tracker.linear_project.name>` (team
+   `<tracker.team.key>`)" and point to `references/linear.md` in the tracker skill.
 8. Branch rules when Git is configured; "Version control is not configured" when
    `git` is `null`.
 9. Decision recording rule.

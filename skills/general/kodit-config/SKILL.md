@@ -27,8 +27,8 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
 - **Metadata mode** -- interview for project metadata; write
   `.kodit/tmp/setup-project-metadata.md`.
 - **Provision mode** -- after checkpoint approval, create or verify tracker
-  resources (file seed files or Linear project/states/labels) and write
-  `kodit.json`.
+  resources (file seed files or Linear project/states/labels). Reads the
+  setup draft; does not write `kodit.json`.
 - **Write mode** -- turn the setup drafts into final artifacts; remove the
   drafts.
 - **Migrate mode** -- detect legacy document sections and replace them with
@@ -80,13 +80,15 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
 
 ### Provision mode
 
-1. Read the setup draft `setup-issue-tracker.md` and the written `kodit.json`.
-   If either is missing, stop and name it.
+1. Read the setup draft `setup-issue-tracker.md`. If missing, stop and name it.
+   The draft is the source of truth during provisioning — `kodit.json` does
+   not exist yet at this point.
 2. Follow the `issue-tracker` skill in **provision mode** to create or verify
    tracker resources. For file-based: seed `.kodit/issues/`. For Linear: create
    or find the project, ensure states and labels exist.
-3. If provisioning succeeds and the backend is Linear, update `kodit.json` with
-   any discovered IDs (e.g. the resolved Linear project ID).
+3. If provisioning succeeds and the backend is Linear, append the resolved
+   project ID to the draft. Do not write `kodit.json` — that happens in
+   write mode.
 4. Report what was created or verified.
 
 ### Migrate mode

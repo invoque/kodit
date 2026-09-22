@@ -6,7 +6,7 @@
     {
       "id": 1,
       "prompt": "Set up issue tracking for a new project. I want to use the file-based backend. The project is called 'myapp', a Python web service. No special labels needed beyond the defaults.",
-      "expected_output": "issue-tracker setup mode offers file-based as recommended, confirms default labels, writes setup-issue-tracker.md with backend=file, path=.kodit/issues, and the five default labels.",
+      "expected_output": "issue-tracker setup mode offers file-based as recommended, confirms default labels, writes setup-issue-tracker.md with backend=file, path=.kodit/issues, and the five default labels. Does NOT create .kodit/issues/.",
       "files": [],
       "allow_remote_writes": false,
       "expectations": [
@@ -38,7 +38,7 @@
     },
     {
       "id": 3,
-      "prompt": "Set up issue tracking for a new project. I want to use Linear, but I don't have any Linear integration set up.",
+      "prompt": "Set up issue tracking for a new project. I want to use Linear, but I don't have any Linear integration set up. My workspace is 'sandbox' and my team is 'EVAL'.",
       "expected_output": "issue-tracker setup mode detects no MCP or CLI, reports the two remediation paths (connect MCP or install CLI), offers file-based as the alternative, and stops without writing a draft.",
       "files": [],
       "allow_remote_writes": false,
@@ -58,10 +58,10 @@
       "allow_remote_writes": true,
       "resource_prefix": "[kodit-eval-provision]",
       "expectations": [
-        "Reads the setup draft and kodit.json",
-        "Verifies workspace=invoque and team.id are present",
+        "Reads the setup draft (not kodit.json) as source of truth",
+        "Verifies workspace=invoque and team.id are present in the draft",
         "Creates or finds the Linear project within invoque/TEST",
-        "Records the resolved project ID in kodit.json",
+        "Appends the resolved project ID to the draft",
         "Verifies required workflow states exist for team TEST",
         "Creates labels if missing in invoque/TEST",
         "Reports what was created or verified",

@@ -73,7 +73,7 @@ overview only.
 
 | Phase | Purpose | Entry criteria | Exit criteria |
 |---|---|---|---|
-| **setup** | Initialize a project for `kodit` | Project has not adopted `kodit` | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is seeded, and configuration is validated |
+| **setup** | Initialize a project for `kodit` | Project has not adopted `kodit` | `kodit.json` and `.kodit/tmp/` exist, the issue tracker is provisioned, and configuration is validated |
 | **milestone-planning** | Agree the scope of the next milestone | Setup complete; a milestone worth of work exists | Milestone scope agreed and recorded |
 | **implement** | Work each milestone item to completion | Approved milestone scope | Every milestone item implemented |
 | **review-loop** | Verify each implemented item | Completed `implement` | Every milestone item reviewed; deltas recorded |
@@ -119,7 +119,7 @@ never reused (`M-001`, `US-001`, `T-001`):
 - `M-001-*/INDEX.md` — milestone charter; `M-001-*/US-001-*.md` — user stories,
   each carrying its tasks in an embedded table.
 
-The setup phase seeds only `README.md` and `INDEX.md`; milestone-planning creates
+The provision phase seeds only `README.md` and `INDEX.md`; milestone-planning creates
 milestones and stories. Full conventions live in the seeded `README.md`.
 
 ### `.kodit/tmp/`

@@ -167,6 +167,6 @@ When `tracker.type` is `file`:
 When `tracker.type` is `linear`:
 
 ```
-- **Issues:** Linear at project `<linear_project>` (team `<team>`) -- see
+- **Issues:** Linear at project `<linear_project.name>` (team `<team.key>`) -- see
   issue-tracker `references/linear.md` for the conventions.
 ```

@@ -71,7 +71,7 @@ file-based under `.kodit/issues/`
 When `tracker.type` is `linear`, render:
 
 ```
-Linear at project `{{tracker.linear_project}}` (team `{{tracker.team}}`)
+Linear at project `{{tracker.linear_project.name}}` (team `{{tracker.team.key}}`)
 ```
 
 ### Conventions pointer rendering (AGENTS.md)
@@ -144,7 +144,7 @@ under `.kodit/issues/` (conventions in `.kodit/issues/README.md`)
 When `tracker.type` is `linear`, render:
 
 ```
-in Linear at project `{{tracker.linear_project}}` (team `{{tracker.team}}`)
+in Linear at project `{{tracker.linear_project.name}}` (team `{{tracker.team.key}}`)
 ```
 
 ### Branch rendering (README.md)
@@ -205,7 +205,7 @@ file at `.kodit/issues`
 When `tracker.type` is `linear`, render:
 
 ```
-Linear at project `{{tracker.linear_project}}` (team `{{tracker.team}}`)
+Linear at project `{{tracker.linear_project.name}}` (team `{{tracker.team.key}}`)
 ```
 
 ### Adoption decision rendering (CONTEXT.md)

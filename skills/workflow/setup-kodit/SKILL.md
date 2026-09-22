@@ -63,11 +63,12 @@ approval.
 ### 6. Provision and write the configuration
 
 Follow the `kodit-config` skill in **provision mode** to create or verify
-tracker resources (file seed or Linear project/states/labels). Then follow
-**write mode** to write `kodit.json`, render managed blocks into `AGENTS.md`,
-`README.md`, and `CONTEXT.md` (creating shells, appending, or migrating per the
-document-state matrix), write `.kodit/.gitignore`, and delete all
-`.kodit/tmp/setup-*.md` drafts. Report each file and its action: created,
+tracker resources (file seed or Linear project/states/labels). Provision reads
+the setup draft — `kodit.json` does not exist yet. Then follow **write mode**
+to write `kodit.json` from the three drafts, render managed blocks into
+`AGENTS.md`, `README.md`, and `CONTEXT.md` (creating shells, appending, or
+migrating per the document-state matrix), write `.kodit/.gitignore`, and delete
+all `.kodit/tmp/setup-*.md` drafts. Report each file and its action: created,
 appended, no-op, migrated, or legacy-retained.
 
 ### 7. Hand off
