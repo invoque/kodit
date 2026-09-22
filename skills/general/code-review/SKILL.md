@@ -29,8 +29,9 @@ Include only items that are implemented or claimed ready for review.
 
 ### 2. Gather requirements
 
-Read the relevant story files, acceptance criteria, approved specs, and approved
-plans. Record the requirements each task must satisfy.
+Read the relevant story data, acceptance criteria, approved specs, and approved
+plans from the issue tracker (file or Linear). Record the requirements each
+task must satisfy.
 
 ### 3. Examine implementation evidence
 

@@ -1,8 +1,8 @@
 # Spec format and story plan links
 
 How `implement` generates a story spec when one is missing, and how plans are
-recorded back into the story file. Specs are untracked working artifacts under
-`.kodit/tmp/specs/`; they attach to a user story.
+recorded back into the story's task record. Specs are untracked working
+artifacts under `.kodit/tmp/specs/`; they attach to a user story.
 
 ## Spec template
 
@@ -47,15 +47,18 @@ Mirror the shape the repository already uses, trimmed to a milestone item:
 (none yet)
 ```
 
-Status runs `draft → approved → done`; `implement` treats a freshly generated
-spec as approved once the user approves it (interactive) or the run proceeds
-(non-interactive). One `R<n>` per acceptance criterion, in the same order — the
-spec is a faithful restatement of *what*, never *how*.
+Status runs `draft → approved → done`. In a single-task scope `implement`
+presents the spec and waits for approval before implementing; in a milestone
+scope it treats a freshly generated spec as approved as the run proceeds, with
+the post-commit checkpoint as the correction point. One `R<n>` per acceptance
+criterion, in the same order — the spec is a faithful restatement of *what*,
+never *how*.
 
 ## Generating a spec
 
-1. Read the story file: frontmatter (`id`, `title`, `type`, `labels`, `parent`),
-   the `## Story` body, and every `## Acceptance Criteria` item.
+1. Read the story data from the issue tracker: frontmatter (`id`, `title`,
+   `type`, `labels`, `parent`), the `## Story` body, and every
+   `## Acceptance Criteria` item.
 2. Fill the template from those, one requirement per criterion. Invent nothing;
    if a criterion is ambiguous, state the ambiguity under Non-requirements
    rather than guessing.
@@ -65,11 +68,14 @@ spec is a faithful restatement of *what*, never *how*.
 
 An existing `spec-US-NNN-*.md` is reused as-is and never rewritten.
 
-## Recording plans in the story file
+## Recording plans in the story
 
 `AGENTS.md`'s inner loop attaches plans to tasks as separate artifacts. Record
 each plan's path next to its task so the story remains the index of its work.
-After `plan-writing` returns, add or update the story file's plan links under
+After `plan-writing` returns, record the plan path via the `issue-tracker` skill
+in operate mode.
+
+For the file backend, add or update the story file's plan links under
 the task table:
 
 ```markdown
@@ -86,5 +92,7 @@ the task table:
 ```
 
 Create the `## Plans` section the first time a plan is recorded; add one row per
-plan and never remove a row. Keep the task table's `Status` column current via
-the `issue-tracker` skill — the plan link is a convenience index, not a status.
+plan and never remove a row.
+
+For the Linear backend, record the plan path in the task issue's description
+metadata block or as a comment. The canonical status lives on each sub-issue.

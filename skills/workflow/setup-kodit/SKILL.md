@@ -54,18 +54,22 @@ Present the review summary in the format from `references/summary-format.md`:
 per-section tables from the three drafts, the exact `kodit.json` that will be
 written, rendered previews of each document's managed block, and a file plan
 with per-file actions (create, append, no-op, migrate, or legacy-retained).
-If legacy sections are detected, show their bounded diff. Ask the user to
-review. Route each change request back to the step that owns it, rewrite that
-draft, and present the checkpoint again. Do not continue without approval.
+For Linear, show the planned remote resources (project, states, labels) in the
+issue tracking table. If legacy sections are detected, show their bounded diff.
+Ask the user to review. Route each change request back to the step that owns it,
+rewrite that draft, and present the checkpoint again. Do not continue without
+approval.
 
-### 6. Write the configuration
+### 6. Provision and write the configuration
 
-Follow the `kodit-config` skill in **write mode** to write
-`kodit.json`, render managed blocks into `AGENTS.md`, `README.md`, and
-`CONTEXT.md` (creating shells, appending, or migrating per the document-state
-matrix), write `.kodit/.gitignore`, and delete all `.kodit/tmp/setup-*.md`
-drafts. Report each file and its action: created, appended, no-op, migrated,
-or legacy-retained.
+Follow the `kodit-config` skill in **provision mode** to create or verify
+tracker resources (file seed or Linear project/states/labels). Provision reads
+the setup draft — `kodit.json` does not exist yet. Then follow **write mode**
+to write `kodit.json` from the three drafts, render managed blocks into
+`AGENTS.md`, `README.md`, and `CONTEXT.md` (creating shells, appending, or
+migrating per the document-state matrix), write `.kodit/.gitignore`, and delete
+all `.kodit/tmp/setup-*.md` drafts. Report each file and its action: created,
+appended, no-op, migrated, or legacy-retained.
 
 ### 7. Hand off
 

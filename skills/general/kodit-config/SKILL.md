@@ -18,7 +18,7 @@ artifacts are written.
 
 ## Usage
 
-Invoked as five modes. Follow the `interview` skill for the metadata
+Invoked as six modes. Follow the `interview` skill for the metadata
 interview. Read `references/kodit-json-schema.md` for the config contract,
 `references/rendering-contract.md` for document normalization, and
 `references/templates.md` for output templates.
@@ -26,6 +26,8 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
 - **Check mode** -- inspect adoption state and report where to resume.
 - **Metadata mode** -- interview for project metadata; write
   `.kodit/tmp/setup-project-metadata.md`.
+- **Provision mode** -- create or verify tracker resources from the setup
+  draft; does not write `kodit.json`.
 - **Write mode** -- turn the setup drafts into final artifacts; remove the
   drafts.
 - **Migrate mode** -- detect legacy document sections and replace them with
@@ -64,15 +66,23 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
    `references/rendering-contract.md`. Never read values piecemeal per document.
 3. Write `kodit.json` at the project root per
    `references/kodit-json-schema.md`.
-4. For `AGENTS.md`, `README.md`, and `CONTEXT.md`: classify each file per the
-   document-state matrix in `rendering-contract.md`. For missing files, create
-   the shell plus managed block. For existing files with a managed block, no-op
-   if current, or migrate if older. For existing files without a managed block,
-   detect legacy or append. Never overwrite content outside managed markers.
-5. Write `.kodit/.gitignore` containing `tmp`. Never ignore `.kodit/issues/`.
-6. Remove all `.kodit/tmp/setup-*.md` drafts.
+4. For `AGENTS.md`, `README.md`, and `CONTEXT.md`: classify each per the
+   document-state matrix in `rendering-contract.md` (create shell, no-op if
+   current, migrate if older, or detect legacy and append). Never overwrite
+   content outside managed markers.
+5. Write `.kodit/.gitignore` containing `tmp`; never ignore `.kodit/issues/`
+   for the file backend.
+6. Verify `kodit.json` parses and carries the resolved tracker IDs, and that
+   every write succeeded. Only then remove all `.kodit/tmp/setup-*.md` drafts;
+   if anything failed, keep them and stop.
 7. Report every file written with its action: created, appended, no-op, migrated,
    or legacy-retained.
+
+### Provision mode
+
+Follow `references/provision-mode.md`: read the setup draft, provision tracker
+resources via the `issue-tracker` skill, append resolved IDs to the draft, and
+report. Never write `kodit.json` here.
 
 ### Migrate mode
 
@@ -95,8 +105,7 @@ interview. Read `references/kodit-json-schema.md` for the config contract,
 3. Find the managed `<!-- kodit:context:v1:start/end -->` block. Locate the
    `### Decisions Log` table inside it. Append one dated row per decision.
    Most recent last; never rewrite existing rows.
-4. If no managed block exists, create one with the full Context structure and
-   append the decision rows.
-5. Confirm the entries with the caller before writing when the caller did not
-   already present them for approval.
-6. Report the rows appended.
+4. If no managed block exists, create one with the full Context structure,
+   then append the decision rows.
+5. Confirm the entries with the caller unless they already approved them, then
+   report the rows appended.

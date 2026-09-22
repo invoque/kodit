@@ -24,10 +24,11 @@ drafting; it owns the template, the worked example, and the test-first rules.
 
 ### 1. Gather the inputs
 
-Read the story file and the task row. Confirm the story's spec exists at
-`.kodit/tmp/specs/spec-US-NNN-*.md` and read it. If the spec is missing, refuse:
-say the task cannot be planned without one, and stop. Read the project's
-`kodit.json` to learn the test command (`project.test`) and language.
+Read the story data from the issue tracker (file or Linear) and the task row.
+Confirm the story's spec exists at `.kodit/tmp/specs/spec-US-NNN-*.md` and read
+it. If the spec is missing, refuse: say the task cannot be planned without one,
+and stop. Read the project's `kodit.json` to learn the test command
+(`project.test`) and language.
 
 ### 2. Draft the plan
 
@@ -61,4 +62,5 @@ collects these into the final check for the whole task.
 Write the plan to `.kodit/tmp/specs/plan-T-NNN-<slug>.md`, where `NNN` is the
 task's number and `<slug>` is a short kebab-case name from its description.
 Never overwrite an existing plan — if one exists, read it and stop, reporting
-its path. Return the path so `implement` can link it in the story file.
+its path. Record the plan path in the story's task record (via issue-tracker
+operate mode) and return the path.

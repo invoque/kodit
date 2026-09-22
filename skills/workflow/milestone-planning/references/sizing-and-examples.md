@@ -105,9 +105,9 @@ Present exactly these sections, then stop for approval.
 <One line of acceptance criteria per story.>
 
 ### Files
-- create `.kodit/issues/M-00N-<name>/INDEX.md`
-- create `.kodit/issues/M-00N-<name>/US-00a-<name>.md`, ...
-- update `.kodit/issues/INDEX.md` (add M-00N row)
+- create milestone (M-00N) in the issue tracker
+- create stories (US-00a, ...) in the issue tracker
+- update the project charter (add M-00N row)
 - append decisions to `CONTEXT.md`
 
 Approve, or tell me what to change.
@@ -118,7 +118,7 @@ Approve, or tell me what to change.
 ```markdown
 ## Milestone recorded
 
-**M-00N — <goal>** at `.kodit/issues/M-00N-<name>/`
+**M-00N — <goal>**
 
 | US | Title | Tasks |
 |----|-------|-------|

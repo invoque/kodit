@@ -55,7 +55,7 @@ None. This skill is entirely automated after the readiness check passes.
 
 ## Artifacts Modified
 
-- `.kodit/issues/M-NNN-<name>/INDEX.md` — PR URL line appended
+- Milestone charter (PR URL line appended) via issue-tracker operate mode
 
 ## Handoff
 
