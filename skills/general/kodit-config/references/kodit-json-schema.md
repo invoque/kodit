@@ -52,19 +52,22 @@ other skill reads it.
   },
   "issue_tracker": {
     "type": "linear",
-    "workspace": "invoque",
-    "team": { "key": "TEST", "id": "<resolved-id>" },
-    "linear_project": { "id": "<resolved-id>", "name": "my-project" },
+    "workspace": "<workspace-slug>",
+    "team": { "key": "ENG", "id": "<team-uuid>" },
+    "linear_project": { "id": "<project-uuid>", "name": "my-project" },
     "status_map": {
+      "open": "Todo",
       "spec": "In Progress",
       "plan": "In Progress",
       "implement": "In Progress",
       "review": "In Review",
       "done": "Done",
+      "blocked": "Blocked",
+      "wontfix": "Canceled",
       "story_open": "Todo",
       "story_in_progress": "In Progress",
       "story_done": "Done",
-      "milestone_planned": "In Progress",
+      "milestone_planned": "Todo",
       "milestone_active": "In Progress",
       "milestone_closed": "Done"
     },
@@ -120,12 +123,12 @@ other skill reads it.
 | Field | Required | Notes |
 |---|---|---|
 | `issue_tracker.type` | yes | Must be `"linear"`. |
-| `issue_tracker.workspace` | yes | Linear workspace slug (e.g. `"invoque"`). All operations target this workspace. |
-| `issue_tracker.team.key` | yes | Linear team key (e.g. `"TEST"`). Issues belong to this team. |
-| `issue_tracker.team.id` | yes | Resolved UUID of the team. Setup resolves and records this; every operation uses it. |
-| `issue_tracker.linear_project.id` | yes | Resolved UUID of the project containing milestones. Setup resolves or creates and records this. |
+| `issue_tracker.workspace` | yes | Linear workspace slug (e.g. `"acme"`). All operations target this workspace. |
+| `issue_tracker.team.key` | yes | Linear team key (e.g. `"ENG"`). Issues belong to this team. |
+| `issue_tracker.team.id` | yes | Resolved UUID of the team. Setup resolves and records this in the draft; every operation uses it. |
+| `issue_tracker.linear_project.id` | yes | Resolved UUID of the project containing milestones. Provision creates or finds the project and appends the ID to the draft. |
 | `issue_tracker.linear_project.name` | yes | Human-readable project name for display. |
-| `issue_tracker.status_map` | yes | Kodit status → Linear workflow state name. See `linear.md` for required keys. |
+| `issue_tracker.status_map` | yes | Kodit status → Linear workflow state name. Must cover every key listed under "Required `status_map` keys" in `linear.md`. |
 
 ### Notes on Linear fields
 
@@ -139,11 +142,12 @@ other skill reads it.
 - `linear_project` is an object with both `id` and `name`. Provision mode
   creates or finds the project and records both. The `id` is used for all
   subsequent operations.
-- `issue_tracker.labels` is used for Kodit handoff labels stored in issue
-  descriptions, not for Linear label creation.
+- `issue_tracker.labels` is the handoff-label vocabulary. In Linear these
+  labels are also provisioned on the team (created if missing) and applied to
+  story issues; the list itself is config, the labels are remote resources.
 - `issue_tracker.status_map` maps each Kodit internal state to a Linear
-  workflow state name for that team. See `references/linear.md` for the full
-  mapping and provisioning requirements.
+  workflow state name for that team. It must cover every required key listed in
+  `references/linear.md`; provisioning ensures each named state exists.
 - Credentials are never stored in `kodit.json`. Authentication is handled by
   the Linear MCP integration or the `linear-cli` tool.
 
@@ -154,9 +158,10 @@ other skill reads it.
   file backend, or `references/linear.md` for Linear).
 - `issue_tracker` is backend-swappable: changing `type` and its fields later is
   the migration path.
-- For Linear: `workspace`, `team.id`, and `linear_project.id` are resolved
-  during setup/provision and written as authoritative UUIDs. Every subsequent
-  operation uses these IDs, not human-readable names.
+- For Linear: setup resolves `workspace` and `team.id`; provision resolves
+  `linear_project.id` and ensures states and labels exist. Write mode then
+  produces `kodit.json` from the draft. Every subsequent operation uses these
+  resolved IDs, not human-readable names.
 - Never invent extra top-level keys. Add a field only with a schema version
   bump and a decision recorded in `CONTEXT.md`.
 - File-backed projects may stay on v1; v2 is only required when adding Linear.
@@ -183,19 +188,22 @@ other skill reads it.
   "project": { "name": "taskflow", "description": "Personal task tracking with weekly reviews.", "language": "typescript", "build": "npm run build", "test": "npm test" },
   "issue_tracker": {
     "type": "linear",
-    "workspace": "invoque",
-    "team": { "key": "TEST", "id": "8959b387-1e7f-4a55-ad57-7c8efce9d499" },
-    "linear_project": { "id": "21af77bf-96e2-47b4-a648-b5b2aac2cdf5", "name": "taskflow" },
+    "workspace": "acme",
+    "team": { "key": "ENG", "id": "<team-uuid>" },
+    "linear_project": { "id": "<project-uuid>", "name": "taskflow" },
     "status_map": {
+      "open": "Todo",
       "spec": "In Progress",
       "plan": "In Progress",
       "implement": "In Progress",
       "review": "In Review",
       "done": "Done",
+      "blocked": "Blocked",
+      "wontfix": "Canceled",
       "story_open": "Todo",
       "story_in_progress": "In Progress",
       "story_done": "Done",
-      "milestone_planned": "In Progress",
+      "milestone_planned": "Todo",
       "milestone_active": "In Progress",
       "milestone_closed": "Done"
     },
