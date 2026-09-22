@@ -37,8 +37,10 @@ write: `references/file-based.md` for file, `references/linear.md` for Linear.
       - Else check for an authenticated `linear-cli` (`linear auth whoami`).
       - If neither works, report the two remediation paths (connect MCP or
         install/authenticate CLI) and offer file-based as the alternative.
-   c. Verify the workspace exists: `linear workspace list` or MCP equivalent.
-      If not found, stop and ask the user to confirm the workspace slug.
+   c. Verify the workspace is reachable: `linear team list --workspace <ws>`
+      errors or returns nothing for an unknown workspace. (The global
+      `--workspace` flag selects among configured credentials; it does not
+      list workspaces — there is no `linear workspace` command.)
    d. Verify the team exists within the workspace: `linear team list --workspace <ws>`
       or MCP equivalent. If the team is not found and cannot be created (plan
       limit), stop and ask the user to pick an existing team.
