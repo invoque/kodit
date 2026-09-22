@@ -1,0 +1,35 @@
+{
+  "skill_name": "implement",
+  "evals": [
+    {
+      "id": 0,
+      "name": "single-task-scope",
+      "prompt": "This project is set up with kodit and has an open milestone. I only have time for one thing right now — just do the next task for me, nothing more. When the flow needs a decision from me, answer as this user: choose to work just the one next task. Play both the agent and the user yourself, do not wait for a human.",
+      "expected_output": "Checks setup, selects the open milestone and moves it to active, creates feature/m-001-* from dev, computes the next unit itself (T-001) without asking the user for an ID, asks the user whether to do one task or the rest of the milestone, works ONLY T-001 (spec, plan, RED->GREEN implement), commits T-001, then asks again whether to continue with the next task or the rest of the milestone. It does NOT implement T-002, and does not present a milestone-complete summary."
+    },
+    {
+      "id": 1,
+      "name": "resume-mid-milestone",
+      "prompt": "This project is set up with kodit and has a milestone already underway. Pick up the next task and work just that one. When the flow needs a decision from me, answer as this user: work just the next task. Play both the agent and the user yourself, do not wait for a human.",
+      "expected_output": "Recognizes T-001 is already review/done and computes the next unit as T-002 (does not redo T-001), asks the scope, works only T-002 to review, commits it, and asks again what to do next."
+    },
+    {
+      "id": 2,
+      "name": "whole-milestone-scope",
+      "prompt": "This project is set up with kodit and has an open milestone. Let's knock out the whole milestone in this session. When the flow needs a decision from me, answer as this user: run the rest of the milestone, keep going through all of it. Play both the agent and the user yourself, do not wait for a human.",
+      "expected_output": "Computes the next unit, asks the scope, the user chooses the rest of the milestone, and it implements both T-001 and T-002 with a spec, RED->GREEN plans, and a commit per task. It still pauses to check in after each commit (re-asking what to do next), then presents the milestone summary and asks whether to open the PR / names the pr-request skill."
+    },
+    {
+      "id": 3,
+      "name": "no-open-milestone-refusal",
+      "prompt": "This project is set up with kodit. Start implementing the milestone — just pick up whatever is next and build it. Play both the agent and the user yourself, do not wait for a human.",
+      "expected_output": "Finds no non-closed milestone (the only milestone is closed), refuses without creating a branch or any artifact, names the state, and directs the user to milestone-planning to plan the next milestone."
+    },
+    {
+      "id": 4,
+      "name": "not-set-up-refusal",
+      "prompt": "Implement the milestone in this project for me — start coding the tasks. Play both the agent and the user yourself, do not wait for a human.",
+      "expected_output": "Detects that kodit.json is missing, refuses, directs the user to the setup-kodit skill, and creates nothing."
+    }
+  ]
+}
