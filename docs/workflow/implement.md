@@ -1,12 +1,12 @@
 # implement
 
-Work an open milestone one checkpoint at a time.
+Work exactly one user story per invocation — test-first, via delegation — and end in a story summary. The skill never opens a pull request.
 
 ## When to Use
 
 - After `milestone-planning` records a milestone.
 - Resuming an interrupted implementation run.
-- To work a single next task ("do the next task", "implement T-003").
+- To work the next story ("start implementing", "work on the milestone", "do the next task", "implement T-003").
 
 ## Prerequisites
 
@@ -15,77 +15,99 @@ Work an open milestone one checkpoint at a time.
 
 If no milestone is open, the skill stops and directs you to `milestone-planning`.
 
+## Mode
+
+Settled once per run — after the entry refusals and next-story computation (steps 1–3), before any delegation (step 5).
+
+- If the invocation contains an auto-accept phrase — "auto", "you decide", "go on with your recommendation", or an equivalent — the run is **automated** and no mode question is asked.
+- Otherwise the user chooses **automated** or **step-by-step**; the answer holds for the whole run.
+- **Automated:** a freshly generated spec and plans are treated as approved.
+- **Step-by-step:** exactly two approval stops — the spec (step 5), then all plans together (step 6).
+
 ## How It Works
 
 ### 1. Verify entry
 
-Follow `kodit-config` in check mode. If `kodit.json` is missing, stop and direct to `setup-kodit`.
+Follow `kodit-config` in check mode. If `kodit.json` is missing, the project is not set up — stop and direct the user to `setup-kodit`.
 
 ### 2. Select the milestone and its branch
 
-Follow `issue-tracker` in operate mode. Find the single non-`closed` milestone and move it to `active`. Create its branch from the latest `dev` (or `git.dev_branch`), named `<feature_prefix>m-NNN-<slug>`. All task commits land here. If the branch already exists, switch to it and resume.
+Follow `issue-tracker` in operate mode. If no milestone is non-`closed`, refuse: name the state and direct the user to `milestone-planning`. Move the single non-`closed` milestone to `active` and create its branch `<feature_prefix>m-NNN-<slug>` from `git.dev_branch` (default `dev`), resuming if it already exists. All task commits land here.
 
-### 3. Compute the next unit
+### 3. Compute the next story
 
-Read all stories and tasks and build the ordered worklist: stories in ID order, tasks in ID order, skipping tasks already `review`/`done`. The next unit is the first task not already `review`/`done`/`wontfix`. Flag blocked items or items with special labels and skip them. **You never ask the user which task to work — you compute it.** If every task is `review`/`done`/`wontfix`, the milestone is complete; go to step 7.
+List the milestone's stories in ID order. The **next story** is the first with any task not `review`/`done`/`wontfix`. Skip — but flag — tasks that are `blocked` or labelled `ready-for-human`, `needs-info`, `needs-triage`, `wontfix`. **Never ask which story to work — compute it.** If every remaining task in the milestone is blocked or labelled, stop and report that state. If no story is eligible, go to step 8.
 
-### 4. Ask the scope
+### 4. Settle the mode, once
 
-Present the computed unit — task ID and title, its story, and how many tasks remain — and ask the user to choose:
+Apply the Mode section above: an auto-accept phrase in the invocation means automated mode with no question asked; otherwise ask the user to choose automated or step-by-step and hold that answer for the whole run.
 
-- **just this task** — work only the next unit, then checkpoint.
-- **the rest of the milestone** — keep working tasks until the milestone is done, still checkpointing after each commit.
-- **stop** — end the run without working anything.
+### 5. Spec the story
 
-Ask before any work begins. The answer holds only for that segment; you re-ask at every checkpoint.
+Delegate spec authoring per `references/delegation.md`, in the format from `references/spec-format.md`. Reuse an existing `spec-US-NNN-*.md` under `.kodit/tmp/specs/` — never rewrite it. The delegate moves the story's tasks `open → spec`; you move the story to `in-progress`. In step-by-step mode, present the spec and wait for approval; route change requests back to the delegate and present again.
 
-### 5. Prepare and implement that unit
+### 6. Plan every task of the story
 
-Per task in the chosen scope:
+Delegate plan authoring for **all** of the story's tasks. The delegate follows `plan-writing`, saves each `plan-T-NNN-*.md` under `.kodit/tmp/specs/`, records plan links in the story per `references/spec-format.md`, and moves tasks `spec → plan`. In step-by-step mode, present **all plans in one stop** and wait for approval before implementing anything.
 
-1. **Ensure a spec for its story.** Look for `spec-US-NNN-*.md` under `.kodit/tmp/specs/`. Reuse it if present — never rewrite. If missing, generate one from the story's acceptance criteria in the format from `references/spec-format.md`. Move tasks `open → spec`.
-2. **Plan the task.** Follow `plan-writing`. Save `plan-T-NNN-*.md` under `.kodit/tmp/specs/`. Link the plan in the story file and move the task `spec → plan`. The plan carries the test-first RED → GREEN ordering.
-3. **Approve on single-task scope.** Present the spec and plan and wait for approval before implementing; route change requests back to steps 1–2. In a milestone segment, continue without pre-approval.
-4. **Implement.** Follow the plan exactly. Move the task `plan → implement`. Enforce the test-first gate: before accepting the passing change, confirm the failing check was produced and run first. Move `implement → review` when code is ready, and the story to `in-progress` if it is not already.
+### 7. Work each task: tests first, then code
 
-### 6. Commit and checkpoint after every task
+Per task, in ID order:
 
-Commit the completed task on the milestone branch with a conventional message. **Never commit or continue past a failing check.** Then recompute the next unit and report what was committed and what remains, asking again: **next task, the rest of the milestone, or stop**. This ask is mandatory after every commit, in both scopes.
+1. **Test delegate (RED).** Writes the plan's failing checks, runs them, observes the failure, **commits the failing tests** with a `test:` message, and moves `plan → implement`.
+2. **Code delegate (GREEN).** Implements the plan's change, verifies the checks now pass, commits with `feat:` or `fix:`, and moves `implement → review`.
 
-### 7. Present the summary and hand off
+Never commit or continue past a failing check. After each commit, report what landed and what remains in the story — a report, never a question, in both modes. Work only tasks of the current story; a second story waits for the next invocation.
 
-When every task is `review`/`done`/`wontfix`, present the summary: branch, stories/tasks completed, artifacts, skipped/blocked items, decisions, and commits. Ask whether to open the pull request now; on yes, tell the user to run `pr-request`. Do not merge.
+### 8. Story summary and stop
+
+Present the summary from `references/summary-format.md` — the story summary, or the milestone-exhausted note when step 3 found no eligible story. Then stop: tell the user to re-invoke `implement` for the next story, or to run `pr-request` when the milestone is exhausted. Never open, create, or merge a pull request.
+
+## Delegation Ladder
+
+| Concern | Delegate | Commit | Status transition |
+|---|---|---|---|
+| Spec authoring | spec delegate | none | `open → spec` |
+| Plan authoring | plan delegate | none | `spec → plan` |
+| Test authoring (RED) | test delegate | `test:` | `plan → implement` |
+| Implementation (GREEN) | code delegate | `feat:` or `fix:` | `implement → review` |
+
+Status writes go through `issue-tracker` in operate mode; artifacts under `.kodit/tmp/specs/` are untracked, so the spec and plan delegates commit nothing. Full briefs live in `references/delegation.md`.
+
+## Two-Commit Policy
+
+Each task lands in two commits: the RED `test:` commit carrying the observed failure must be durable before the GREEN `feat:`/`fix:` commit begins. For this markdown repository the checks are verification greps and YAML/JSON parse checks against skill, docs, and eval files; the two-commit discipline applies unchanged.
 
 ## User Decisions
 
 | Step | Decision |
 |---|---|
-| 4 | Scope of the segment: one task, the rest of the milestone, or stop (re-asked at every checkpoint) |
-| 5 | Approval of the spec and plan (single-task scope only) |
-| 7 | Whether to hand off to `pr-request` now |
+| 4 | Mode: automated or step-by-step (every run; asked once unless the invocation already accepted automation) |
+| 5 | Story spec approval (step-by-step mode only) |
+| 6 | All of the story's plans, approved together (step-by-step mode only) |
 
 ## Key Rules
 
-- **One branch per milestone.** All commits for the milestone land on `<feature_prefix>m-NNN-<slug>`.
-- **Compute, don't ask.** The skill determines the next task from the tracker; the user chooses only the scope.
-- **Test-first RED → GREEN.** The failing check must be observed before the passing change. A test written after the code proves nothing.
-- **No test runner?** When `kodit.json` has no `project.test`, use a verifiable substitute — a command or observation that fails first and passes after.
+- **One story per run.** Exactly one user story per invocation; never start a second story, even when tasks remain.
+- **Compute the story, never ask.** The next story comes from the tracker in ID order; there is no scope question.
+- **Delegate-owned transitions.** Spec, plan, test, and code delegates move tasks `open → spec → plan → implement → review`. The orchestrator owns only milestone → active plus branch creation, and story → in-progress.
 - **Spec reuse.** An existing `spec-US-NNN-*.md` is never rewritten.
-- **Immediate commits.** Every completed task is committed on its feature branch before the checkpoint.
+- **Checkpoint is a report.** After each commit, report what landed and what remains — never a question, in both modes.
 
 ## Artifacts Created
 
-- `.kodit/tmp/specs/spec-US-NNN-<slug>.md` — story specs (if missing)
+- `.kodit/tmp/specs/spec-US-NNN-<slug>.md` — story spec (reused when present)
 - `.kodit/tmp/specs/plan-T-NNN-<slug>.md` — task plans
 - Code and skill files (per plan)
-- Conventional commits on the milestone branch
+- Conventional commits on the milestone branch: `test:` then `feat:`/`fix:` per task
 
 ## Handoff
 
-**Next skill:** `pr-request` (offered at the milestone-completion checkpoint)
+The story stop ends the run. Next step: re-invoke `implement` for the next story, or run `pr-request` when the milestone is exhausted. The skill never creates a pull request. Do not merge or push protected branches — the pull-request flow and the review that follows own those steps.
 
 ## Source
 
 - Canonical definition: `skills/workflow/implement/SKILL.md`
+- Delegation briefs: `skills/workflow/implement/references/delegation.md`
 - Spec template and plan-recording format: `skills/workflow/implement/references/spec-format.md`
-- Milestone summary and handoff format: `skills/workflow/implement/references/summary-format.md`
+- Story summary and handoff format: `skills/workflow/implement/references/summary-format.md`
