@@ -137,4 +137,30 @@ returns 0 matches — split literals are working.
 
 ## GREEN — 2026-09-25
 
-(populated after implementation — see T-018)
+Run after implementation (T-018). Result: **18 of 18 PASS**. Format caps:
+frontmatter keys exactly `name`,`description`; body 87 lines (< 100);
+description 79 words (≤ 80); `evals.json` valid JSON, 5 cases.
+
+| Check | Observed | Result |
+|---|---|---|
+| AC 1 | `one user story` present; step 7 forbids starting a second story | PASS |
+| AC 2 | `automated`, `step-by-step`, `you decide` all present (description + step 4) | PASS |
+| AC 3 | `all plans` present (step 6); old approval phrase absent from skill and docs | PASS |
+| AC 4 | `general-purpose subagent capability is available` present (Usage) | PASS |
+| AC 5 | `references/delegation.md` exists; spec/plan/test authoring literals, `feat:`/`fix:`, `commit the failing tests` all present | PASS |
+| AC 6 | all four transition arrows present in delegation.md | PASS |
+| AC 7 | no matches in skill dir, docs/workflow/implement.md, docs/README.md, README.md | PASS |
+| AC 8 | `test:` and `feat:`/`fix:` present; step 7 orders RED commit before GREEN | PASS |
+| AC 9 | `grep` present in delegation.md (tests are verification greps) | PASS |
+| AC 10 | `pr-request` in SKILL.md and summary-format.md; old ask phrase absent | PASS |
+| AC 11 | `setup-kodit`, `milestone-planning`, `every remaining task` all present | PASS |
+| AC 12 | keys exact; body 87 < 100; description 79 ≤ 80 | PASS |
+| AC 13 | no vendor strings or agent-specific subagent naming in the skill dir | PASS |
+| AC 14 | evals.json valid; 5 cases: automated-mode-full-story, manual-mode-stops, resume-mid-story, no-open-milestone-refusal, not-set-up-refusal | PASS |
+| AC 15 | `automated` present in spec-format.md; `single-task scope` gone | PASS |
+| AC 16 | `story summary` present; handoff names re-invoking `implement` and `pr-request` | PASS |
+| AC 17 | `story` and `automated` present in docs/workflow/implement.md; `automated` in docs/README.md | PASS |
+| AC 18 | `2026-09-25` row with `Supersede the 2026-09-22` appended; old contiguous phrase gone from CONTEXT.md | PASS |
+
+Self-match proof re-verified: grepping this file for each forbidden phrase
+returns 0 matches.
