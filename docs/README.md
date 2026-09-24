@@ -30,7 +30,7 @@ Each skill hands off by name to the next. There is no central dispatcher; you in
 |---|---|---|---|
 | [setup-kodit](workflow/setup-kodit.md) | Initialize `kodit` in a project | Metadata, issue tracking, git branching, checkpoint approval | `milestone-planning` |
 | [milestone-planning](workflow/milestone-planning.md) | Agree the next milestone's scope | Interview, checkpoint approval | `implement` |
-| [implement](workflow/implement.md) | Work an open milestone one checkpoint at a time | Scope per segment (one task / rest of milestone / stop), re-asked after every commit; spec+plan approval on single-task scope | `pr-request` |
+| [implement](workflow/implement.md) | Work exactly one user story per run, test-first, via delegation | Mode: automated or step-by-step (settled once per run); in step-by-step mode, spec approval and one approval for all the story's plans | `pr-request` |
 | [pr-request](workflow/pr-request.md) | Open a PR for the milestone branch | None | `pr-review` |
 | [pr-review](workflow/pr-review.md) | Review a milestone PR and close the loop | None (receives review context) | `implement` or `pr-approve` |
 | [pr-approve](workflow/pr-approve.md) | Finalize a reviewed PR via approval and merge | Confirmation gate, branch cleanup | — (terminal) |
@@ -47,9 +47,8 @@ The workflow requires explicit approval at these points:
 |---|---|
 | `setup-kodit` step 5 | Project metadata, issue config, git config, and the exact `kodit.json` before anything is written |
 | `milestone-planning` step 4 | Milestone goal, stories, tasks, and file plan |
-| `implement` step 4 | Scope of the segment: one task, the rest of the milestone, or stop (re-asked at every post-commit checkpoint) |
-| `implement` step 5 | The spec and plan of the task (single-task scope only) |
-| `implement` step 7 | Whether to hand off to `pr-request` at milestone completion |
+| `implement` step 4 | Mode: automated or step-by-step (asked once per run unless the invocation already accepted automation) |
+| `implement` steps 5–6 | Story spec, then all plans together (step-by-step mode only) |
 | `pr-approve` step 4 | Approval and merge actions before any remote write |
 
 ## Safety Invariants
