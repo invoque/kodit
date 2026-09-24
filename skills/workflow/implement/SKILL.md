@@ -3,102 +3,97 @@ name: implement
 description: >-
   Use when the user wants to build agreed milestone work — "start implementing",
   "work on the milestone", "do the next task", "implement T-003", or when
-  milestone-planning hands off. Computes the next task from the tracker, asks
-  whether to run one task or the rest of the milestone, prepares a spec per
-  story and a test-first plan per task, implements and commits each task, and
-  asks again after every commit. Refuses when the project is not set up or no
-  milestone is open. Defines only the sequence, the ask, and the handoff.
+  milestone-planning hands off. Works exactly one user story per run: settles
+  an automated-vs-step-by-step mode gate, delegates spec, plan, tests, and code
+  to subagents with test-first commits, presents a story summary, and stops
+  with the next step named. Refuses when the project is not set up or no
+  milestone is open. Never opens a PR.
 ---
 
 # implement
 
-The implement phase: work an open milestone one checkpoint at a time.
+The implement phase: one user story per run, test-first, via delegation.
 
 ## Usage
 
-Invoke after `milestone-planning` records a milestone, when an implementation
-run was interrupted, or to work a single task. It is a pure orchestrator: it
-sequences the work and delegates to general skills, never authoring plans,
-tracker files, or code itself. Read `references/spec-format.md` before step 5
-and `references/summary-format.md` before the milestone handoff.
+Invoke after `milestone-planning` records a milestone, to resume an interrupted
+run, or to work the next story. Pure orchestrator: it sequences, asks, and
+reports — it never authors specs, plans, tests, or code itself. When a
+general-purpose subagent capability is available, delegate each concern to it;
+otherwise perform that work inline yourself (briefs in
+`references/delegation.md`). Read `references/spec-format.md` before step 5
+and `references/summary-format.md` before step 8.
 
 ## What You Must Do When Invoked
 
 ### 1. Verify entry
 
-Follow the `kodit-config` skill in **check mode**. If `kodit.json` is missing,
-the project is not set up: say so and stop, directing the user to `setup-kodit`.
+Follow `kodit-config` in **check mode**. Missing `kodit.json`: the project is
+not set up — say so and stop, directing the user to `setup-kodit`.
 
-### 2. Select the milestone and its branch
+### 2. Select the milestone and branch
 
-Follow the `issue-tracker` skill in **operate mode** to read the project charter
-and every milestone. If no milestone is non-`closed`, refuse: name the state and
-direct the user to `milestone-planning`. Work exactly one milestone: select the
-single non-`closed` one and move it to `active`. Create its branch from the
-latest integration branch (`git.dev_branch` in `kodit.json`, default `dev`),
-named `<feature_prefix>m-NNN-<slug>`; if it already exists, switch to it and
-resume.
+Follow `issue-tracker` in **operate mode**. If no milestone is non-`closed`,
+refuse: name the state and direct the user to `milestone-planning`. Work
+exactly one milestone: move the single non-`closed` one to `active`, and
+create its branch `<feature_prefix>m-NNN-<slug>` from `git.dev_branch`
+(default `dev`), resuming if it already exists.
 
-### 3. Compute the next unit
+### 3. Compute the next story
 
-Follow the `issue-tracker` skill in **operate mode**: list the milestone's
-stories and each story's tasks, and build the ordered worklist — stories in ID
-order, tasks in ID order. The **next unit** is the first task not already
-`review`/`done`/`wontfix`; flag any item that is `blocked` or labelled
-`ready-for-human`, `needs-info`, `needs-triage`, or `wontfix` and skip it. Never
-ask the user which task or milestone to work — compute it. If every task is
-`review`/`done`/`wontfix`, the milestone is complete: go to step 7.
+List the milestone's stories in ID order; the **next story** is the first
+with any task not `review`/`done`/`wontfix`. Skip — but flag — tasks that are
+`blocked` or labelled `ready-for-human`, `needs-info`, `needs-triage`,
+`wontfix`. Never ask which story to work. If every remaining task in the
+milestone is blocked or labelled, stop and report that state. If no story is
+eligible, go to step 8.
 
-### 4. Ask the scope
+### 4. Settle the mode, once
 
-Present the computed unit (task ID and title, its story, and how many tasks
-remain) and ask the user to choose:
+After the refusals and before any delegation: if the invocation contains an
+auto-accept phrase — "auto", "you decide", "go on with your recommendation",
+or an equivalent — run in **automated** mode. Otherwise ask the user to choose
+**automated** or **step-by-step** and hold that answer for the whole run.
+Automated: a freshly generated spec and plans are treated as approved.
+Step-by-step: exactly two approval STOPs — the spec (step 5) and all plans
+together (step 6).
 
-- **just this task** — work only the next unit, then checkpoint;
-- **the rest of the milestone** — keep working tasks until the milestone is
-  done (still checkpointing after each commit);
-- **stop** — end the run without working anything.
+### 5. Spec the story
 
-Hold the answer only for the segment it was given for; re-ask at every
-checkpoint in step 6.
+Delegate spec authoring per `references/delegation.md`, in the format from
+`references/spec-format.md`. Reuse an existing `spec-US-NNN-*.md` — never
+rewrite it. The delegate moves the story's tasks `open → spec`; you move the
+story to `in-progress`. In step-by-step mode, present the spec and wait for
+approval; route change requests back to the delegate and present again.
 
-### 5. Prepare and implement that unit
+### 6. Plan every task of the story
 
-Repeat per task in the chosen scope:
+Delegate plan authoring for **all** of the story's tasks — the delegate
+follows the `plan-writing` skill, saves each `plan-T-NNN-*.md` under
+`.kodit/tmp/specs/`, records plan links per `references/spec-format.md`, and
+moves tasks `spec → plan`. In step-by-step mode, present **all plans** in one
+STOP and wait for approval before implementing anything.
 
-1. **Ensure a spec for its story.** Look for `spec-US-NNN-*.md` under
-   `.kodit/tmp/specs/`; reuse it if present — never rewrite it. If missing,
-   generate one from the story's acceptance criteria and body in the format from
-   `references/spec-format.md`, moving its tasks `open → spec`.
-2. **Plan the task.** Follow the `plan-writing` skill and save `plan-T-NNN-*.md`
-   under `.kodit/tmp/specs/`. Link the plan in the story file per
-   `references/spec-format.md` and move the task `spec → plan`. The plan carries
-   the test-first RED → GREEN ordering.
-3. **Approve when the scope is a single task.** For a single-task segment,
-   present the spec and plan and wait for approval before implementing; route
-   change requests back to steps 1–2 and present again. In a milestone segment,
-   continue without pre-approval — the step 6 checkpoint is the correction
-   point.
-4. **Implement.** Follow the plan exactly. Move the task `plan → implement`,
-   dispatch the work to a subagent when available (otherwise inline), and
-   enforce the test-first gate: before accepting the passing change, confirm the
-   failing test or check was produced and run first. Move the task
-   `implement → review` when its code is ready, and move the story to
-   `in-progress` if it is not already.
+### 7. Work each task: tests first, then code
 
-### 6. Commit and checkpoint after every task
+Per task, in ID order:
 
-Commit the completed task on the milestone branch with a conventional commit
-message. Never commit or continue past a task whose checks fail. Then recompute
-the next unit (step 3) and report what was committed and what remains, asking
-again: **next task, the rest of the milestone, or stop**. Continue on the
-answer; this ask is mandatory after every commit, in both scopes.
+1. **Test delegate (RED).** Writes the plan's failing checks, runs them,
+   observes the failure, **commits the failing tests** with a `test:`
+   message, and moves `plan → implement`.
+2. **Code delegate (GREEN).** Implements the plan's change, verifies the
+   checks now pass, commits with `feat:` or `fix:`, and moves
+   `implement → review`.
 
-### 7. Present the milestone summary and hand off
+Never commit or continue past a failing check. After each commit, report what
+landed and what remains in the story — a report, never a question, in both
+modes. Work only tasks of the current story; a second story waits for the
+next invocation.
 
-When every task in the milestone is `review`/`done`/`wontfix`, present the
-summary in the format from `references/summary-format.md`: the branch, the
-stories and tasks completed, the artifacts written, the items skipped or
-blocked, the decisions surfaced, and the commits. Then ask whether to open the
-pull request now; on yes, tell the user to run the **`pr-request`** skill for
-the milestone branch. Do not merge; the pull-request flow owns that.
+### 8. Story summary and stop
+
+Present the summary from `references/summary-format.md` — the story summary,
+or the milestone-exhausted note when step 3 found no eligible story. Then
+stop: tell the user to re-invoke `implement` for the next story, or to run
+`pr-request` when the milestone is exhausted. Never open, create, or merge a
+pull request.
