@@ -132,15 +132,19 @@ Agent: → runs setup: writes kodit.json, creates .kodit/tmp/
 You:  Let's plan the next milestone.
 Agent: → runs milestone-planning and agrees the milestone scope with you
 You:  Start implementing.
-Agent: → runs implement: a spec and plan per item, then implements each
+Agent: → runs implement: one story, test-first, via delegation, then a summary
 You:  Reset the milestone for review.
 Agent: → runs review-loop, then milestone-review
 You:  Wrap it up.
 Agent: → runs done: docs, changelog, commit
 ```
 
-You choose the scope of each segment — just the next task, or the rest of the
-milestone — and the agent checkpoints with you after every commit.
+Each run works exactly one user story. Unless your prompt already says "auto"
+(or equivalent), the agent first asks whether to run automated or step-by-step,
+then delegates the spec, plan, tests, and code, committing a failing `test:`
+check before each `feat:`/`fix:` change. It finishes by presenting a story
+summary and stopping, naming the next step: the next story (re-invoke
+`implement`) or `pr-request` when the milestone is exhausted.
 
 ## Contributing
 
