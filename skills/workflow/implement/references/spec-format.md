@@ -47,12 +47,12 @@ Mirror the shape the repository already uses, trimmed to a milestone item:
 (none yet)
 ```
 
-Status runs `draft → approved → done`. In a single-task scope `implement`
-presents the spec and waits for approval before implementing; in a milestone
-scope it treats a freshly generated spec as approved as the run proceeds, with
-the post-commit checkpoint as the correction point. One `R<n>` per acceptance
-criterion, in the same order — the spec is a faithful restatement of *what*,
-never *how*.
+Status runs `draft → approved → done`. In **automated** mode `implement`
+treats a freshly generated spec as approved as the run proceeds. In
+**step-by-step** mode it presents the story spec and waits for approval before
+implementing; change requests route back to the spec delegate and the spec is
+re-presented. One `R<n>` per acceptance criterion, in the same order — the
+spec is a faithful restatement of *what*, never *how*.
 
 ## Generating a spec
 
@@ -72,8 +72,8 @@ An existing `spec-US-NNN-*.md` is reused as-is and never rewritten.
 
 `AGENTS.md`'s inner loop attaches plans to tasks as separate artifacts. Record
 each plan's path next to its task so the story remains the index of its work.
-After `plan-writing` returns, record the plan path via the `issue-tracker` skill
-in operate mode.
+After the plan delegate's `plan-writing` run returns, that delegate records
+the plan path via the `issue-tracker` skill in operate mode.
 
 For the file backend, add or update the story file's plan links under
 the task table:

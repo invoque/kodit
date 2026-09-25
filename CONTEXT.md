@@ -254,11 +254,13 @@ kodit/
   `.kodit/tmp/specs/spec-005-implement-skill.md` and
   `.kodit/tmp/specs/plan-005-implement-skill.md`. It establishes the test-first
   (RED → GREEN) convention.
-- `implement` was reworked into a checkpoint-per-unit loop (spec
-  `spec-US-007-implement-checkpoint-loop.md`): it computes the next task, asks
-  whether to run one task or the rest of the milestone, commits each task, and
-  re-asks after every commit. The interactive/non-interactive mode gate was
-  removed.
+- `implement` was reworked into a one-story delegation loop (spec
+  `spec-US-008-implement-story-unit.md`): each run works exactly one user
+  story — it computes the story, settles an automated-vs-step-by-step mode
+  gate once, delegates spec/plan/tests/code with a failing `test:` commit
+  before each `feat:`/`fix:` commit, presents a story summary, and stops
+  naming the next step. The per-commit scope question is gone; the run-level
+  mode gate is restored.
 - The fourth workflow skill exists: `skills/workflow/pr-review/`, using the new
   `github-pr-state` and `code-review` companions; `pr-request` hands
   off to it, and the issue tracker now supports a durable `## Review` note on
@@ -342,3 +344,4 @@ Next up: scaffold the remaining three phase workflow skills and complete review-
 | 2026-09-22 | The `invoque` TEST team (canonical key `TES`, id `4019459a-...`) is a durable eval fixture; its labels and workflow states are verified, never created or deleted by evals. | Making team-level resources durable avoids repeated destructive churn and keeps the eval focused on project provisioning. Unique `[kodit-eval-provision]` project names isolate each live run for cleanup. |
 | 2026-09-22 | The iteration-3 benchmark shows 100% pass rate for both with-skill and baseline runs, indicating the current assertions do not discriminate skill value. | Deterministic fixtures removed the environment-driven failures, revealing that the assertions test outcomes a capable baseline can also achieve. The skill's value is in process discipline (correct conventions, structured drafts, setup/provision separation), which the current assertions do not capture. Tightening assertions is future work. |
 | 2026-09-22 | Supersede the 2026-09-20 interactive/non-interactive decision: `implement` now computes the next task itself, asks at invocation and after every commit whether to run **one task**, **the rest of the milestone**, or **stop**, and commits each task before each checkpoint. | A full-milestone run gave a solo developer no supported way to work one reviewed task at a time, and no post-commit decision point. Making the scope a per-segment answer replaces the run-level mode gate with one repeated question: single-task scope keeps the spec/plan approval gate, milestone scope trades it for full checkpoint control after each commit. Computing the next unit rather than asking the user for an ID keeps the tracker the source of truth. Starting a literal next milestone stays out of scope — the PR flow must close the current one first. |
+| 2026-09-25 | Supersede the 2026-09-22 checkpoint-loop decision: `implement` now works exactly one user story per invocation, settles an automated-vs-step-by-step mode gate once per run (auto-accept phrases in the prompt imply automated), delegates spec, plan, RED tests, and implementation to general-purpose subagents with inline fallback, commits the failing tests `test:` before each `feat:`/`fix:` commit, and has each delegate own its task-status transitions (open → spec → plan → implement → review); a run ends with a story summary and a named handoff, never a pull request. | A task-shaped cadence let a run stop mid-story or push into the next one, and single commits left RED failure evidence undurable. Story-unit runs match how milestones are planned and reviewed; the restored mode gate returns control to the user once per run instead of a question after every commit; two commits per task make the failing state durable before GREEN begins; delegate-owned transitions keep status beside the work that produced it; the orchestrator stays a pure sequencer. |
