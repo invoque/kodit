@@ -90,14 +90,31 @@ The full schema is in `references/hermes-skill-format.md`; the essentials:
 
 ## Distribution
 
-This collection is consumed by Hermes via GitHub.
+This collection is consumed by Hermes directly from this repository's default
+branch (`master`) — there is no publish or release step. Merging to `master` is
+what makes a skill installable, and CI validates every skill on that push.
 
 - Install one skill directly (no tap needed):
-  `hermes skills install OWNER/REPO/hermes-skills/tools/NAME`
-- Tap-style: add an entry with a non-default path (`hermes-skills/`) in
-  `~/.hermes/skills/.hub/taps.json`, then `hermes skills tap add OWNER/REPO`.
-  Whether discovery recurses through the category directory is **unverified**;
-  confirm with a live `hermes skills search` before relying on it.
-- Publish changes with
-  `hermes skills publish DIR --to github --repo OWNER/REPO`.
+  `hermes skills install invoque/kodit/hermes-skills/tools/NAME`
+- Install resolves the default branch only: no tag, release, or commit can be
+  selected with a GitHub identifier.
+- Tap-style discovery is **one level deep** — it probes each subdirectory of the
+  tap path for `SKILL.md` and does not recurse. A tap pointing at
+  `hermes-skills/` finds nothing, because the only children are the category
+  directories. Add **one tap entry per category** by hand-editing
+  `~/.hermes/skills/.hub/taps.json` (`hermes skills tap add` hardcodes
+  `path: "skills/"` and dedupes by repo, so it cannot write these):
+
+  ```json
+  {"taps": [
+    {"repo": "invoque/kodit", "path": "hermes-skills/general/"},
+    {"repo": "invoque/kodit", "path": "hermes-skills/tools/"},
+    {"repo": "invoque/kodit", "path": "hermes-skills/workflow/"}
+  ]}
+  ```
+
+- Taps feed search and browse only; install never consults `taps.json`.
+- Do **not** use `hermes skills publish` for this repository. It forks the given
+  target repo and opens a PR that puts files under that repo's `skills/`
+  directory — a contribution flow for someone else's repo, not this one.
 - Installed skills land in `~/.hermes/skills/` on the user's machine.
