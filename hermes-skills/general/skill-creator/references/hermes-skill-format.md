@@ -32,7 +32,8 @@ skill-name/
 ```
 
 The skill directory name **must equal** the frontmatter `name`. In this repository skills
-live directly under `skills/` (tap layout): `skills/<skill-name>/SKILL.md`.
+live under a category directory: `general/<skill-name>/SKILL.md` or
+`workflow/<skill-name>/SKILL.md`.
 
 ## Core frontmatter
 

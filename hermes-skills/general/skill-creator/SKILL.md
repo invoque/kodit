@@ -46,8 +46,9 @@ Suggest a default; let the user decide.
 
 ### 3. Draft the skill
 
-Create `skills/<skill-name>/SKILL.md` in this repo (tap layout). The directory name **must**
-equal the frontmatter `name`. Start from `assets/skill-template/SKILL.md` and fill it in.
+Create `CATEGORY/<skill-name>/SKILL.md` in this repo, where `CATEGORY` is `general` or
+`workflow`. The directory name **must** equal the frontmatter `name`. Start from
+`assets/skill-template/SKILL.md` and fill it in.
 For the full frontmatter schema, read `references/hermes-skill-format.md`.
 
 Use Hermes-specific fields only when they earn their place: `platforms` for OS gating,
