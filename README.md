@@ -164,9 +164,17 @@ Contributions follow the same workflow this project prescribes.
     skills/<category>/<skill-name>/SKILL.md
   ```
 
-  This check also runs automatically via GitHub Actions on every push to `master`
-  (`.github/workflows/validate-skills.yml`). GitHub Releases are created only when
-  a `v*` tag is pushed (`.github/workflows/release-skills.yml`); use
+  Hermes skills under `hermes-skills/` are checked the same way, plus the
+  name-equals-directory, kebab-case, and description-length rules:
+
+  ```bash
+  python3 .github/scripts/validate-hermes-skills.py
+  ```
+
+  Both checks also run automatically via GitHub Actions on every push to
+  `master` (`.github/workflows/validate-skills.yml`) and before a release
+  (`.github/workflows/release-skills.yml`). GitHub Releases are created only when
+  a `v*` tag is pushed; use
   `gh release create v<X>.<Y>.<Z> --verify-tag` locally if you prefer.
 
 - **Use conventional commits** (`feat:`, `fix:`, `docs:`, `chore:`) and record

@@ -4,10 +4,10 @@ description: >-
   Use after pr-review returns a clean milestone pull request — "approve and
   merge the PR", "finalize the milestone PR", or when the user asks to close out
   the reviewed milestone. Locates the reviewed PR, verifies approval and merge
-  eligibility, requires final user confirmation, delegates GitHub approval and
-  merge to github-pr-merge, records the merge in the tracker, and optionally
-  cleans up the milestone branch. Never approves when the identity is ineligible
-  and never merges without explicit confirmation.
+  eligibility, requires final confirmation, delegates approval and merge to
+  github-pr-merge, records the merge in the tracker, and optionally cleans up
+  the milestone branch. Never approves an ineligible identity and never merges
+  without explicit confirmation.
 ---
 
 # pr-approve

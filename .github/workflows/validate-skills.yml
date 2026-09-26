@@ -26,3 +26,8 @@ jobs:
         run: gh skill publish --dry-run
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Validate hermes skills
+        run: |
+          python3 -c "import yaml" 2>/dev/null || python3 -m pip install --quiet --break-system-packages pyyaml
+          python3 .github/scripts/validate-hermes-skills.py
