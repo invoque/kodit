@@ -40,14 +40,14 @@ through the `terminal` tool.
 
 Verify the CLI is installed:
 
-```bash
-linear --version
+```
+terminal(command="linear --version")
 ```
 
 If `linear` is not on PATH, run it without installing:
 
-```bash
-npx @schpet/linear-cli --version
+```
+terminal(command="npx @schpet/linear-cli --version")
 ```
 
 Prefix every command with `npx @schpet/linear-cli` in place of `linear`, or install
@@ -66,8 +66,8 @@ unavailable (Docker, Modal, SSH).
 Alternatively, authenticate the CLI interactively, which stores the key in the
 system keyring:
 
-```bash
-linear auth login
+```
+terminal(command="linear auth login")
 ```
 
 On Linux the keyring requires `secret-tool` from `libsecret`. When neither method
@@ -76,8 +76,8 @@ project's `.linear.toml` (less secure — never commit it).
 
 Confirm the active identity and workspace:
 
-```bash
-linear auth whoami
+```
+terminal(command="linear auth whoami")
 ```
 
 Multi-workspace users switch per command with `--workspace <slug>`, or
@@ -94,10 +94,10 @@ flag covers the operation.
 `issue query` searches across all assignees and supports structured filters that can
 be combined:
 
-```bash
-linear issue query --team ENG --state started --json
-linear issue query --project "Mobile App" --state backlog --state triage --unassigned
-linear issue query --assignee sam --label bug --updated-after 2026-01-01
+```
+terminal(command="linear issue query --team ENG --state started --json")
+terminal(command="linear issue query --project \"Mobile App\" --state backlog --state triage --unassigned")
+terminal(command="linear issue query --assignee sam --label bug --updated-after 2026-01-01")
 ```
 
 `linear issue list` is an alias of `issue mine` and only shows *your* issues — use
@@ -105,15 +105,14 @@ linear issue query --assignee sam --label bug --updated-after 2026-01-01
 
 ### List my issues
 
-```bash
-linear issue mine --state started --sort priority
+```
+terminal(command="linear issue mine --state started --sort priority")
 ```
 
 ### Create an issue
 
-```bash
-linear issue create --team ENG --title "Fix login redirect" \
-  --description-file ./description.md --no-interactive
+```
+terminal(command="linear issue create --team ENG --title \"Fix login redirect\" --description-file ./description.md --no-interactive")
 ```
 
 Write multi-line markdown to a file and pass `--description-file` (see
@@ -122,22 +121,26 @@ scripted use.
 
 ### Update an issue's state, assignee, or labels
 
-```bash
-linear issue update ENG-123 --state "In Review" --assignee sam
-linear issue update ENG-123 --unassign
-linear issue update ENG-123 --add-label security             # add, keep existing labels
-linear issue update ENG-123 --remove-label sprint-42         # detach; does not delete the label
-linear issue update ENG-123 --remove-label sprint-42 --add-label sprint-43  # atomic swap
-linear issue update ENG-123 --label infra --label security   # replaces the label set
 ```
+terminal(command="linear issue update ENG-123 --state \"In Review\" --assignee sam")
+terminal(command="linear issue update ENG-123 --unassign")
+terminal(command="linear issue update ENG-123 --add-label security")
+terminal(command="linear issue update ENG-123 --remove-label sprint-42")
+terminal(command="linear issue update ENG-123 --remove-label sprint-42 --add-label sprint-43")
+terminal(command="linear issue update ENG-123 --label infra --label security")
+```
+
+`--add-label` adds while keeping existing labels; `--remove-label` detaches without
+deleting the label; pairing the two swaps atomically; `--label` replaces the whole
+label set.
 
 ### Create an issue or project from a template
 
-```bash
-linear template list --type issue --team ENG              # find the template a team expects
-linear template view "Bug report"                         # see what it pre-fills (title, fields, body, sub-issues)
-linear issue create --team ENG --template "Bug report" --title "Login fails on Safari"
-linear project create --name "Q3 launch" --team ENG --template "Kickoff"
+```
+terminal(command="linear template list --type issue --team ENG")
+terminal(command="linear template view \"Bug report\"")
+terminal(command="linear issue create --team ENG --template \"Bug report\" --title \"Login fails on Safari\"")
+terminal(command="linear project create --name \"Q3 launch\" --team ENG --template \"Kickoff\"")
 ```
 
 Explicit flags override the template's values, `--label` merges with its labels, and
@@ -146,14 +149,14 @@ cannot be applied through the API.
 
 ### Add a comment
 
-```bash
-linear issue comment add ENG-123 --body-file ./comment.md
+```
+terminal(command="linear issue comment add ENG-123 --body-file ./comment.md")
 ```
 
 ### Attach an image or screenshot so it is visible inline
 
-```bash
-linear issue comment add ENG-123 --attach ./screenshot.png
+```
+terminal(command="linear issue comment add ENG-123 --attach ./screenshot.png")
 ```
 
 This uploads the image and embeds it in a comment, where Linear renders it inline. Do
@@ -162,19 +165,26 @@ sidebar link attachment and does not render images inline.
 
 ### View an issue / get its URL
 
-```bash
-linear issue view ENG-123          # details incl. comments
-linear issue view ENG-123 --json   # structured output
-linear issue url ENG-123           # print just the URL
 ```
+terminal(command="linear issue view ENG-123")
+terminal(command="linear issue view ENG-123 --json")
+terminal(command="linear issue url ENG-123")
+```
+
+`view` prints details including comments; `--json` gives structured output; `url`
+prints just the issue URL.
 
 ### Close, delete, or archive an issue
 
-```bash
-linear issue update ENG-123 --state Done       # or Canceled; Linear auto-archives closed issues later
-linear issue delete ENG-123                    # trash; restorable in Linear for 30 days
-linear issue archive ENG-123 --confirm         # rarely appropriate, see Pitfalls
 ```
+terminal(command="linear issue update ENG-123 --state Done")
+terminal(command="linear issue delete ENG-123")
+terminal(command="linear issue archive ENG-123 --confirm")
+```
+
+`--state Done` (or `Canceled`) closes the issue, which Linear auto-archives later;
+`delete` moves it to trash, restorable in Linear for 30 days; `archive` is rarely
+appropriate — see Pitfalls.
 
 ## Markdown Content
 
@@ -184,17 +194,16 @@ flags instead of passing content as command-line arguments:
 - `--description-file` for `issue create` and `issue update`
 - `--body-file` for `comment add` and `comment update`
 
-Write the markdown with `write_file` to a path the CLI can read, then pass that path.
-File-based flags ensure correct rendering in the Linear web UI, avoid shell escaping
-problems with newlines, prevent literal `\n` sequences, and keep multi-line content
-manageable. Use inline flags (`--description`, `--body`) only for simple
-single-line content.
+Write the markdown to a file with the `write_file` tool, then pass that path to the
+CLI:
 
-```bash
-# 1. write_file -> ./description.md
-# 2. create the issue with the file
-linear issue create --title "My Issue" --description-file ./description.md
-```
+1. Use `write_file` to create `./description.md`.
+2. Run `terminal(command="linear issue create --title \"My Issue\" --description-file ./description.md")`.
+
+File-based flags ensure correct rendering in the Linear web UI, avoid shell
+escaping problems with newlines, prevent literal `\n` sequences, and keep
+multi-line content manageable. Use inline flags (`--description`, `--body`) only
+for simple single-line content.
 
 ### Mention people and resources with plain URLs
 
@@ -209,8 +218,8 @@ https://linear.app/yourworkspace/profiles/someuser could you review this? https:
 Resolve people within the relevant team first — the team can usually be inferred
 from the issue identifier or the current directory:
 
-```bash
-linear team members ENG --json
+```
+terminal(command="linear team members ENG --json")
 ```
 
 Use the selected member's `url` field verbatim. If the intended person is not a
@@ -238,10 +247,10 @@ covered by the CLI. See `references/api.md` for details.
 
 Write the schema to a temp file, then search it:
 
-```bash
-linear schema -o "${TMPDIR:-/tmp}/linear-schema.graphql"
-grep -i "cycle" "${TMPDIR:-/tmp}/linear-schema.graphql"
-grep -A 30 "^type Issue " "${TMPDIR:-/tmp}/linear-schema.graphql"
+```
+terminal(command="linear schema -o /tmp/linear-schema.graphql")
+terminal(command="grep -i cycle /tmp/linear-schema.graphql")
+terminal(command="grep -A 30 '^type Issue ' /tmp/linear-schema.graphql")
 ```
 
 `linear api` takes the GraphQL document as its only positional argument and has no
@@ -252,41 +261,35 @@ GraphQL queries containing non-null type markers (for example `String` followed 
 an exclamation mark) must be passed via heredoc stdin to avoid escaping issues;
 simple queries without those markers can be passed inline.
 
-```bash
-# Simple query (no type markers, so inline is fine)
-linear api '{ viewer { id name email } }'
-
-# Query with variables — use heredoc to avoid escaping issues
-linear api --variable teamId=abc123 <<'GRAPHQL'
-query($teamId: String!) { team(id: $teamId) { name } }
-GRAPHQL
-
-# Search issues by text
-linear api --variable term=onboarding <<'GRAPHQL'
-query($term: String!) { searchIssues(term: $term, first: 20) { nodes { identifier title state { name } } } }
-GRAPHQL
-
-# Numeric and boolean variables
-linear api --variable first=5 <<'GRAPHQL'
-query($first: Int!) { issues(first: $first) { nodes { title } } }
-GRAPHQL
-
-# Complex variables via JSON
-linear api --variables-json '{"filter": {"state": {"name": {"eq": "In Progress"}}}}' <<'GRAPHQL'
-query($filter: IssueFilter!) { issues(filter: $filter) { nodes { title } } }
-GRAPHQL
-
-# Pipe to jq for filtering
-linear api '{ issues(first: 5) { nodes { identifier title } } }' | jq '.data.issues.nodes[].title'
 ```
+terminal(command="linear api '{ viewer { id name email } }'")
+
+terminal(command="linear api --variable teamId=abc123 <<'GRAPHQL'
+query($teamId: String!) { team(id: $teamId) { name } }
+GRAPHQL")
+
+terminal(command="linear api --variable term=onboarding <<'GRAPHQL'
+query($term: String!) { searchIssues(term: $term, first: 20) { nodes { identifier title state { name } } } }
+GRAPHQL")
+
+terminal(command="linear api --variable first=5 <<'GRAPHQL'
+query($first: Int!) { issues(first: $first) { nodes { title } } }
+GRAPHQL")
+
+terminal(command="linear api --variables-json '{\"filter\": {\"state\": {\"name\": {\"eq\": \"In Progress\"}}}}' <<'GRAPHQL'
+query($filter: IssueFilter!) { issues(filter: $filter) { nodes { title } } }
+GRAPHQL")
+
+terminal(command="linear api '{ issues(first: 5) { nodes { identifier title } } }' | jq '.data.issues.nodes[].title'")
+```
+
+The first is a simple inline query; the rest use a heredoc inside the command
+string because non-null type markers (`String!`) break shell quoting.
 
 For full HTTP control, use `linear auth token` with `curl`:
 
-```bash
-curl -s -X POST https://api.linear.app/graphql \
-  -H "Content-Type: application/json" \
-  -H "Authorization: $(linear auth token)" \
-  -d '{"query": "{ viewer { id } }"}'
+```
+terminal(command="curl -s -X POST https://api.linear.app/graphql -H 'Content-Type: application/json' -H \"Authorization: $(linear auth token)\" -d '{\"query\": \"{ viewer { id } }\"}'")
 ```
 
 ## Pitfalls
@@ -304,7 +307,8 @@ curl -s -X POST https://api.linear.app/graphql \
 - **Hidden required flags.** `issue list` sorts by priority by default — override
   with `--sort` (`manual` or `priority`), the `issue_sort` config option, or
   `LINEAR_ISSUE_SORT`. It also requires `--team <key>` unless the team can be
-  inferred from the directory; run `linear team list --json` to map names to keys.
+  inferred from the directory; run `terminal(command="linear team list --json")` to map
+  names to keys.
 - **`linear api` quoting.** The GraphQL document is a single quoted argument with the
   `query`/`mutation` keyword inside it; non-null markers (`String!`) need a heredoc.
 - **Mentions.** Only plain Linear URLs create mentions; resolve team members before
@@ -318,9 +322,10 @@ curl -s -X POST https://api.linear.app/graphql \
 
 ## Verification
 
-- `linear auth whoami` exits successfully and prints the expected user/workspace.
+- `terminal(command="linear auth whoami")` exits successfully and prints the expected
+  user/workspace.
 - A created or updated issue returns its identifier, and
-  `linear issue view <ID> --json` reflects the fields that were set.
+  `terminal(command="linear issue view <ID> --json")` reflects the fields that were set.
 - A comment added with `--body-file` renders as formatted markdown (not literal
   `\n`) when viewed in Linear.
 - A GraphQL call returns data under `.data` when piped to `jq` (no `.errors`).
