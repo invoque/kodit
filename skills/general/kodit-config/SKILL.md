@@ -6,9 +6,8 @@ description: >-
   Provides the kodit.json schema, checks adoption state and resumes an
   interrupted setup, runs the project-metadata interview, writes the final
   artifacts from the setup drafts, migrates legacy document sections to
-  marker-delimited blocks, and appends entries to the CONTEXT.md decisions log.
-  Invoked by the setup-kodit and milestone-planning workflow skills; the schema
-  is the single source of truth for every other kodit skill.
+  marker-delimited blocks, and appends CONTEXT.md decisions. Invoked by the
+  setup-kodit and milestone-planning workflow skills.
 ---
 
 # kodit-config

@@ -43,21 +43,40 @@ kodit/
 │       │   ├── spec-US-NNN-*.md  # specifications (per user story)
 │       │   └── plan-T-NNN-*.md   # implementation plans (per task)
 │       └── workspaces/  # throwaway workspaces for testing (created on demand)
-└── skills/
-    ├── workflow/        # one skill per workflow phase (orchestrators)
-    │   └── <skill-name>/
-    │       ├── SKILL.md
-    │       ├── references/
-    │       └── scripts/
-    └── general/         # single-purpose capability skills
-        └── <skill-name>/
-            ├── SKILL.md
-            ├── references/
-            └── scripts/
+├── skills/              # agent-agnostic workflow + general skills
+│   ├── workflow/        # one skill per workflow phase (orchestrators)
+│   │   └── <skill-name>/
+│   │       ├── SKILL.md
+│   │       ├── references/
+│   │       └── scripts/
+│   └── general/         # single-purpose capability skills
+│       └── <skill-name>/
+│           ├── SKILL.md
+│           ├── references/
+│           └── scripts/
+└── hermes-skills/       # Hermes Agent skills (own AGENTS.md)
+    ├── general/
+    └── workflow/        # created on demand
 ```
+
+### Skill authoring scope
+
+**All skill creation and editing happens inside this project — only under
+`skills/` or `hermes-skills/`.** Never create, edit, or copy skills into agent
+config or install directories (`~/.config/opencode/skills/`, `~/.hermes/skills/`,
+`~/.claude/skills/`, or any path outside this repository). Installing a skill
+onto a machine is a distribution step, not authoring: changes are made here and
+consumed via the repository (see `hermes-skills/AGENTS.md`).
 
 ## Working Contract
 
+0. **Never switch, create, rename, or delete git branches unless the user
+   explicitly tells you to in that same request.** Do not `git switch`,
+   `git checkout`, `git branch -c`, or `git switch -c` on your own initiative —
+   not as a "convenience", not because a convention suggests it, not even when
+   another instruction file says work happens on `feature/*`. If a task seems to
+   need a branch change, stop and ask first. Staying on the user's current
+   branch is always the safe default.
 1. Read `CONTEXT.md` first — it is the source of truth.
 2. Read `kodit.json` when it exists — it holds project configuration.
 3. Follow the workflow phases below, in order. Do not skip phases.
@@ -256,6 +275,9 @@ for the actual work. Every skill must be clean, concise, and terse.
 
 - Do not put vendor-specific instructions inside a skill (no "only for Claude",
   no "only for pi", no agent-specific tool names).
+- Do not create, edit, or copy skills outside this project's `skills/` or
+  `hermes-skills/` directories — never write to `~/.config/opencode/skills/`,
+  `~/.hermes/skills/`, `~/.claude/skills/`, or any install path.
 - Do not add runtime code, dependencies, or a package manifest without a prior
   decision recorded in `CONTEXT.md`.
 - Do not exceed the skill body line cap, and do not pad a skill with preamble,
@@ -271,6 +293,9 @@ for the actual work. Every skill must be clean, concise, and terse.
 - Do not commit secrets, tokens, or machine-specific absolute paths.
 - Do not commit unless the change is complete and verified for its phase.
 - Do not commit directly to `master` or `dev`, and do not force-push either.
+- Do not run `git switch`, `git checkout`, `git branch -c`, or `git switch -c`,
+  and do not create, rename, or delete a branch, unless the user said so in the
+  same request (see Working Contract item 0).
 
 ### Branching
 
