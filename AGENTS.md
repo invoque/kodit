@@ -70,6 +70,13 @@ consumed via the repository (see `hermes-skills/AGENTS.md`).
 
 ## Working Contract
 
+0. **Never switch, create, rename, or delete git branches unless the user
+   explicitly tells you to in that same request.** Do not `git switch`,
+   `git checkout`, `git branch -c`, or `git switch -c` on your own initiative —
+   not as a "convenience", not because a convention suggests it, not even when
+   another instruction file says work happens on `feature/*`. If a task seems to
+   need a branch change, stop and ask first. Staying on the user's current
+   branch is always the safe default.
 1. Read `CONTEXT.md` first — it is the source of truth.
 2. Read `kodit.json` when it exists — it holds project configuration.
 3. Follow the workflow phases below, in order. Do not skip phases.
@@ -286,6 +293,9 @@ for the actual work. Every skill must be clean, concise, and terse.
 - Do not commit secrets, tokens, or machine-specific absolute paths.
 - Do not commit unless the change is complete and verified for its phase.
 - Do not commit directly to `master` or `dev`, and do not force-push either.
+- Do not run `git switch`, `git checkout`, `git branch -c`, or `git switch -c`,
+  and do not create, rename, or delete a branch, unless the user said so in the
+  same request (see Working Contract item 0).
 
 ### Branching
 
