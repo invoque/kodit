@@ -35,13 +35,17 @@ hermes-skills/
 │       ├── scripts/           # optional: executable helpers
 │       ├── references/        # optional: docs loaded on demand
 │       └── assets/            # optional: templates, images, data
+├── tools/                     # skills that wrap a single external CLI tool
+│   └── NAME/
+│       └── SKILL.md
 └── workflow/                  # phase-orchestrator skills (created on demand)
     └── NAME/
         └── SKILL.md
 ```
 
-- Categories: `general` (a reusable capability with no phase knowledge) and
-  `workflow` (sequences a phase and invokes general skills).
+- Categories: `general` (a reusable capability with no phase knowledge),
+  `tools` (skills that wrap a single external command-line tool, e.g. `gh`,
+  `linear`), and `workflow` (sequences a phase and invokes general skills).
 - A skill's directory name **must equal** its frontmatter `name`.
 - Names are lowercase kebab-case and globally unique across categories.
 
@@ -89,7 +93,7 @@ The full schema is in `references/hermes-skill-format.md`; the essentials:
 This collection is consumed by Hermes via GitHub.
 
 - Install one skill directly (no tap needed):
-  `hermes skills install OWNER/REPO/hermes-skills/general/NAME`
+  `hermes skills install OWNER/REPO/hermes-skills/tools/NAME`
 - Tap-style: add an entry with a non-default path (`hermes-skills/`) in
   `~/.hermes/skills/.hub/taps.json`, then `hermes skills tap add OWNER/REPO`.
   Whether discovery recurses through the category directory is **unverified**;
