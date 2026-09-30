@@ -1,0 +1,15 @@
+name: kodit-projects
+version: 0.1.0
+description: >-
+  Project registry with an SQLite/FTS5 file index. Detects which registered
+  project an instant-message is about, injects a capped per-turn
+  [project-context] block, and exposes /kodit-projects commands plus
+  kodit_projects_* search/show/set tools. Ships a bundled companion skill.
+author: invoque (kodit)
+provides_hooks:
+  - pre_llm_call
+  - on_session_start
+provides_tools:
+  - kodit_projects_search
+  - kodit_projects_show
+  - kodit_projects_set
