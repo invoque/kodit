@@ -15,7 +15,7 @@ MAX_BLOCK = 2000
 _SHED = ("key paths:", "github:", "linear:", "indexed files:")
 
 _NEXT = ("next: find files with kodit_projects_search; read or edit metadata with "
-         "/kodit-projects or skill kodit-projects:projects.")
+         "/projects or skill kodit-projects:projects.")
 
 
 def build_block(project: Dict[str, Any], *, first_turn: bool = False,

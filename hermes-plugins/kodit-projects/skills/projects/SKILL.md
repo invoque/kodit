@@ -26,7 +26,7 @@ Namespaced as `kodit-projects:projects`; read via `skill_view` when an
 3. Read metadata with `kodit_projects_show`; change fields or aliases with
    `kodit_projects_set` (fields: name, summary, description, linear_url,
    github_repo, alias_add, alias_remove).
-4. For registry operations the user runs directly, use `/kodit-projects`:
+4. For registry operations the user runs directly, use `/projects`:
    `register <path> [name]`, `list`, `show [key]`,
    `set <key> <field> <value>`, `alias <key> add|remove <alias>`,
    `index <key>`, `forget <key>`.

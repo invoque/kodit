@@ -38,14 +38,14 @@ profile-scoped). The install dir holds only source — deleting it never touches
 Slash command (CLI and gateway/IM sessions):
 
 ```
-/kodit-projects register <path> [name]      # derives summary from README/CONTEXT/kodit.json,
+/projects register <path> [name]      # derives summary from README/CONTEXT/kodit.json,
                                             # origin from `git remote`, then indexes files
-/kodit-projects list
-/kodit-projects show [key]                  # active project when key omitted
-/kodit-projects set <key> <field> <value>   # name|summary|description|linear_url|github_repo
-/kodit-projects alias <key> add|remove <alias>
-/kodit-projects index <key>                 # force reindex
-/kodit-projects forget <key>
+/projects list
+/projects show [key]                  # active project when key omitted
+/projects set <key> <field> <value>   # name|summary|description|linear_url|github_repo
+/projects alias <key> add|remove <alias>
+/projects index <key>                 # force reindex
+/projects forget <key>
 ```
 
 Agent tools (toolset `kodit_projects`):

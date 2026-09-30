@@ -40,17 +40,17 @@ _GUIDANCE = (
     'kodit-projects: the "[project-context] ..." block in the user message names the active '
     "project; its working dir and metadata are authoritative for this turn. Find files with the "
     "kodit_projects_search tool, read metadata with kodit_projects_show, and update fields with "
-    'kodit_projects_set or /kodit-projects. Full workflow: skill "kodit-projects:projects".'
+    'kodit_projects_set or /projects. Full workflow: skill "kodit-projects:projects".'
 )
 
 _USAGE = """usage:
-  /kodit-projects register <path> [name]      register a project (derives summary/origin, indexes files)
-  /kodit-projects list                        all registered projects
-  /kodit-projects show [key]                  metadata (active project when key omitted)
-  /kodit-projects set <key> <field> <value>   field: name|summary|description|linear_url|github_repo
-  /kodit-projects alias <key> add|remove <alias>
-  /kodit-projects index <key>                 reindex the project's files
-  /kodit-projects forget <key>                remove the project and its index"""
+  /projects register <path> [name]      register a project (derives summary/origin, indexes files)
+  /projects list                        all registered projects
+  /projects show [key]                  metadata (active project when key omitted)
+  /projects set <key> <field> <value>   field: name|summary|description|linear_url|github_repo
+  /projects alias <key> add|remove <alias>
+  /projects index <key>                 reindex the project's files
+  /projects forget <key>                remove the project and its index"""
 
 
 def _remember(cache: "OrderedDict[str, str]", key: str, value: str) -> None:
@@ -159,7 +159,7 @@ def _fmt_project(p: Dict[str, Any]) -> str:
 
 def _cmd_register(args: list) -> str:
     if not args:
-        return "usage: /kodit-projects register <path> [name ...]"
+        return "usage: /projects register <path> [name ...]"
     root = os.path.abspath(os.path.expanduser(args[0]))
     if not os.path.isdir(root):
         return f"not a directory: {root}"
@@ -177,7 +177,7 @@ def _cmd_register(args: list) -> str:
 def _cmd_list() -> str:
     projects = store.list_projects()
     if not projects:
-        return "no projects registered — /kodit-projects register <path>"
+        return "no projects registered — /projects register <path>"
     return "\n".join(
         f'{p["slug"]:20} {p["name"]:24} {p["working_dir"]}' for p in projects)
 
@@ -192,21 +192,21 @@ def _cmd_show(args: list) -> str:
     if project is None:
         projects = store.list_projects()
         if not projects:
-            return "no projects registered — /kodit-projects register <path>"
+            return "no projects registered — /projects register <path>"
         project = max(projects, key=lambda p: p.get("last_session_at") or 0)
     return _fmt_project(project)
 
 
 def _cmd_set(args: list) -> str:
     if len(args) < 3:
-        return "usage: /kodit-projects set <key> <field> <value ...>"
+        return "usage: /projects set <key> <field> <value ...>"
     project = store.set_field(args[0], args[1].lower(), " ".join(args[2:]))
     return f'{project["slug"]}.{args[1].lower()} updated'
 
 
 def _cmd_alias(args: list) -> str:
     if len(args) < 3 or args[1].lower() not in ("add", "remove"):
-        return "usage: /kodit-projects alias <key> add|remove <alias>"
+        return "usage: /projects alias <key> add|remove <alias>"
     if args[1].lower() == "add":
         store.add_alias(args[0], " ".join(args[2:]))
         return f'alias added to {args[0]}'
@@ -216,7 +216,7 @@ def _cmd_alias(args: list) -> str:
 
 def _cmd_index(args: list) -> str:
     if not args:
-        return "usage: /kodit-projects index <key>"
+        return "usage: /projects index <key>"
     project = store.get_project(args[0])
     if project is None:
         return f"unknown project: {args[0]}"
@@ -226,7 +226,7 @@ def _cmd_index(args: list) -> str:
 
 def _cmd_forget(args: list) -> str:
     if not args:
-        return "usage: /kodit-projects forget <key>"
+        return "usage: /projects forget <key>"
     if store.forget(args[0]):
         return f"forgot {args[0]} (registry and file index removed)"
     return f"unknown project: {args[0]}"
@@ -299,7 +299,7 @@ def _tool_show(args: Dict[str, Any], session_id: str = "", **_: Any) -> str:
     if project is None:
         projects = store.list_projects()
         if not projects:
-            return _json({"error": "no projects registered; run /kodit-projects register <path>"})
+            return _json({"error": "no projects registered; run /projects register <path>"})
         project = max(projects, key=lambda p: p.get("last_session_at") or 0)
     out = {k: project.get(k) for k in (
         "slug", "name", "description", "working_dir", "summary", "linear_url",
@@ -392,7 +392,7 @@ def register(ctx: Any) -> None:
     ctx.register_hook("pre_llm_call", _on_pre_llm_call)
     ctx.register_hook("on_session_start", _on_session_start)
     ctx.register_system_prompt_section("kodit-projects.context", _prompt_section)
-    ctx.register_command("kodit-projects", _cmd,
+    ctx.register_command("projects", _cmd,
                          description="Manage the project registry and file index",
                          args_hint="<register|list|show|set|alias|index|forget> [args]")
     ctx.register_tool(name="kodit_projects_search", toolset="kodit_projects",
@@ -465,12 +465,12 @@ def _selftest() -> None:
             and v[1]["parameters"]["type"] == "object"
             and v[1]["parameters"].get("additionalProperties") is False
             for k, v in ctx.tools.items()))
-        ok("command wired", "kodit-projects" in ctx.commands)
+        ok("command wired", "projects" in ctx.commands)
         ok("section wired", "kodit-projects.context" in ctx.sections)
         ok("skill wired", ctx.skills.get("projects", "").endswith("SKILL.md"))
 
         # command roundtrip
-        cmd = ctx.commands["kodit-projects"]
+        cmd = ctx.commands["projects"]
         ok("usage on empty", "usage:" in cmd(""))
         out = cmd(f"register {proj}")
         ok("register", "registered" in out and "files indexed: 2" in out)
