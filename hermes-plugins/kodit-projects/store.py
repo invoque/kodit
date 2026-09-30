@@ -98,6 +98,12 @@ def _now() -> int:
     return int(time.time())
 
 
+def _now_f() -> float:
+    """Sub-second index timestamps: getmtime() has sub-second precision, so
+    comparing it against a whole-second index time is flaky."""
+    return time.time()
+
+
 def _norm_dir(path: str) -> str:
     return os.path.abspath(os.path.expanduser(str(path).strip())).rstrip("/\\") or "/"
 
@@ -197,6 +203,16 @@ def list_projects(db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
         return [dict(r) for r in conn.execute("SELECT * FROM projects ORDER BY name")]
 
 
+def aliases_for(key: str, db_path: Optional[Path] = None) -> List[str]:
+    with db(db_path) as conn:
+        project = _get(conn, key)
+        if not project:
+            return []
+        return [r["alias"] for r in conn.execute(
+            "SELECT alias FROM aliases WHERE project_id = ? ORDER BY alias",
+            (project["id"],))]
+
+
 def set_field(key: str, field: str, value: str, db_path: Optional[Path] = None) -> Dict[str, Any]:
     if field not in _SETTABLE:
         raise ValueError(f"field must be one of {_SETTABLE}, got {field!r}")
@@ -277,8 +293,13 @@ def project_for_cwd(cwd: str, db_path: Optional[Path] = None) -> Optional[Dict[s
         return best
 
 
-def find_by_token(token: str, db_path: Optional[Path] = None) -> Optional[Dict[str, Any]]:
-    """Cascade: path token → exact slug/alias/name → registry FTS → LIKE."""
+def find_by_token(token: str, db_path: Optional[Path] = None,
+                  fuzzy: bool = True) -> Optional[Dict[str, Any]]:
+    """Cascade: path token → exact slug/alias/name → registry FTS → LIKE.
+
+    ``fuzzy=False`` stops after the exact/FTS steps; turn-time detection uses it so
+    common words cannot substring-match an unrelated project name.
+    """
     token = str(token or "").strip()
     if not token:
         return None
@@ -299,6 +320,8 @@ def find_by_token(token: str, db_path: Optional[Path] = None) -> Optional[Dict[s
                 hit = _get(conn, row["proj"])
                 if hit:
                     return hit
+        if not fuzzy:
+            return None
         row = conn.execute(
             "SELECT id FROM projects WHERE lower(name) LIKE ? OR lower(slug) LIKE ? "
             "LIMIT 1", (f"%{token.lower()}%", f"%{token.lower()}%")).fetchone()
@@ -330,7 +353,7 @@ def replace_file_index(project_id: str, rows: Iterable[Dict[str, Any]],
                          (project_id, r["path"], r.get("title") or "",
                           (r.get("body") or "")[:8000]))
         conn.execute("UPDATE projects SET last_indexed_at = ? WHERE id = ?",
-                     (_now(), project_id))
+                     (_now_f(), project_id))
     return len(rows)
 
 
@@ -354,6 +377,35 @@ def file_count(project_id: str, db_path: Optional[Path] = None) -> int:
         return int(row["n"]) if row else 0
 
 
+def top_paths(project_id: str, limit: int = 6,
+              db_path: Optional[Path] = None) -> List[str]:
+    """Shallowest-path sample for the first-turn context block (README.md before
+    deep/nested/file.md — depth first, alphabetical within a depth)."""
+    with db(db_path) as conn:
+        return [r["path"] for r in conn.execute(
+            "SELECT path FROM files WHERE project_id = ? "
+            "ORDER BY (LENGTH(path) - LENGTH(REPLACE(path, '/', ''))), path LIMIT ?",
+            (project_id, max(1, int(limit))))]
+
+
+def search_files_global(query: str, limit: int = 10,
+                        db_path: Optional[Path] = None) -> List[Dict[str, Any]]:
+    """FTS across every project's index: [{proj, path, title, snip}].
+
+    Used by detection (>=2 message words matching one project's files) and by the
+    search tool when no project scope was given.
+    """
+    fts = _fts_query(query)
+    if not fts:
+        return []
+    with db(db_path) as conn:
+        rows = conn.execute(
+            "SELECT proj, path, title, snippet(files_fts, 3, '[', ']', '...', 12) AS snip "
+            "FROM files_fts WHERE files_fts MATCH ? LIMIT ?",
+            (fts, max(1, min(int(limit), 100)))).fetchall()
+        return [dict(r) for r in rows]
+
+
 def is_index_stale(project_id: str, max_age: int = DEFAULT_MAX_AGE,
                    db_path: Optional[Path] = None) -> bool:
     with db(db_path) as conn:
@@ -365,10 +417,11 @@ def is_index_stale(project_id: str, max_age: int = DEFAULT_MAX_AGE,
             return False
         if row["last_indexed_at"] is None:
             return True
-        if _now() - int(row["last_indexed_at"]) > max_age:
+        indexed = float(row["last_indexed_at"])
+        if time.time() - indexed > max_age:
             return True
         try:
-            return os.path.getmtime(row["working_dir"]) > int(row["last_indexed_at"])
+            return os.path.getmtime(row["working_dir"]) > indexed
         except OSError:
             return False
 
@@ -415,12 +468,13 @@ def _selftest() -> None:
             {"path": "src/main.py", "title": "main.py", "body": "def main(): run()", "mtime": 1},
             {"path": "README.md", "title": "Readme",
              "body": "# Kodit One\nThe project summary lives here.", "mtime": 2},
+            {"path": "a/b/c.md", "title": "c", "body": "deep nested doc", "mtime": 3},
         ], db_path=db_path)
-        ok("index replaced (2)", n == 2)
+        ok("index replaced (3)", n == 3)
         ok("search file path", search_files(p1["id"], "main", db_path=db_path)[0]["path"] == "src/main.py")
         ok("search file body", search_files(p1["id"], "summary", db_path=db_path)[0]["path"] == "README.md")
         ok("search miss", search_files(p1["id"], "quantum-tunnel", db_path=db_path) == [])
-        ok("file_count", file_count(p1["id"], db_path=db_path) == 2)
+        ok("file_count", file_count(p1["id"], db_path=db_path) == 3)
         ok("index fresh", not is_index_stale(p1["id"], max_age=10**9, db_path=db_path))
 
         updated = set_field("kodit-one", "summary", "brand-new phrase for match", db_path=db_path)
@@ -429,6 +483,7 @@ def _selftest() -> None:
            find_by_token("brand-new", db_path=db_path)["id"] == p1["id"])
         add_alias("kodit-one", "k1", db_path=db_path)
         ok("add_alias", find_by_token("k1", db_path=db_path)["id"] == p1["id"])
+        ok("aliases_for", aliases_for("kodit-one", db_path=db_path) == ["k1", "kodit one", "kodit-one"])
         ok("remove_alias", remove_alias("kodit-one", "k1", db_path=db_path)
            and find_by_token("k1", db_path=db_path) is None)
 
@@ -438,6 +493,17 @@ def _selftest() -> None:
         with db(db_path) as conn:
             conn.execute("UPDATE projects SET last_indexed_at = 1 WHERE id = ?", (p1["id"],))
         ok("stale detected", is_index_stale(p1["id"], max_age=10**9, db_path=db_path))
+
+        ok("top_paths shallowest first",
+           top_paths(p1["id"], db_path=db_path) ==
+           ["README.md", "src/main.py", "a/b/c.md"])
+        ok("search_files_global hit",
+           search_files_global("summary lives", db_path=db_path)[0]["proj"] == p1["id"])
+        ok("search_files_global miss",
+           search_files_global("quantum-tunnel", db_path=db_path) == [])
+        ok("find_by_token strict skips LIKE",
+           find_by_token("odit", fuzzy=False, db_path=db_path) is None
+           and find_by_token("odit", fuzzy=True, db_path=db_path)["id"] == p1["id"])
 
         ok("forget", forget("kodit-one", db_path=db_path)
            and get_project("kodit-one", db_path=db_path) is None)
