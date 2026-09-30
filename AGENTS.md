@@ -54,19 +54,22 @@ kodit/
 │           ├── SKILL.md
 │           ├── references/
 │           └── scripts/
-└── hermes-skills/       # Hermes Agent skills (own AGENTS.md)
-    ├── general/
-    └── workflow/        # created on demand
+├── hermes-skills/       # Hermes Agent skills (own AGENTS.md)
+│   ├── general/
+│   └── workflow/        # created on demand
+└── hermes-plugins/      # Hermes Agent plugins (Python runtime code, own AGENTS.md)
+    └── <plugin-name>/
 ```
 
 ### Skill authoring scope
 
 **All skill creation and editing happens inside this project — only under
-`skills/` or `hermes-skills/`.** Never create, edit, or copy skills into agent
-config or install directories (`~/.config/opencode/skills/`, `~/.hermes/skills/`,
-`~/.claude/skills/`, or any path outside this repository). Installing a skill
-onto a machine is a distribution step, not authoring: changes are made here and
-consumed via the repository (see `hermes-skills/AGENTS.md`).
+`skills/`, `hermes-skills/`, or `hermes-plugins/*/skills/`.** Never create,
+edit, or copy skills into agent config or install directories
+(`~/.config/opencode/skills/`, `~/.hermes/skills/`, `~/.claude/skills/`, or any
+path outside this repository). Installing a skill onto a machine is a
+distribution step, not authoring: changes are made here and consumed via the
+repository (see `hermes-skills/AGENTS.md`).
 
 ## Working Contract
 
@@ -275,9 +278,10 @@ for the actual work. Every skill must be clean, concise, and terse.
 
 - Do not put vendor-specific instructions inside a skill (no "only for Claude",
   no "only for pi", no agent-specific tool names).
-- Do not create, edit, or copy skills outside this project's `skills/` or
-  `hermes-skills/` directories — never write to `~/.config/opencode/skills/`,
-  `~/.hermes/skills/`, `~/.claude/skills/`, or any install path.
+- Do not create, edit, or copy skills outside this project's `skills/`,
+  `hermes-skills/`, or `hermes-plugins/*/skills/` directories — never write to
+  `~/.config/opencode/skills/`, `~/.hermes/skills/`, `~/.claude/skills/`, or
+  any install path.
 - Do not add runtime code, dependencies, or a package manifest without a prior
   decision recorded in `CONTEXT.md`.
 - Do not exceed the skill body line cap, and do not pad a skill with preamble,
