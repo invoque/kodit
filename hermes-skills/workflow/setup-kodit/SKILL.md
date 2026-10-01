@@ -1,0 +1,132 @@
+---
+name: setup-kodit
+description: >-
+  Use when the user wants to adopt or initialize kodit in a project — "set up
+  kodit", "initialize this project for kodit", "get started with the kodit
+  workflow" — or when a setup was interrupted and needs resuming. Checks
+  adoption state, interviews for project metadata, issue tracking, and git
+  branching, checkpoints for review, then writes kodit.json, AGENTS.md,
+  README.md, CONTEXT.md, and .kodit/. This is the setup phase; it defines only
+  the sequence and delegates the work. Not for milestone work.
+version: 1.0.0
+author: invoque
+license: MIT
+platforms: [linux, macos, windows]
+metadata:
+  hermes:
+    tags: [kodit, setup, workflow, init, onboarding]
+    related_skills: [kodit-config, issue-tracker, git-branching, interview]
+---
+
+# setup-kodit
+
+The setup phase: initialize `kodit` in a project, one reviewable step at a time.
+
+## When to Use
+
+- Adopting or initializing kodit in a project: "set up kodit", "initialize this
+  project for kodit", "get started with the kodit workflow".
+- Resuming a setup that was interrupted and left `.kodit/tmp/setup-*.md` drafts
+  behind.
+- Not for milestone work — use the milestone workflow for that.
+
+## Usage
+
+Delegates all work to general skills and never writes configuration itself.
+Load each delegate with `skill_view` when available. Read
+`references/summary-format.md` before presenting the checkpoint or the final
+summary. The delegates and their modes:
+
+- **kodit-config** — check mode, metadata mode, provision mode, write mode.
+- **issue-tracker** — setup mode.
+- **git-branching** — its setup steps.
+
+## Steps
+
+### 1. Check the project
+
+Load the `kodit-config` skill with `skill_view` and follow it in **check
+mode**: adoption state, `.kodit/tmp/`, git, and existing `setup-*.md` drafts. If
+`kodit.json` exists, present the completed state and stop — do not reconfigure
+unless the user asks. Otherwise, keep the reported resume point: the first step
+below with no draft. Drafts already present are re-confirmed, not re-asked. If
+the `kodit-config` skill is not installed, stop and report that it is required.
+
+### 2. Settle project metadata
+
+If `.kodit/tmp/setup-project-metadata.md` is missing, follow the
+`kodit-config` skill in **metadata mode** (it runs the `interview` skill).
+Otherwise re-confirm the draft with the user. If the `kodit-config` skill is
+not installed, ask the metadata questions directly and write the draft.
+
+### 3. Settle issue tracking
+
+If `.kodit/tmp/setup-issue-tracker.md` is missing, follow the
+`issue-tracker` skill in **setup mode**. Otherwise re-confirm the draft. If the
+`issue-tracker` skill is not installed, stop and report that it is required.
+
+### 4. Settle git branching
+
+If `.kodit/tmp/setup-git-branching.md` is missing, follow
+the `git-branching` skill. Otherwise re-confirm the draft. If the `git-branching`
+skill is not installed, stop and report that it is required.
+
+### 5. Checkpoint — STOP
+
+Present the review summary in the format from `references/summary-format.md`:
+per-section tables from the three drafts, the exact `kodit.json` that will be
+written, rendered previews of each document's managed block, and a file plan
+with per-file actions (create, append, no-op, migrate, or legacy-retained).
+For Linear, show the planned remote resources (project, states, labels) in the
+issue tracking table. If legacy sections are detected, show their bounded diff.
+Ask the user to review. Route each change request back to the step that owns it,
+rewrite that draft, and present the checkpoint again. Do not continue without
+approval.
+
+### 6. Provision and write the configuration
+
+Follow the `kodit-config` skill in **provision mode** to create or verify
+tracker resources (file seed or Linear project/states/labels). Provision reads
+the setup draft — `kodit.json` does not exist yet. Then follow **write mode**
+to write `kodit.json` from the three drafts, render managed blocks into
+`AGENTS.md`, `README.md`, and `CONTEXT.md` (creating shells, appending, or
+migrating per the document-state matrix), write `.kodit/.gitignore`, and delete
+all `.kodit/tmp/setup-*.md` drafts. Report each file and its action: created,
+appended, no-op, migrated, or legacy-retained.
+
+### 7. Hand off
+
+Present the final summary from `references/summary-format.md` — what was
+written, the branch and issue configuration, and the next action: invoke the
+`milestone-planning` skill to agree the first milestone. If the
+`milestone-planning` skill is not installed, name it as the next skill to
+install. Offer to commit the setup if the project's conventions expect it.
+
+## Pitfalls
+
+- **Writing before approval.** Nothing is written until step 6. Drafts are the
+  only state; the checkpoint must be approved first. Route change requests back
+  to the owning step and present the checkpoint again.
+- **Reconfiguring an adopted project.** `kodit.json` present means setup is
+  done — present the completed state and stop unless the user asks.
+- **Re-asking settled drafts.** A present `setup-*.md` draft is the step's
+  completed output — re-confirm it, do not re-run the interview or the setup.
+- **Improvising a missing dependency.** If a required delegate skill is not
+  installed, stop and report it; do not hand-roll its work, except for the
+  metadata questions, which step 2 allows you to ask directly.
+
+## Verification
+
+- Nothing is written before step 5 approval; the three drafts exist and are
+  re-confirmed, not re-created.
+- Every file reports an action: created, appended, no-op, migrated, or
+  legacy-retained.
+- `.kodit/tmp/setup-*.md` drafts are removed only by write mode after all
+  writes succeed.
+- The final summary names the next action — invoke `milestone-planning`.
+
+## Reference files
+
+| Topic | Read |
+| --- | --- |
+| Checkpoint and final-summary presentation | `references/summary-format.md` |
