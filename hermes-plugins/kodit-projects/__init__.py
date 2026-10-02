@@ -394,7 +394,7 @@ def register(ctx: Any) -> None:
     ctx.register_system_prompt_section("kodit-projects.context", _prompt_section)
     ctx.register_command("projects", _cmd,
                          description="Manage the project registry and file index",
-                         args_hint="<register|list|show|set|alias|index|forget> [args]")
+                         args_hint="[register|list|show|set|alias|index|forget] [args]")
     ctx.register_tool(name="kodit_projects_search", toolset="kodit_projects",
                       schema=_SEARCH_SCHEMA, handler=_tool_search)
     ctx.register_tool(name="kodit_projects_show", toolset="kodit_projects",
